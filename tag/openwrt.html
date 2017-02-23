@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/pygments/github.min.css">
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/font-awesome/css/font-awesome.min.css">
+
+
+    <link href="https://blog.chih.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="chih's blog Atom">
+
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+    <meta name="author" content="chih" />
+    <meta name="description" content="" />
+<meta property="og:site_name" content="chih's blog"/>
+<meta property="og:type" content="blog"/>
+<meta property="og:title" content="chih's blog"/>
+<meta property="og:description" content=""/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://blog.chih.me"/>
+
+  <title>chih's blog &ndash;     Tag openwrt
+</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://blog.chih.me">
+        <img src="https://blog.chih.me/theme/img/profile.png" alt="" title="">
+      </a>
+      <h1><a href="https://blog.chih.me"></a></h1>
+
+
+      <nav>
+        <ul class="list">
+          <li><a href="https://blog.chih.me/pages/about-me.html#about-me">About Me</a></li>
+
+          <li><a href="http://www.hjk.im/" target="_blank">HJK</a></li>
+          <li><a href="http://imis.me/" target="_blank">记忆反射弧</a></li>
+          <li><a href="http://mijack.github.io/" target="_blank">mijack</a></li>
+        </ul>
+      </nav>
+
+      <ul class="social">
+        <li><a class="sc-GitHub" href="https://github.com/chih7" target="_blank"><i class="fa fa-GitHub"></i></a></li>
+        <li><a class="sc-twitter" href="https://twitter.com/chih758" target="_blank"><i class="fa fa-twitter"></i></a></li>
+        <li><a class="sc-Google+" href="https://google.com/+GarsonChih" target="_blank"><i class="fa fa-Google+"></i></a></li>
+      </ul>
+    </div>
+
+
+  </aside>
+  <main>
+
+
+
+
+<article>
+  <header>
+    <h2><a href="https://blog.chih.me/chang-openwtr-ppoe-password.html#chang-openwtr-ppoe-password">使用LuCI的RPC接口修改openwrt配置</a></h2>
+    <p>
+          Posted on Mon 17 October 2016 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/openwrt.html">openwrt</a>,              <a href="https://blog.chih.me/tag/android.html">android</a>,              <a href="https://blog.chih.me/tag/luci.html">luci</a>,              <a href="https://blog.chih.me/tag/rpc.html">rpc</a>
+    </p>
+  </header>
+  <div>
+      <p>简单来说，本文整理了一些<code>openwrt</code>的RPC接口，用来自动修改pppoe的密码，并重启网络。为什么要弄这些玩意呢，因为浙江高校中普遍使用的蛋疼的闪讯——两三天换个动态密码，时不时给你断个网！使用这些API的是一个Android应用，它在用户按下一个按键后自动向电信发送一条获取密码的短信，然后获取返回的短信，解析其中的闪讯动态密码，通过<code>openwrt</code>的RPC接口修改密码并重启网络，这样，只需要一次按按钮的操作，就能恢复网络，又可以愉快的玩耍啦。</p>
+<p><a href="https://github.com/openwrt/openwrt">openwrt</a> 我就不多介绍了，玩路由器的都知道；<a href="https://wiki.openwrt.org/doc/techref/uci">UCI</a>是<code>openwrt</code>提供的一套统一的配置接口，可以用以配置整台<code>openwrt</code>设备；而<a href="https://wiki.openwrt.org/doc/techref/luci">LuCI</a>是一个基于Lua语言开发的、包装了底层UCI接口的易于使用的Web用户接口。LuCI也提供了一种基于JSON格式的RPC机制来访问其内部的库。</p>
+<p>LuCI的RPC接口的地址为 <strong>/cgi-bin/luci/rpc/LIBRARY</strong>，其中LIBRARY代表按功能区分的几个库，分别为：</p>
+<ul>
+<li><strong>auth</strong> - 基于token的认证库</li>
+<li><strong>uci</strong> - UCI统一配置接口的映射</li>
+<li><strong>fs</strong> -  文件操作</li>
+<li><strong>sys …</strong></li></ul>
+      <br>
+      <a class="btn" href="https://blog.chih.me/chang-openwtr-ppoe-password.html#chang-openwtr-ppoe-password">    Continue reading
+</a>
+  </div>
+</article>
+
+  <div class="pagination">
+  </div>
+
+
+
+
+    <footer>
+<p>&copy; chih </p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-61054351-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " chih's blog ",
+  "url" : "https://blog.chih.me",
+  "image": "",
+  "description": ""
+}
+</script>
+  
+</body>
+</html>

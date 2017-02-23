@@ -1,0 +1,1404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>chih's blog - chih</title><link href="https://blog.chih.me/" rel="alternate"></link><link href="https://blog.chih.me/feeds/chih.atom.xml" rel="self"></link><id>https://blog.chih.me/</id><updated>2016-11-21T00:00:00+08:00</updated><entry><title>使用redsocks把shadowsocks转为全局代理</title><link href="https://blog.chih.me/global-proxy-within-redsocks-and-shadowsocks.html" rel="alternate"></link><published>2016-11-21T00:00:00+08:00</published><updated>2016-11-21T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2016-11-21:/global-proxy-within-redsocks-and-shadowsocks.html</id><summary type="html">&lt;h2&gt;前言&lt;/h2&gt;
+&lt;p&gt;shadowsocks是个非常棒的翻墙代理，它可以在本地提供一个socks5端口供软件使用代理。比如启动chrome的时候加上&lt;code&gt;--proxy-server="socks5://myproxy:1080"&lt;/code&gt;这条参数就可以让chrome走代理；然而，有些软件不支持设置代理的功能。所以有时候，我们需要一个全局代理的环境，使用VPN是一个通常的选择，不过一般购买的VPN的速度不如shadowsocks，同时，VPN更容易受到GFW的干扰。为什么不把正在使用的shadowsocks利用起来作为一个全局代理呢？&lt;/p&gt;
+&lt;p&gt;本文介绍了一种利用&lt;a href="https://github.com/darkk/redsocks"&gt;redsocks&lt;/a&gt;与iptables实现全局代理的方法，其基本原理如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;iptables的规则将所有tcp包转发到redsocks打开的本地端口&lt;/li&gt;
+&lt;li&gt;redsocks接收tcp包并转发给shadowsocks打开的本地socks端口&lt;/li&gt;
+&lt;li&gt;shadowsocks将接收的包转发给远端的代理服务器&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;由于使用了redsocks与iptables，因此本文的方法仅适用于Linux。&lt;/p&gt;
+&lt;h2&gt;安装&lt;/h2&gt;
+&lt;p&gt;由于使用的是Arch Linux，我直接通过AUR安装&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ yaourt redsocks
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;通过&lt;code&gt;yaourt&lt;/code&gt;搜索redsocks包，然后选择你要安装的包的序号就可以进行安装了。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;注意：下文中的配置文件的路径全部基于Arch Linux，如果你用的不是Arch Linux，请根据自己的情况更改。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;其他发行版可以通过各自的包管理器或者下载源码&lt;a href="https://github.com/darkk/redsocks/blob/master/README"&gt;安装&lt;/a&gt;。&lt;/p&gt;
+&lt;h2&gt;配置&lt;/h2&gt;
+&lt;h3&gt;配置redsocks&lt;/h3&gt;
+&lt;p&gt;我在包提供的原有配置的基础上进行了一些修改，主要是把 &lt;code&gt;redsocks …&lt;/code&gt;&lt;/p&gt;</summary><content type="html">&lt;h2&gt;前言&lt;/h2&gt;
+&lt;p&gt;shadowsocks是个非常棒的翻墙代理，它可以在本地提供一个socks5端口供软件使用代理。比如启动chrome的时候加上&lt;code&gt;--proxy-server="socks5://myproxy:1080"&lt;/code&gt;这条参数就可以让chrome走代理；然而，有些软件不支持设置代理的功能。所以有时候，我们需要一个全局代理的环境，使用VPN是一个通常的选择，不过一般购买的VPN的速度不如shadowsocks，同时，VPN更容易受到GFW的干扰。为什么不把正在使用的shadowsocks利用起来作为一个全局代理呢？&lt;/p&gt;
+&lt;p&gt;本文介绍了一种利用&lt;a href="https://github.com/darkk/redsocks"&gt;redsocks&lt;/a&gt;与iptables实现全局代理的方法，其基本原理如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;iptables的规则将所有tcp包转发到redsocks打开的本地端口&lt;/li&gt;
+&lt;li&gt;redsocks接收tcp包并转发给shadowsocks打开的本地socks端口&lt;/li&gt;
+&lt;li&gt;shadowsocks将接收的包转发给远端的代理服务器&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;由于使用了redsocks与iptables，因此本文的方法仅适用于Linux。&lt;/p&gt;
+&lt;h2&gt;安装&lt;/h2&gt;
+&lt;p&gt;由于使用的是Arch Linux，我直接通过AUR安装&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ yaourt redsocks
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;通过&lt;code&gt;yaourt&lt;/code&gt;搜索redsocks包，然后选择你要安装的包的序号就可以进行安装了。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;注意：下文中的配置文件的路径全部基于Arch Linux，如果你用的不是Arch Linux，请根据自己的情况更改。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;其他发行版可以通过各自的包管理器或者下载源码&lt;a href="https://github.com/darkk/redsocks/blob/master/README"&gt;安装&lt;/a&gt;。&lt;/p&gt;
+&lt;h2&gt;配置&lt;/h2&gt;
+&lt;h3&gt;配置redsocks&lt;/h3&gt;
+&lt;p&gt;我在包提供的原有配置的基础上进行了一些修改，主要是把 &lt;code&gt;redsocks -&amp;gt; port&lt;/code&gt; 修改为shadowsocks的本地端口(1080)，另外，由于只需要转发tcp流量，我把 &lt;code&gt;redudp&lt;/code&gt; 和 &lt;code&gt;dnstc&lt;/code&gt; 段的配置全部注释了。注意 &lt;code&gt;redsocks -&amp;gt; local_port&lt;/code&gt; 配置的端口是用来接收iptables传来的流量用的，设置为一个不会和别的程序冲突的端口，但要保证和iptables规则里的端口对应。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ vim /etc/redsocks.conf
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;base &lt;span class="o"&gt;{&lt;/span&gt;
+    // debug: connection progress &lt;span class="p"&gt;&amp;amp;&lt;/span&gt; client list on SIGUSR1
+    &lt;span class="nv"&gt;log_debug&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; off&lt;span class="p"&gt;;&lt;/span&gt;
+
+    // info: start and end of client session
+    &lt;span class="nv"&gt;log_info&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; off&lt;span class="p"&gt;;&lt;/span&gt;
+
+    /* possible &lt;span class="sb"&gt;`&lt;/span&gt;log&lt;span class="s1"&gt;&amp;#39; values are:&lt;/span&gt;
+&lt;span class="s1"&gt;     *   stderr&lt;/span&gt;
+&lt;span class="s1"&gt;     *   &amp;quot;file:/path/to/file&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;     *   syslog:FACILITY  facility is any of &amp;quot;daemon&amp;quot;, &amp;quot;local0&amp;quot;...&amp;quot;local7&amp;quot;&lt;/span&gt;
+&lt;span class="s1"&gt;     */&lt;/span&gt;
+&lt;span class="s1"&gt;    // log = stderr;&lt;/span&gt;
+&lt;span class="s1"&gt;    // log = &amp;quot;file:/path/to/file&amp;quot;;&lt;/span&gt;
+&lt;span class="s1"&gt;    log = &amp;quot;syslog:daemon&amp;quot;;&lt;/span&gt;
+
+&lt;span class="s1"&gt;    // detach from console&lt;/span&gt;
+&lt;span class="s1"&gt;    daemon = on;&lt;/span&gt;
+
+&lt;span class="s1"&gt;    /* Change uid, gid and root directory, these options require root&lt;/span&gt;
+&lt;span class="s1"&gt;     * privilegies on startup.&lt;/span&gt;
+&lt;span class="s1"&gt;     * Note, your chroot may requre /etc/localtime if you write log to syslog.&lt;/span&gt;
+&lt;span class="s1"&gt;     * Log is opened before chroot &amp;amp; uid changing.&lt;/span&gt;
+&lt;span class="s1"&gt;     */&lt;/span&gt;
+&lt;span class="s1"&gt;    user = redsocks;&lt;/span&gt;
+&lt;span class="s1"&gt;    group = redsocks;&lt;/span&gt;
+&lt;span class="s1"&gt;    // chroot = &amp;quot;/var/chroot&amp;quot;;&lt;/span&gt;
+
+&lt;span class="s1"&gt;    /* possible `redirector&amp;#39;&lt;/span&gt; values are:
+     *   iptables   - &lt;span class="k"&gt;for&lt;/span&gt; Linux
+     *   ipf        - &lt;span class="k"&gt;for&lt;/span&gt; FreeBSD
+     *   pf         - &lt;span class="k"&gt;for&lt;/span&gt; OpenBSD
+     *   generic    - some generic redirector that MAY work
+     */
+    &lt;span class="nv"&gt;redirector&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; iptables&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+
+redsocks &lt;span class="o"&gt;{&lt;/span&gt;
+    /* &lt;span class="sb"&gt;`&lt;/span&gt;local_ip&lt;span class="s1"&gt;&amp;#39; defaults to 127.0.0.1 for security reasons,&lt;/span&gt;
+&lt;span class="s1"&gt;     * use 0.0.0.0 if you want to listen on every interface.&lt;/span&gt;
+&lt;span class="s1"&gt;     * `local_*&amp;#39;&lt;/span&gt; are used as port to redirect to.
+     */
+    &lt;span class="nv"&gt;local_ip&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;127&lt;/span&gt;.0.0.1&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="nv"&gt;local_port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;31338&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    // listen&lt;span class="o"&gt;()&lt;/span&gt; queue length. Default value is SOMAXCONN and it should be
+    // good enough &lt;span class="k"&gt;for&lt;/span&gt; most of us.
+    // &lt;span class="nv"&gt;listenq&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;128&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; // SOMAXCONN equals &lt;span class="m"&gt;128&lt;/span&gt; on my Linux box.
+
+    // &lt;span class="sb"&gt;`&lt;/span&gt;max_accept_backoff&lt;span class="sb"&gt;`&lt;/span&gt; is a delay to retry &lt;span class="sb"&gt;`&lt;/span&gt;accept&lt;span class="o"&gt;()&lt;/span&gt;&lt;span class="sb"&gt;`&lt;/span&gt; after accept
+    // failure &lt;span class="o"&gt;(&lt;/span&gt;e.g. due to lack of file descriptors&lt;span class="o"&gt;)&lt;/span&gt;. It&lt;span class="s1"&gt;&amp;#39;s measured in&lt;/span&gt;
+&lt;span class="s1"&gt;    // milliseconds and maximal value is 65535. `min_accept_backoff` is&lt;/span&gt;
+&lt;span class="s1"&gt;    // used as initial backoff value and as a damper for `accept() after&lt;/span&gt;
+&lt;span class="s1"&gt;    // close()` logic.&lt;/span&gt;
+&lt;span class="s1"&gt;    // min_accept_backoff = 100;&lt;/span&gt;
+&lt;span class="s1"&gt;    // max_accept_backoff = 60000;&lt;/span&gt;
+
+&lt;span class="s1"&gt;    // `ip&amp;#39;&lt;/span&gt; and &lt;span class="sb"&gt;`&lt;/span&gt;port&lt;span class="s1"&gt;&amp;#39; are IP and tcp-port of proxy-server&lt;/span&gt;
+&lt;span class="s1"&gt;    // You can also use hostname instead of IP, only one (random)&lt;/span&gt;
+&lt;span class="s1"&gt;    // address of multihomed host will be used.&lt;/span&gt;
+&lt;span class="s1"&gt;    ip = 127.0.0.1;&lt;/span&gt;
+&lt;span class="s1"&gt;    // 修改为shadosocks的本地端口&lt;/span&gt;
+&lt;span class="s1"&gt;    port = 1080;&lt;/span&gt;
+
+
+&lt;span class="s1"&gt;    // known types: socks4, socks5, http-connect, http-relay&lt;/span&gt;
+&lt;span class="s1"&gt;    type = socks5;&lt;/span&gt;
+
+&lt;span class="s1"&gt;    // login = &amp;quot;foobar&amp;quot;;&lt;/span&gt;
+&lt;span class="s1"&gt;    // password = &amp;quot;baz&amp;quot;;&lt;/span&gt;
+&lt;span class="s1"&gt;}&lt;/span&gt;
+
+&lt;span class="s1"&gt;//redudp {&lt;/span&gt;
+&lt;span class="s1"&gt;    // `local_ip&amp;#39;&lt;/span&gt; should not be &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0 as it&lt;span class="s1"&gt;&amp;#39;s also used for outgoing&lt;/span&gt;
+&lt;span class="s1"&gt;    // packets that are sent as replies - and it should be fixed&lt;/span&gt;
+&lt;span class="s1"&gt;    // if we want NAT to work properly.&lt;/span&gt;
+&lt;span class="s1"&gt;    //local_ip = 127.0.0.1;&lt;/span&gt;
+&lt;span class="s1"&gt;    //local_port = 10053;&lt;/span&gt;
+
+&lt;span class="s1"&gt;    // `ip&amp;#39;&lt;/span&gt; and &lt;span class="sb"&gt;`&lt;/span&gt;port&lt;span class="s1"&gt;&amp;#39; of socks5 proxy server.&lt;/span&gt;
+&lt;span class="s1"&gt;    //ip = 127.0.0.1;&lt;/span&gt;
+&lt;span class="s1"&gt;    //port = 1080;&lt;/span&gt;
+
+&lt;span class="s1"&gt;    // login = username;&lt;/span&gt;
+&lt;span class="s1"&gt;    // password = pazzw0rd;&lt;/span&gt;
+
+&lt;span class="s1"&gt;    // kernel does not give us this information, so we have to duplicate it&lt;/span&gt;
+&lt;span class="s1"&gt;    // in both iptables rules and configuration file.  By the way, you can&lt;/span&gt;
+&lt;span class="s1"&gt;    // set `local_ip&amp;#39;&lt;/span&gt; to &lt;span class="m"&gt;127&lt;/span&gt;.45.67.89 &lt;span class="k"&gt;if&lt;/span&gt; you need more than &lt;span class="m"&gt;65535&lt;/span&gt; ports to
+    // forward &lt;span class="p"&gt;;&lt;/span&gt;-&lt;span class="o"&gt;)&lt;/span&gt;
+    // This limitation may be relaxed in future versions using contrack-tools.
+    //dest_ip &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;8&lt;/span&gt;.8.8.8&lt;span class="p"&gt;;&lt;/span&gt;
+    //dest_port &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;53&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    //udp_timeout &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;30&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    //udp_timeout_stream &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;180&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+//&lt;span class="o"&gt;}&lt;/span&gt;
+
+//dnstc &lt;span class="o"&gt;{&lt;/span&gt;
+    // fake and really dumb DNS server that returns &lt;span class="s2"&gt;&amp;quot;truncated answer&amp;quot;&lt;/span&gt; to
+    // every query via UDP, RFC-compliant resolver should repeat same query
+    // via TCP in this &lt;span class="k"&gt;case&lt;/span&gt;.
+//  &lt;span class="nv"&gt;local_ip&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;127&lt;/span&gt;.0.0.1&lt;span class="p"&gt;;&lt;/span&gt;
+//  &lt;span class="nv"&gt;local_port&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="m"&gt;5300&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+//&lt;span class="o"&gt;}&lt;/span&gt;
+
+// you can add more &lt;span class="sb"&gt;`&lt;/span&gt;redsocks&lt;span class="s1"&gt;&amp;#39; and `redudp&amp;#39;&lt;/span&gt; sections &lt;span class="k"&gt;if&lt;/span&gt; you need.
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;iptables规则&lt;/h3&gt;
+&lt;p&gt;也是在包提供的原有配置的基础上进行了一些修改，唯一的修改只是增加了这一条&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;-A REDSOCKS -d proxy_server_ip -j RETURN&lt;/code&gt;，使代理自己不要再被重定向，不然就无限循环了。。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ vim /etc/iptables/redsocks.rules
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Transparent SOCKS proxy&lt;/span&gt;
+&lt;span class="c1"&gt;# See: http://darkk.net.ru/redsocks/&lt;/span&gt;
+
+*nat
+:PREROUTING ACCEPT &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;:0&lt;span class="o"&gt;]&lt;/span&gt;
+:INPUT ACCEPT &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;:0&lt;span class="o"&gt;]&lt;/span&gt;
+:OUTPUT ACCEPT &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;:0&lt;span class="o"&gt;]&lt;/span&gt;
+:POSTROUTING ACCEPT &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;:0&lt;span class="o"&gt;]&lt;/span&gt;
+:REDSOCKS - &lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;:0&lt;span class="o"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Redirect all output through redsocks&lt;/span&gt;
+-A OUTPUT -p tcp -j REDSOCKS
+
+&lt;span class="c1"&gt;# Whitelist LANs and some other reserved addresses.&lt;/span&gt;
+&lt;span class="c1"&gt;# https://en.wikipedia.org/wiki/Reserved_IP_addresses#Reserved_IPv4_addresses&lt;/span&gt;
+-A REDSOCKS -d &lt;span class="m"&gt;0&lt;/span&gt;.0.0.0/8 -j RETURN
+-A REDSOCKS -d &lt;span class="m"&gt;10&lt;/span&gt;.0.0.0/8 -j RETURN
+-A REDSOCKS -d &lt;span class="m"&gt;127&lt;/span&gt;.0.0.0/8 -j RETURN
+-A REDSOCKS -d &lt;span class="m"&gt;169&lt;/span&gt;.254.0.0/16 -j RETURN
+-A REDSOCKS -d &lt;span class="m"&gt;172&lt;/span&gt;.16.0.0/12 -j RETURN
+-A REDSOCKS -d &lt;span class="m"&gt;192&lt;/span&gt;.168.0.0/16 -j RETURN
+-A REDSOCKS -d &lt;span class="m"&gt;224&lt;/span&gt;.0.0.0/4 -j RETURN
+-A REDSOCKS -d &lt;span class="m"&gt;240&lt;/span&gt;.0.0.0/4 -j RETURN
+&lt;span class="c1"&gt;# import shadowsocks server ip&lt;/span&gt;
+&lt;span class="c1"&gt;#-A REDSOCKS -d xxx.xxx.xxx.xxx -j RETURN&lt;/span&gt;
+&lt;span class="c1"&gt;# shadowsocks server port&lt;/span&gt;
+-A REDSOCKS -p tcp --dport xxxxx -j RETURN
+
+&lt;span class="c1"&gt;# Redirect everything else to redsocks port&lt;/span&gt;
+-A REDSOCKS -p tcp -j REDIRECT --to-ports &lt;span class="m"&gt;31338&lt;/span&gt;
+
+COMMIT
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;运行&lt;/h2&gt;
+&lt;p&gt;开启redsocks和iptables服务，并让它们开机自启:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo systemctl start  redsocks.service iptables.service
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo systemctl &lt;span class="nb"&gt;enable&lt;/span&gt;  redsocks.service iptables.service
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;当你需要进入全局代理时，简单地导入&lt;code&gt;redsocks.rules&lt;/code&gt;就行:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo iptables-restore &amp;lt; /etc/iptables/redsocks.rules
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;当你需要退出全局代理环境，只需要清空iptables规则，redsocks可以让他一直运行:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo /usr/lib/systemd/scripts/iptables-flush
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;一些人可能是自己编译源码进行安装的，这些Arch Linux软件包内的&lt;a href="https://aur.archlinux.org/cgit/aur.git/tree/?h=redsocks-git"&gt;默认配置和运行脚本&lt;/a&gt;可能对你有所帮助。&lt;/p&gt;
+&lt;h2&gt;高级配置&lt;/h2&gt;
+&lt;p&gt;由于我只在极少数特殊情况下才会用到全局代理，所以DNS防污染，国内ip白名单等都没有弄，有需要的可以研究下以下几个技术：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;dnsmasq&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;pdnsd&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;chnroutes&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;ChinaDNS&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Pcap_DNSProxy&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;</content><category term="Arch Linux"></category><category term="Linux"></category><category term="redsocks"></category><category term="iptables"></category><category term="shadowsocks"></category><category term="代理"></category></entry><entry><title>使用LuCI的RPC接口修改openwrt配置</title><link href="https://blog.chih.me/chang-openwtr-ppoe-password.html" rel="alternate"></link><published>2016-10-17T00:00:00+08:00</published><updated>2016-10-17T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2016-10-17:/chang-openwtr-ppoe-password.html</id><summary type="html">&lt;p&gt;简单来说，本文整理了一些&lt;code&gt;openwrt&lt;/code&gt;的RPC接口，用来自动修改pppoe的密码，并重启网络。为什么要弄这些玩意呢，因为浙江高校中普遍使用的蛋疼的闪讯——两三天换个动态密码，时不时给你断个网！使用这些API的是一个Android应用，它在用户按下一个按键后自动向电信发送一条获取密码的短信，然后获取返回的短信，解析其中的闪讯动态密码，通过&lt;code&gt;openwrt&lt;/code&gt;的RPC接口修改密码并重启网络，这样，只需要一次按按钮的操作，就能恢复网络，又可以愉快的玩耍啦。&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/openwrt/openwrt"&gt;openwrt&lt;/a&gt; 我就不多介绍了，玩路由器的都知道；&lt;a href="https://wiki.openwrt.org/doc/techref/uci"&gt;UCI&lt;/a&gt;是&lt;code&gt;openwrt&lt;/code&gt;提供的一套统一的配置接口，可以用以配置整台&lt;code&gt;openwrt&lt;/code&gt;设备；而&lt;a href="https://wiki.openwrt.org/doc/techref/luci"&gt;LuCI&lt;/a&gt;是一个基于Lua语言开发的、包装了底层UCI接口的易于使用的Web用户接口。LuCI也提供了一种基于JSON格式的RPC机制来访问其内部的库。&lt;/p&gt;
+&lt;p&gt;LuCI的RPC接口的地址为 &lt;strong&gt;/cgi-bin/luci/rpc/LIBRARY&lt;/strong&gt;，其中LIBRARY代表按功能区分的几个库，分别为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;auth&lt;/strong&gt; - 基于token的认证库&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;uci&lt;/strong&gt; - UCI统一配置接口的映射&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;fs&lt;/strong&gt; -  文件操作&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;sys …&lt;/strong&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;简单来说，本文整理了一些&lt;code&gt;openwrt&lt;/code&gt;的RPC接口，用来自动修改pppoe的密码，并重启网络。为什么要弄这些玩意呢，因为浙江高校中普遍使用的蛋疼的闪讯——两三天换个动态密码，时不时给你断个网！使用这些API的是一个Android应用，它在用户按下一个按键后自动向电信发送一条获取密码的短信，然后获取返回的短信，解析其中的闪讯动态密码，通过&lt;code&gt;openwrt&lt;/code&gt;的RPC接口修改密码并重启网络，这样，只需要一次按按钮的操作，就能恢复网络，又可以愉快的玩耍啦。&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/openwrt/openwrt"&gt;openwrt&lt;/a&gt; 我就不多介绍了，玩路由器的都知道；&lt;a href="https://wiki.openwrt.org/doc/techref/uci"&gt;UCI&lt;/a&gt;是&lt;code&gt;openwrt&lt;/code&gt;提供的一套统一的配置接口，可以用以配置整台&lt;code&gt;openwrt&lt;/code&gt;设备；而&lt;a href="https://wiki.openwrt.org/doc/techref/luci"&gt;LuCI&lt;/a&gt;是一个基于Lua语言开发的、包装了底层UCI接口的易于使用的Web用户接口。LuCI也提供了一种基于JSON格式的RPC机制来访问其内部的库。&lt;/p&gt;
+&lt;p&gt;LuCI的RPC接口的地址为 &lt;strong&gt;/cgi-bin/luci/rpc/LIBRARY&lt;/strong&gt;，其中LIBRARY代表按功能区分的几个库，分别为：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;auth&lt;/strong&gt; - 基于token的认证库&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;uci&lt;/strong&gt; - UCI统一配置接口的映射&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;fs&lt;/strong&gt; -  文件操作&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;sys&lt;/strong&gt; - 提供了一些系统通用功能&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ipkg&lt;/strong&gt; - ipk包的管理&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;下面以具体的操作演示其中一些库的使用，文中未用到的库可自行查询&lt;a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/openwrt/luci/master/documentation/api/index.html"&gt;API文档&lt;/a&gt; 。&lt;/p&gt;
+&lt;h2&gt;修改pppoe密码流程&lt;/h2&gt;
+&lt;p&gt;下面的请求都使用&lt;code&gt;curl&lt;/code&gt;作为HTTP客户端。&lt;/p&gt;
+&lt;h3&gt;获取token&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ curl -i -X POST -d &lt;span class="s1"&gt;&amp;#39;{&amp;quot;method&amp;quot;:&amp;quot;login&amp;quot;,&amp;quot;params&amp;quot;:[&amp;quot;root&amp;quot;,&amp;quot;admin&amp;quot;]}&amp;#39;&lt;/span&gt; http://192.168.1.1/cgi-bin/luci/rpc/auth
+
+HTTP/1.1 &lt;span class="m"&gt;200&lt;/span&gt; OK
+Connection: close
+Transfer-Encoding: chunked
+Content-Type: application/json
+Set-Cookie: &lt;span class="nv"&gt;sysauth&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;f807d8dc25e82d2d457c0d2f1ee27ce7&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nv"&gt;path&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/
+Cache-Control: no-cache
+Expires: &lt;span class="m"&gt;0&lt;/span&gt;
+
+&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;id&amp;quot;&lt;/span&gt;:null,&lt;span class="s2"&gt;&amp;quot;result&amp;quot;&lt;/span&gt;:&lt;span class="s2"&gt;&amp;quot;f807d8dc25e82d2d457c0d2f1ee27ce7&amp;quot;&lt;/span&gt;,&lt;span class="s2"&gt;&amp;quot;error&amp;quot;&lt;/span&gt;:null&lt;span class="o"&gt;}&lt;/span&gt;%   
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;以POST形式向&lt;code&gt;/cgi-bin/luci/rpc/auth&lt;/code&gt;地址发送格式为&lt;code&gt;{"method":"login","params":["root","admin"]}&lt;/code&gt;的登录请求，其中参数&lt;code&gt;params&lt;/code&gt;为路由器的帐号密码，路由器返回json，其中result的值就是token，在这里是f807d8dc25e82d2d457c0d2f1ee27ce7。&lt;/p&gt;
+&lt;h3&gt;设置pppoe密码&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ curl -i -X POST -d &lt;span class="s1"&gt;&amp;#39;{&amp;quot;method&amp;quot;:&amp;quot;set&amp;quot;, &amp;quot;params&amp;quot;:[&amp;quot;network&amp;quot;, &amp;quot;wan&amp;quot;, &amp;quot;password&amp;quot;, &amp;quot;123456&amp;quot;]}&amp;#39;&lt;/span&gt; http://192.168.1.1/cgi-bin/luci/rpc/uci&lt;span class="se"&gt;\?&lt;/span&gt;auth&lt;span class="se"&gt;\=&lt;/span&gt;f807d8dc25e82d2d457c0d2f1ee27ce7
+
+HTTP/1.1 &lt;span class="m"&gt;200&lt;/span&gt; OK
+Connection: close
+Transfer-Encoding: chunked
+Content-Type: application/json
+Cache-Control: no-cache
+Expires: &lt;span class="m"&gt;0&lt;/span&gt;
+
+&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;id&amp;quot;&lt;/span&gt;:null,&lt;span class="s2"&gt;&amp;quot;result&amp;quot;&lt;/span&gt;:true,&lt;span class="s2"&gt;&amp;quot;error&amp;quot;&lt;/span&gt;:null&lt;span class="o"&gt;}&lt;/span&gt;%    
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;上面的POST请求向&lt;code&gt;cgi-bin/luci/rpc/uci&lt;/code&gt;这个地址发送&lt;code&gt;set&lt;/code&gt;方法，参数格式如下所示：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;config: UCI config&lt;/li&gt;
+&lt;li&gt;section: UCI section name&lt;/li&gt;
+&lt;li&gt;option: UCI option or UCI section type&lt;/li&gt;
+&lt;li&gt;value: UCI value or nothing if you want to create a section&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这里 &lt;code&gt;params":["network", "wan", "password", "123456"]&lt;/code&gt;的参数即代表修改network-&amp;gt;wan-&amp;gt;password的值为123456。注意带上你的token，不然请求将返回403错误码。&lt;/p&gt;
+&lt;h3&gt;获取pppoe密码&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ curl -i -X POST -d &lt;span class="s1"&gt;&amp;#39;{&amp;quot;method&amp;quot;:&amp;quot;get&amp;quot;, &amp;quot;params&amp;quot;:[&amp;quot;network&amp;quot;, &amp;quot;wan&amp;quot;, &amp;quot;password&amp;quot;]}&amp;#39;&lt;/span&gt; http://192.168.1.1/cgi-bin/luci/rpc/uci&lt;span class="se"&gt;\?&lt;/span&gt;auth&lt;span class="se"&gt;\=&lt;/span&gt;f807d8dc25e82d2d457c0d2f1ee27ce7
+
+HTTP/1.1 &lt;span class="m"&gt;200&lt;/span&gt; OK
+Connection: close
+Transfer-Encoding: chunked
+Content-Type: application/json
+Cache-Control: no-cache
+Expires: &lt;span class="m"&gt;0&lt;/span&gt;
+
+&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;id&amp;quot;&lt;/span&gt;:null,&lt;span class="s2"&gt;&amp;quot;result&amp;quot;&lt;/span&gt;:&lt;span class="s2"&gt;&amp;quot;123456&amp;quot;&lt;/span&gt;,&lt;span class="s2"&gt;&amp;quot;error&amp;quot;&lt;/span&gt;:null&lt;span class="o"&gt;}&lt;/span&gt;%   
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;有&lt;code&gt;set&lt;/code&gt;方式，当然也有&lt;code&gt;get&lt;/code&gt;方法，可以用以取得配置的值。&lt;/p&gt;
+&lt;h3&gt;提交修改&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ curl -i -X POST -d &lt;span class="s1"&gt;&amp;#39;{&amp;quot;method&amp;quot;:&amp;quot;commit&amp;quot;, &amp;quot;params&amp;quot;:[&amp;quot;network&amp;quot;]}&amp;#39;&lt;/span&gt; http://192.168.1.1/cgi-bin/luci/rpc/uci&lt;span class="se"&gt;\?&lt;/span&gt;auth&lt;span class="se"&gt;\=&lt;/span&gt;f807d8dc25e82d2d457c0d2f1ee27ce7  
+
+HTTP/1.1 &lt;span class="m"&gt;200&lt;/span&gt; OK
+Connection: close
+Transfer-Encoding: chunked
+Content-Type: application/json
+Cache-Control: no-cache
+Expires: &lt;span class="m"&gt;0&lt;/span&gt;
+
+&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;id&amp;quot;&lt;/span&gt;:null,&lt;span class="s2"&gt;&amp;quot;result&amp;quot;&lt;/span&gt;:true,&lt;span class="s2"&gt;&amp;quot;error&amp;quot;&lt;/span&gt;:null&lt;span class="o"&gt;}&lt;/span&gt;%   
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;注意，前面的&lt;code&gt;set&lt;/code&gt;方法只改变了内存中配置的值，而 &lt;code&gt;uci&lt;/code&gt;库中的&lt;code&gt;commit&lt;/code&gt;即相当于把更改写入到配置文件。想让配置生效，这一步是不缺少的。&lt;/p&gt;
+&lt;h3&gt;重启网络&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ curl -i -X POST -d &lt;span class="s1"&gt;&amp;#39;{&amp;quot;method&amp;quot;:&amp;quot;exec&amp;quot;, &amp;quot;params&amp;quot;:[&amp;quot;/etc/init.d/network restart&amp;quot;]}&amp;#39;&lt;/span&gt; http://192.168.1.1/cgi-bin/luci/rpc/sys&lt;span class="se"&gt;\?&lt;/span&gt;auth&lt;span class="se"&gt;\=&lt;/span&gt;f807d8dc25e82d2d457c0d2f1ee27ce7
+
+HTTP/1.1 &lt;span class="m"&gt;200&lt;/span&gt; OK
+Connection: close
+Transfer-Encoding: chunked
+Content-Type: application/json
+Cache-Control: no-cache
+Expires: &lt;span class="m"&gt;0&lt;/span&gt;
+
+&lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;id&amp;quot;&lt;/span&gt;:null,&lt;span class="s2"&gt;&amp;quot;result&amp;quot;&lt;/span&gt;:&lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;,&lt;span class="s2"&gt;&amp;quot;error&amp;quot;&lt;/span&gt;:null&lt;span class="o"&gt;}&lt;/span&gt;%  
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;访问&lt;code&gt;/cgi-bin/luci/rpc/sys&lt;/code&gt;地址可以使用&lt;code&gt;sys&lt;/code&gt;库各种方法。大致有以下几种：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;a href="http://htmlpreview.github.io/?http://raw.githubusercontent.com/openwrt/luci/master/documentation/api/modules/luci.sys.html#call"&gt;call&lt;/a&gt; (...)&lt;/th&gt;
+&lt;th align="left"&gt;Execute a given shell command and return the error code&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href="http://htmlpreview.github.io/?http://raw.githubusercontent.com/openwrt/luci/master/documentation/api/modules/luci.sys.html#dmesg"&gt;dmesg&lt;/a&gt; ()&lt;/td&gt;
+&lt;td align="left"&gt;Retrieves the output of the "dmesg" command.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href="http://htmlpreview.github.io/?http://raw.githubusercontent.com/openwrt/luci/master/documentation/api/modules/luci.sys.html#exec"&gt;exec&lt;/a&gt; (command)&lt;/td&gt;
+&lt;td align="left"&gt;Execute a given shell command and capture its standard output&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href="http://htmlpreview.github.io/?http://raw.githubusercontent.com/openwrt/luci/master/documentation/api/modules/luci.sys.html#getenv"&gt;getenv&lt;/a&gt; (var)&lt;/td&gt;
+&lt;td align="left"&gt;Retrieve environment variables.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href="http://htmlpreview.github.io/?http://raw.githubusercontent.com/openwrt/luci/master/documentation/api/modules/luci.sys.html#hostname"&gt;hostname&lt;/a&gt; (String)&lt;/td&gt;
+&lt;td align="left"&gt;Get or set the current hostname.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href="http://htmlpreview.github.io/?http://raw.githubusercontent.com/openwrt/luci/master/documentation/api/modules/luci.sys.html#httpget"&gt;httpget&lt;/a&gt; (url, stream, target)&lt;/td&gt;
+&lt;td align="left"&gt;Returns the contents of a documented referred by an URL.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href="http://htmlpreview.github.io/?http://raw.githubusercontent.com/openwrt/luci/master/documentation/api/modules/luci.sys.html#mounts"&gt;mounts&lt;/a&gt; ()&lt;/td&gt;
+&lt;td align="left"&gt;Retrieve information about currently mounted file systems.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href="http://htmlpreview.github.io/?http://raw.githubusercontent.com/openwrt/luci/master/documentation/api/modules/luci.sys.html#reboot"&gt;reboot&lt;/a&gt; ()&lt;/td&gt;
+&lt;td align="left"&gt;Initiate a system reboot.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href="http://htmlpreview.github.io/?http://raw.githubusercontent.com/openwrt/luci/master/documentation/api/modules/luci.sys.html#syslog"&gt;syslog&lt;/a&gt; ()&lt;/td&gt;
+&lt;td align="left"&gt;Retrieves the output of the "logread" command.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href="http://htmlpreview.github.io/?http://raw.githubusercontent.com/openwrt/luci/master/documentation/api/modules/luci.sys.html#uniqueid"&gt;uniqueid&lt;/a&gt; (bytes)&lt;/td&gt;
+&lt;td align="left"&gt;Generates a random id with specified length.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;a href="http://htmlpreview.github.io/?http://raw.githubusercontent.com/openwrt/luci/master/documentation/api/modules/luci.sys.html#uptime"&gt;uptime&lt;/a&gt; ()&lt;/td&gt;
+&lt;td align="left"&gt;Returns the current system uptime stats.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;code&gt;sys&lt;/code&gt;库中&lt;code&gt;exec&lt;/code&gt;方法可以执行系统命令，这里我们通过&lt;code&gt;/etc/init.d/network restart&lt;/code&gt;命令重启网络，让配置生效。&lt;/p&gt;
+&lt;h2&gt;Android端&lt;/h2&gt;
+&lt;p&gt;需要RPC接口基本都介绍完了，接下来就是使用接口了，Android需要完成以下任务：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;界面显示&lt;/li&gt;
+&lt;li&gt;给电信发送请求密码的短信&lt;/li&gt;
+&lt;li&gt;获取电信返回的电信&lt;/li&gt;
+&lt;li&gt;解析出短信中的密码&lt;/li&gt;
+&lt;li&gt;调用openwrt的RPC接口修改密码&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Android端目前基本已经可以用了，相关代码后续会开源出来。&lt;/p&gt;
+&lt;h2&gt;参考&lt;/h2&gt;
+&lt;p&gt;Documentation - &lt;a href="http://luci.subsignal.org/trac/wiki/Documentation/JsonRpcHowTo"&gt;http://luci.subsignal.org/trac/wiki/Documentation/JsonRpcHowTo&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/openwrt/luci/master/documentation/api/index.html"&gt;LuCI API文档&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://blog.csdn.net/jt6562/article/details/21399897"&gt;LuCI的RPC接口使用方法详解&lt;/a&gt;&lt;/p&gt;</content><category term="linux"></category><category term="openwrt"></category><category term="android"></category><category term="luci"></category><category term="rpc"></category></entry><entry><title>使用Python求解分隙ALOHA最大效率</title><link href="https://blog.chih.me/use-SymPy-get-max-effectiveness-of-ALOHA.html" rel="alternate"></link><published>2016-10-08T00:00:00+08:00</published><updated>2016-10-08T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2016-10-08:/use-SymPy-get-max-effectiveness-of-ALOHA.html</id><summary type="html">&lt;p&gt;SymPy是一个符号计算的Python库，SymPy支持符号计算、高精度计算、模式匹配、绘图、解方程、微积分、组合数学、离散数学、几何学、概率与统计、物理学等方面的功能。下面我将基于它求解以下两个问题。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;当有N个活跃节点的时候，分隙ALOHA的效率为 &lt;span class="math"&gt;\(N p (1 - p)^{N - 1}\)&lt;/span&gt; ，找出使这个表达式最大化的&lt;code&gt;p&lt;/code&gt;值。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;采用 &lt;code&gt;1&lt;/code&gt; 中的p值，计算当 &lt;code&gt;N&lt;/code&gt; 趋近于无穷时分隙ALOHA的效率。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;sympy&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;首先导入sympy库，方便起见，导入了所有内容。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;N&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Symbol&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;N&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Symbol&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;p&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;在SymPy中，数学符号是Symbol类的对象，要明确声明符号变量，我们新建了&lt;code&gt;N&lt;/code&gt;与&lt;code&gt;p&lt;/code&gt;符号 …&lt;/p&gt;</summary><content type="html">&lt;p&gt;SymPy是一个符号计算的Python库，SymPy支持符号计算、高精度计算、模式匹配、绘图、解方程、微积分、组合数学、离散数学、几何学、概率与统计、物理学等方面的功能。下面我将基于它求解以下两个问题。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;当有N个活跃节点的时候，分隙ALOHA的效率为 &lt;span class="math"&gt;\(N p (1 - p)^{N - 1}\)&lt;/span&gt; ，找出使这个表达式最大化的&lt;code&gt;p&lt;/code&gt;值。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;采用 &lt;code&gt;1&lt;/code&gt; 中的p值，计算当 &lt;code&gt;N&lt;/code&gt; 趋近于无穷时分隙ALOHA的效率。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;sympy&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;首先导入sympy库，方便起见，导入了所有内容。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;N&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Symbol&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;N&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Symbol&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;p&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;在SymPy中，数学符号是Symbol类的对象，要明确声明符号变量，我们新建了&lt;code&gt;N&lt;/code&gt;与&lt;code&gt;p&lt;/code&gt;符号。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;**&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;定义公式 &lt;span class="math"&gt;\(N p (1 - p)^{N - 1}\)&lt;/span&gt; 为&lt;code&gt;e&lt;/code&gt;。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;e1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;diff&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;使用&lt;code&gt;diff(func, var)&lt;/code&gt;函数计算函数&lt;code&gt;e&lt;/code&gt;对&lt;code&gt;p&lt;/code&gt;的微分。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;solve&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[1/N]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;使用&lt;code&gt;solve(func， var)&lt;/code&gt;函数求解当&lt;code&gt;e1=0&lt;/code&gt;时p的值，为 &lt;span class="math"&gt;\(\frac{1}{N}\)&lt;/span&gt; 可知，使 &lt;span class="math"&gt;\(N p (1 - p)^{N - 1}\)&lt;/span&gt; 最大化的&lt;code&gt;p&lt;/code&gt;值为 &lt;span class="math"&gt;\(\frac{1}{N}\)&lt;/span&gt; &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;subs&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;将 &lt;span class="math"&gt;\(p = \frac{1}{N}\)&lt;/span&gt; 代入原表达式。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="n"&gt;limit&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;N&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;oo&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;exp(-1)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;使用&lt;code&gt;limit(function, variable, point)&lt;/code&gt;函数求解当N趋向无穷大时， 表达式e的极限，即为 &lt;span class="math"&gt;\(\frac{1}{e}\)&lt;/span&gt; 所以，当 N 趋近于无穷时分隙ALOHA的效率为 &lt;span class="math"&gt;\(\frac{1}{e}\)&lt;/span&gt;&lt;/p&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    var location_protocol = (false) ? 'https' : document.location.protocol;
+    if (location_protocol !== 'http' &amp;&amp; location_protocol !== 'https') location_protocol = 'https:';
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = location_protocol + '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="Python"></category><category term="SymPy"></category><category term="ALOHA"></category><category term="math"></category></entry><entry><title>无题</title><link href="https://blog.chih.me/64.html" rel="alternate"></link><published>2015-06-01T00:00:00+08:00</published><updated>2015-06-01T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2015-06-01:/64.html</id><summary type="html">&lt;p&gt;“鲜活的生命，悄无声息地消失。他们的死，既不壮烈，也不浪漫，当时无人知晓，今后或许也不会再被提起。但只要仍有人记得，他们的死便并非毫无意义。这也是卡萝尔•莫莉拍摄这部记录片并制作游戏的目的。人，不能永远消失。他们的故事，应让世人知晓。”&lt;/p&gt;
+&lt;p&gt;“‘我们的人性，由我们对待同胞的行为界定。’1961年诺贝尔文学奖得主伊沃•安德里奇写道。卡萝尔为乔伊丝留下一部电影，玛格丽特为乔伊丝留下一个网站。而更多的人，从这个世界消失，没人悼念他们，没人为他们感到抱歉，甚至没人知道他们曾经存在过。今时今日，我们又能为他们做些什么?”&lt;/p&gt;
+&lt;p&gt;-EOF-&lt;/p&gt;</summary><content type="html">&lt;p&gt;“鲜活的生命，悄无声息地消失。他们的死，既不壮烈，也不浪漫，当时无人知晓，今后或许也不会再被提起。但只要仍有人记得，他们的死便并非毫无意义。这也是卡萝尔•莫莉拍摄这部记录片并制作游戏的目的。人，不能永远消失。他们的故事，应让世人知晓。”&lt;/p&gt;
+&lt;p&gt;“‘我们的人性，由我们对待同胞的行为界定。’1961年诺贝尔文学奖得主伊沃•安德里奇写道。卡萝尔为乔伊丝留下一部电影，玛格丽特为乔伊丝留下一个网站。而更多的人，从这个世界消失，没人悼念他们，没人为他们感到抱歉，甚至没人知道他们曾经存在过。今时今日，我们又能为他们做些什么?”&lt;/p&gt;
+&lt;p&gt;-EOF-&lt;/p&gt;</content><category term="64"></category></entry><entry><title>我的硬盘不可能这么空~aria2篇</title><link href="https://blog.chih.me/download-use-aria2.html" rel="alternate"></link><published>2015-03-31T00:00:00+08:00</published><updated>2015-03-31T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2015-03-31:/download-use-aria2.html</id><summary type="html">&lt;p&gt;对于单纯的Aria2程序来说，它是一个轻量级、支持多种协议的命令行下载工具。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;支持的协议包括HTTP(S), FTP, BitTorrent, Metalink&lt;/li&gt;
+&lt;li&gt;aria2可以并发的进行下载，并尝试将下载带宽利用率最大化&lt;/li&gt;
+&lt;li&gt;分片与续传，自动中止并替换慢的线程&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;看到命令行可能有人会想:“恩，又是那种强大到用起来要查手册写命令的玩意”。其实不然，由于aria2 支持 JSON-RPC和XML-RPC远程调用，可以通过web前端或客户端方便地进行管理。&lt;/p&gt;
+&lt;h3&gt;安装&lt;/h3&gt;
+&lt;p&gt;在Linux下，可以很方便地通过包管理进行安装，比如Arch Linux&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo pacman -S aria2
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;如果是Windows，可以下载编译好的二进制文件，放在&lt;code&gt;C:\WINDOWS\system32&lt;/code&gt;目录下，就可以通过&lt;code&gt;aria2c&lt;/code&gt;命令执行程序了&lt;/p&gt;
+&lt;p&gt;可以直接运行命令进行下载:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;HTTP下载&lt;/p&gt;
+&lt;p&gt;$ aria2c http://example.org/test.bin&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;从两个源同时下载&lt;/p&gt;
+&lt;p&gt;$ aria2c http …&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;对于单纯的Aria2程序来说，它是一个轻量级、支持多种协议的命令行下载工具。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;支持的协议包括HTTP(S), FTP, BitTorrent, Metalink&lt;/li&gt;
+&lt;li&gt;aria2可以并发的进行下载，并尝试将下载带宽利用率最大化&lt;/li&gt;
+&lt;li&gt;分片与续传，自动中止并替换慢的线程&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;看到命令行可能有人会想:“恩，又是那种强大到用起来要查手册写命令的玩意”。其实不然，由于aria2 支持 JSON-RPC和XML-RPC远程调用，可以通过web前端或客户端方便地进行管理。&lt;/p&gt;
+&lt;h3&gt;安装&lt;/h3&gt;
+&lt;p&gt;在Linux下，可以很方便地通过包管理进行安装，比如Arch Linux&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo pacman -S aria2
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;如果是Windows，可以下载编译好的二进制文件，放在&lt;code&gt;C:\WINDOWS\system32&lt;/code&gt;目录下，就可以通过&lt;code&gt;aria2c&lt;/code&gt;命令执行程序了&lt;/p&gt;
+&lt;p&gt;可以直接运行命令进行下载:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;HTTP下载&lt;/p&gt;
+&lt;p&gt;$ aria2c http://example.org/test.bin&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;从两个源同时下载&lt;/p&gt;
+&lt;p&gt;$ aria2c http://example.org/test.bin ftp://example.org/test.bin&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;用种子下载&lt;/p&gt;
+&lt;p&gt;$ aria2c http://example.org/test.torrent&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;用磁力链下载&lt;/p&gt;
+&lt;p&gt;$ aria2c 'magnet:?xt=urn:btih:248D0A1CD08284299DE78D5C1ED359BB46717D8C'&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;配置&lt;/h3&gt;
+&lt;p&gt;每次下载都要打命令太麻烦，可以通过配置文件开启rpc server模式并启用图形界面，让它自动等待下载任务、自动下载、暂停或续传。
+以下的配置文件参考YAAW作者的&lt;a href="http://blog.binux.me/2012/12/aria2-examples/"&gt;配置示例&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;参数 --dir --input-file --save-session 根据实际情况修改路径&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;#允许rpc
+enable-rpc=true
+#允许所有来源, web界面跨域权限需要
+rpc-allow-origin-all=true
+#允许非外部访问
+rpc-listen-all=true
+#RPC端口, 仅当默认端口被占用时修改
+#rpc-listen-port=6800
+#最大同时下载数(任务数), 路由建议值: 3
+max-concurrent-downloads=5
+#断点续传
+continue=true
+#同服务器连接数
+max-connection-per-server=5
+#最小文件分片大小, 下载线程数上限取决于能分出多少片, 对于小文件重要
+min-split-size=10M
+#单文件最大线程数, 路由建议值: 5
+split=10
+#下载速度限制
+max-overall-download-limit=0
+#单文件速度限制
+max-download-limit=0
+#上传速度限制
+max-overall-upload-limit=0
+#单文件速度限制
+max-upload-limit=0
+#断开速度过慢的连接
+#lowest-speed-limit=0
+#验证用，需要1.16.1之后的release版本
+#referer=*
+input-file=/home/USER/.config/aria2_web/session.lock
+save-session=/home/USER/.config/aria2_web/session.lock
+#文件保存路径, 默认为当前启动位置
+dir=/home/chih/Downloads
+#文件缓存, 使用内置的文件缓存, 如果你不相信Linux内核文件缓存和磁盘内置缓存时使用, 需要1.16及以上版本
+#disk-cache=0
+#另一种Linux文件缓存方式, 使用前确保您使用的内核支持此选项, 需要1.15及以上版本(?)
+#enable-mmap=true
+#文件预分配, 能有效降低文件碎片, 提高磁盘性能. 缺点是预分配时间较长
+#所需时间 none &amp;lt; falloc ? trunc &amp;lt;&amp;lt; prealloc, falloc和trunc需要文件系统和内核支持
+file-allocation=prealloc
+#启用本地节点查找
+bt-enable-lpd=true
+#添加额外的tracker
+#bt-tracker=&amp;lt;URI&amp;gt;,…
+#单种子最大连接数
+#bt-max-peers=55
+#强制加密, 防迅雷必备
+#bt-require-crypto=true
+#当下载的文件是一个种子(以.torrent结尾)时, 自动下载BT
+follow-torrent=true
+#BT监听端口, 当端口屏蔽时使用
+#listen-port=6881-6999
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;我把配置文件放在了&lt;code&gt;~/.config/aria2_web&lt;/code&gt;目录下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ mkdir -p ~/.config/aria2_web
+$ vim ~/.config/aria2_web/aria2.conf
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;同时在目录下创建会话文件，未完成任务会保存在这里&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ touch ~/.config/aria2_web/session.lock
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;好了，可以通过&lt;code&gt;aria2c  --conf-path=~ /.config/aria2_web/aria2.conf&lt;/code&gt;进行配置文件的测试。&lt;/p&gt;
+&lt;h3&gt;进程管理&lt;/h3&gt;
+&lt;p&gt;现在我希望可以让aria2自动开启，并可以方便地进行进程管理，我使用了&lt;strong&gt;systemd&lt;/strong&gt;，当然，&lt;strong&gt;supervisor&lt;/strong&gt;也是可以达到类似效果。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ vim ~/.config/systemd/user/aria2.service
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;内容可以是这样:(感谢jahiyw指出错误:  systemctl --user 的启动脚本应该把 WantedBy 设置成 default.target，而不是 multi-user.target，因为以 --user 方式启动不存在 multi-user.target，所以，systemctl --user enable 了之后，永远都不会自动启动)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;[Unit]&lt;/span&gt;
+&lt;span class="na"&gt;Description&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;Aria2 Service&lt;/span&gt;
+&lt;span class="na"&gt;After&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;network.target&lt;/span&gt;
+
+&lt;span class="k"&gt;[Service]&lt;/span&gt;
+&lt;span class="na"&gt;ExecStart&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;/usr/bin/aria2c  --conf-path=%h/.config/aria2_web/aria2.conf&lt;/span&gt;
+
+&lt;span class="k"&gt;[Install]&lt;/span&gt;
+&lt;span class="na"&gt;WantedBy&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;default.target&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;通过以下命令管理:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ systemctl --user start aria2
+$ systemctl --user stop aria2
+$ systemctl --user restart aria2
+$ systemctl --user status aria2
+$ systemctl --user &lt;span class="nb"&gt;enable&lt;/span&gt; aria2
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;注意: &lt;code&gt;--user&lt;/code&gt;这个选项不要忘了，也不需要&lt;code&gt;sudo&lt;/code&gt;，在这里用的是systemd给用户生成的systemd实例，具体可以见&lt;a href="https://wiki.archlinux.org/index.php/Systemd/User"&gt;这里&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;YAAW&lt;/h3&gt;
+&lt;p&gt;&lt;a href="https://github.com/binux/yaaw"&gt;YAAW&lt;/a&gt;是Binux写的一个Aria2 Web管理前端，直接用web服务器（Nginx, Apache）搭就是了，如果用的是上面的aria2配置，直接访问YAAW就可以管理aria2了。&lt;/p&gt;
+&lt;p&gt;附上我的Nginx配置:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;server {
+    listen       80;
+    server_name  yaaw.site;
+
+    location / {
+        root   /opt/yaaw;
+        index  index.html index.htm;
+    }
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;一些支持导出到aria2 RPC的chrome扩展&lt;/h3&gt;
+&lt;p&gt;&lt;a href="https://chrome.google.com/webstore/detail/thunderlixianassistant/eehlmkfpnagoieibahhcghphdbjcdmen"&gt;迅雷离线&lt;/a&gt;
+&lt;a href="https://github.com/acgotaku/BaiduExporter"&gt;百度网盘&lt;/a&gt;
+&lt;a href="https://chrome.google.com/webstore/detail/115exporter/ojafklbojgenkohhdgdjeaepnbjffdjf"&gt;115网盘&lt;/a&gt;&lt;/p&gt;</content><category term="linux"></category><category term="下载"></category><category term="aria2"></category><category term="systemd"></category></entry><entry><title>Arch Linux 修复grub2 引导过程中的花屏</title><link href="https://blog.chih.me/fixbug-grub2-in-archlinux.html" rel="alternate"></link><published>2015-03-15T00:00:00+08:00</published><updated>2015-03-15T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2015-03-15:/fixbug-grub2-in-archlinux.html</id><summary type="html">&lt;p&gt;前几天 &lt;code&gt;opensuse 13.2&lt;/code&gt; 被我强关了几次，结果用 &lt;code&gt;XFS&lt;/code&gt; 挂载的 &lt;code&gt;/home&lt;/code&gt; 每次都丢文件， 这样实在是让人难以安心，再加上opensuse 的一些操作始终感觉有些麻烦，官方仓库的软件也少。种种不便之处， 让我想起以前用 &lt;code&gt;Arch Linux&lt;/code&gt;时的舒心，于是备份重装。所有的文件系统用了 &lt;code&gt;Ext4&lt;/code&gt;(opensuse 上的&lt;code&gt;Btrfs&lt;/code&gt;的确先进，但很多功能我也没怎么去用)。&lt;/p&gt;
+&lt;p&gt;​&lt;code&gt;Arch Linux&lt;/code&gt;的安装过程先略去不表。安装基本系统和&lt;code&gt;KDE&lt;/code&gt;都没有发现问题，但安装完基本系统重启的时候就发现有个小问题了喵。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;从BIOS自检完成到桌面启动直接的那段过程中屏幕一直都是花的，就是那种黑白电视机雪花屏的样子。
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;这只是一个小问题，反正进入桌面之后就没影响了，但对于强迫症患者真是太难受了啊! 于是去Google找解决方案，翻了几页之后还真的被我找到类似的问题了—— &lt;a href="https://forum.suse.org.cn/viewtopic.php?f=2&amp;amp;t=2365"&gt;https://forum.suse.org.cn/viewtopic.php?f=2 …&lt;/a&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;前几天 &lt;code&gt;opensuse 13.2&lt;/code&gt; 被我强关了几次，结果用 &lt;code&gt;XFS&lt;/code&gt; 挂载的 &lt;code&gt;/home&lt;/code&gt; 每次都丢文件， 这样实在是让人难以安心，再加上opensuse 的一些操作始终感觉有些麻烦，官方仓库的软件也少。种种不便之处， 让我想起以前用 &lt;code&gt;Arch Linux&lt;/code&gt;时的舒心，于是备份重装。所有的文件系统用了 &lt;code&gt;Ext4&lt;/code&gt;(opensuse 上的&lt;code&gt;Btrfs&lt;/code&gt;的确先进，但很多功能我也没怎么去用)。&lt;/p&gt;
+&lt;p&gt;​&lt;code&gt;Arch Linux&lt;/code&gt;的安装过程先略去不表。安装基本系统和&lt;code&gt;KDE&lt;/code&gt;都没有发现问题，但安装完基本系统重启的时候就发现有个小问题了喵。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;从BIOS自检完成到桌面启动直接的那段过程中屏幕一直都是花的，就是那种黑白电视机雪花屏的样子。
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;这只是一个小问题，反正进入桌面之后就没影响了，但对于强迫症患者真是太难受了啊! 于是去Google找解决方案，翻了几页之后还真的被我找到类似的问题了—— &lt;a href="https://forum.suse.org.cn/viewtopic.php?f=2&amp;amp;t=2365"&gt;https://forum.suse.org.cn/viewtopic.php?f=2&amp;amp;t=2365&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;安装了 openSUSE，第一次用，以前都是 Debian；
+目前是 KDE 桌面，IBM T400 Intel 集显 2G 内存；
+我的问题是开机引导的页面是花屏，像是小时候的黑白电视机差一点点就收到信号的花屏，直接回车会进入系统，进入系统后一切正常；有和我情况一样的 suser 么？&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;然后根据苏姐的回答，来到了&lt;code&gt;opensuse&lt;/code&gt;的官方文档
+——&lt;a href="https://activedoc.opensuse.org/book/opensuse-reference/chapter-10-the-boot-loader-grub2"&gt;https://activedoc.opensuse.org/book/opensuse-reference/chapter-10-the-boot-loader-grub2&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;GRUB_GFXMODE&lt;/strong&gt;
+The resolution used for the gfxterm graphical terminal. Note that you can only use modes supported by your graphics card (VBE). The default is ‘auto’, which tries to select a preferred resolution. You can display the screen resolutions available to GRUB2 by typing vbeinfo in the GRUB2 command line. The command line is accessed by typing c when the GRUB2 boot menu screen is displayed.
+You can also specify a color bit depth by appending it to the resolution setting, for example GRUB_GFXMODE=1280x1024x24.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;OK，差不多有答案了，看我来试试看，修改&lt;code&gt;grub&lt;/code&gt;配置文件:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# vim /etc/default/grub
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;blockquote&gt;
+&lt;p&gt;GRUB_GFXMODE=1440x900&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;修改GRUB配置文件&lt;code&gt;/etc/default/grub&lt;/code&gt; 和&lt;code&gt;/etc/grub.d/*&lt;/code&gt;后不要忘记重新生成GRUB2所需的配置文件&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# sudo grub-mkconfig -o /boot/grub/grub.cfg
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;满怀信心，重启。恩。。。还是失败，和之前的问题一模一样。&lt;/p&gt;
+&lt;p&gt;那再改改吧，把分辨率降低一些——&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;GRUB_GFXMODE=800x600&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这样就可以了，&lt;code&gt;GRUB&lt;/code&gt;完美的出现在屏幕上了。&lt;/p&gt;
+&lt;p&gt;-EOF-&lt;/p&gt;</content><category term="linux"></category><category term="grub2"></category></entry><entry><title>为MineCraft启动器挂上代理</title><link href="https://blog.chih.me/socks-for-minecraft.html" rel="alternate"></link><published>2015-03-14T00:00:00+08:00</published><updated>2015-03-14T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2015-03-14:/socks-for-minecraft.html</id><summary type="html">&lt;p&gt;&lt;code&gt;MineCraft&lt;/code&gt;官方启动器在启动的时候会从以下地址获取更新:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;https://s3.amazonaws.com/Minecraft.Download/launcher/launcher.pack.lzma
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;如你所见，用的是Amazon EC2，Amazon AWS云服务，这两个服务在国内都是部分被屏蔽的。&lt;/p&gt;
+&lt;p&gt;但是如果你有shadowsocks等socks代理的话是可以给&lt;code&gt;MineCraft&lt;/code&gt;挂上代理的，虽然官方启动器并未提供代理设置。&lt;/p&gt;
+&lt;p&gt;我在这里用的是&lt;code&gt;java&lt;/code&gt;提供的代理选项:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ java -DsocksProxyHost&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;127&lt;/span&gt;.0.0.1 -DsocksProxyPort&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1080&lt;/span&gt; -jar ~/.minecraft/Minecraft.jar
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;这样子打开&lt;code&gt;MineCraft&lt;/code&gt;启动器就可以很快的登录、更新、下游戏了。但需要注意的是你通过启动器打开&lt;code&gt;Minecraft&lt;/code&gt;游戏本体之后，游戏是不走代理的。&lt;/p&gt;
+&lt;p&gt;-EOF-&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;code&gt;MineCraft&lt;/code&gt;官方启动器在启动的时候会从以下地址获取更新:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;https://s3.amazonaws.com/Minecraft.Download/launcher/launcher.pack.lzma
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;如你所见，用的是Amazon EC2，Amazon AWS云服务，这两个服务在国内都是部分被屏蔽的。&lt;/p&gt;
+&lt;p&gt;但是如果你有shadowsocks等socks代理的话是可以给&lt;code&gt;MineCraft&lt;/code&gt;挂上代理的，虽然官方启动器并未提供代理设置。&lt;/p&gt;
+&lt;p&gt;我在这里用的是&lt;code&gt;java&lt;/code&gt;提供的代理选项:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ java -DsocksProxyHost&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;127&lt;/span&gt;.0.0.1 -DsocksProxyPort&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;1080&lt;/span&gt; -jar ~/.minecraft/Minecraft.jar
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;这样子打开&lt;code&gt;MineCraft&lt;/code&gt;启动器就可以很快的登录、更新、下游戏了。但需要注意的是你通过启动器打开&lt;code&gt;Minecraft&lt;/code&gt;游戏本体之后，游戏是不走代理的。&lt;/p&gt;
+&lt;p&gt;-EOF-&lt;/p&gt;</content><category term="linux"></category><category term="Java"></category><category term="Minecraft"></category><category term="shadowsocks"></category><category term="代理"></category></entry><entry><title>在openSUSE上编译WizNote(为知笔记)</title><link href="https://blog.chih.me/Compiler-WizNote-in-openSUSE.html" rel="alternate"></link><published>2015-03-11T00:00:00+08:00</published><updated>2015-03-11T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2015-03-11:/Compiler-WizNote-in-openSUSE.html</id><summary type="html">&lt;p&gt;&lt;code&gt;Wiznote&lt;/code&gt;--为知笔记是一款优秀的全平台云笔记客户端，当初我从Windows切换到纯Linux平台的时候，就同时把我的在线笔记从&lt;code&gt;Evernote&lt;/code&gt;切换到了&lt;code&gt;WizNote&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;openSUSE&lt;/code&gt;的个人仓库里其实是有&lt;code&gt;WizNote&lt;/code&gt;的
+&lt;a href="https://build.opensuse.org/package/show?project=home%3Agmg137&amp;amp;package=WizNote"&gt;https://build.opensuse.org/package/show?project=home%3Agmg137&amp;amp;package=WizNote&lt;/a&gt;， 但它并不是最新版本。所以我打算自己编译一个最新版自用，同时因为是自用，直接源码编译安装了，并没有打包。如果需要在&lt;code&gt;openSUSE&lt;/code&gt;下打包，可以参照苏姐的视频教学&lt;a href="http://www.bilibili.com/video/av688454"&gt;http://www.bilibili.com/video/av688454&lt;/a&gt;。&lt;/p&gt;
+&lt;h2&gt;获取源码&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;从github 上面 clone 为知笔记客户端源码到本地&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git clone https://github.com/WizTeam/WizQTClient.git …&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;&lt;code&gt;Wiznote&lt;/code&gt;--为知笔记是一款优秀的全平台云笔记客户端，当初我从Windows切换到纯Linux平台的时候，就同时把我的在线笔记从&lt;code&gt;Evernote&lt;/code&gt;切换到了&lt;code&gt;WizNote&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;openSUSE&lt;/code&gt;的个人仓库里其实是有&lt;code&gt;WizNote&lt;/code&gt;的
+&lt;a href="https://build.opensuse.org/package/show?project=home%3Agmg137&amp;amp;package=WizNote"&gt;https://build.opensuse.org/package/show?project=home%3Agmg137&amp;amp;package=WizNote&lt;/a&gt;， 但它并不是最新版本。所以我打算自己编译一个最新版自用，同时因为是自用，直接源码编译安装了，并没有打包。如果需要在&lt;code&gt;openSUSE&lt;/code&gt;下打包，可以参照苏姐的视频教学&lt;a href="http://www.bilibili.com/video/av688454"&gt;http://www.bilibili.com/video/av688454&lt;/a&gt;。&lt;/p&gt;
+&lt;h2&gt;获取源码&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;从github 上面 clone 为知笔记客户端源码到本地&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git clone https://github.com/WizTeam/WizQTClient.git
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;checkout到你想要的版本&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git checkout v2.1.15
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;准备编译环境&lt;/h2&gt;
+&lt;h3&gt;安装依赖&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# zypper in fdupes hicolor-icon-theme update-desktop-files boost-devel cmake chrpath
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;安装Qt5&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# zypper in libqt5-qtbase-devel libqt5-qttools-devel libQt5WebKit5-devel libQt5WebKitWidgets-devel
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;编译安装&lt;/h2&gt;
+&lt;h3&gt;生成Makefile&lt;/h3&gt;
+&lt;p&gt;创建一个build目录&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ &lt;span class="nb"&gt;cd&lt;/span&gt; ./WizQTClient
+$ mkdir build
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;用&lt;code&gt;cmake&lt;/code&gt;生成Makefile&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ &lt;span class="nb"&gt;cd&lt;/span&gt; build
+$ cmake &lt;span class="se"&gt;\&lt;/span&gt;
+-DWIZNOTE_USE_QT5&lt;span class="o"&gt;=&lt;/span&gt;YES &lt;span class="se"&gt;\&lt;/span&gt;
+-DCMAKE_INSTALL_PREFIX&lt;span class="o"&gt;=&lt;/span&gt;/usr &lt;span class="se"&gt;\&lt;/span&gt;
+-DCMAKE_BUILD_TYPE&lt;span class="o"&gt;=&lt;/span&gt;Release &lt;span class="se"&gt;\&lt;/span&gt;
+../WizQTClient
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;编译安装&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ make -jx
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;x为你cpu核数，并行编译，加快速度。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo make install
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;执行&lt;code&gt;make install&lt;/code&gt;安装到系统目录时需root权限。&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;参考资料&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://projects.archlinux.org/svntogit/community.git/tree/trunk/PKGBUILD?h=packages/wiznote"&gt;https://projects.archlinux.org/svntogit/community.git/tree/trunk/PKGBUILD?h=packages/wiznote&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://build.opensuse.org/package/view_file/home:gmg137/WizNote/WizNote.spec?expand=1"&gt;https://build.opensuse.org/package/view_file/home:gmg137/WizNote/WizNote.spec?expand=1&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content><category term="linux"></category><category term="Qt5"></category><category term="openSUSE"></category><category term="编译"></category><category term="WizNote"></category></entry><entry><title>解决在opensuse下virtualbox无法挂载主机USB设备的问题</title><link href="https://blog.chih.me/use-USB-in-virtualbox-at-openSUSE.html" rel="alternate"></link><published>2015-03-02T00:00:00+08:00</published><updated>2015-03-02T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2015-03-02:/use-USB-in-virtualbox-at-openSUSE.html</id><summary type="html">&lt;p&gt;因为要用&lt;code&gt;virtualbox&lt;/code&gt;中的&lt;code&gt;Windows&lt;/code&gt;虚拟机设置G602的可编程键，所以需要把G602的USB无线接收器挂载到虚拟机上，结果发现&lt;code&gt;virtualbox&lt;/code&gt;右下角USB设备那里尽管有&lt;code&gt;logitech USB Receiver&lt;/code&gt;这个选项，但它是灰色的，无法选中。&lt;/p&gt;
+&lt;p&gt;因为已经确认当前用户已经加入&lt;code&gt;vboxusers&lt;/code&gt;组、并已经安装&lt;code&gt;Oracle Extensions&lt;/code&gt;扩展包，那么问题应该从其他方向寻找。&lt;/p&gt;
+&lt;p&gt;在Google了一段时间后，终于在openSUSE论坛找到了&lt;a href="https://forum.suse.org.cn/viewtopic.php?f=13&amp;amp;t=3130"&gt;解决方法&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;源中的包，/usr/lib/udev/rules.d/60-vboxdrv.rules 里面有 4 行规则被用 # 号注释掉了，有安全隐患。把那 4 行注释打开应该就可以了。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;找到那四行并取消注释就可以了:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;SUBSYSTEM=="usb_device", ACTION=="add", RUN+="/usr/share …&lt;/li&gt;&lt;/ul&gt;&lt;/blockquote&gt;</summary><content type="html">&lt;p&gt;因为要用&lt;code&gt;virtualbox&lt;/code&gt;中的&lt;code&gt;Windows&lt;/code&gt;虚拟机设置G602的可编程键，所以需要把G602的USB无线接收器挂载到虚拟机上，结果发现&lt;code&gt;virtualbox&lt;/code&gt;右下角USB设备那里尽管有&lt;code&gt;logitech USB Receiver&lt;/code&gt;这个选项，但它是灰色的，无法选中。&lt;/p&gt;
+&lt;p&gt;因为已经确认当前用户已经加入&lt;code&gt;vboxusers&lt;/code&gt;组、并已经安装&lt;code&gt;Oracle Extensions&lt;/code&gt;扩展包，那么问题应该从其他方向寻找。&lt;/p&gt;
+&lt;p&gt;在Google了一段时间后，终于在openSUSE论坛找到了&lt;a href="https://forum.suse.org.cn/viewtopic.php?f=13&amp;amp;t=3130"&gt;解决方法&lt;/a&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;源中的包，/usr/lib/udev/rules.d/60-vboxdrv.rules 里面有 4 行规则被用 # 号注释掉了，有安全隐患。把那 4 行注释打开应该就可以了。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;找到那四行并取消注释就可以了:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;SUBSYSTEM=="usb_device", ACTION=="add", RUN+="/usr/share/virtualbox/VBoxCreateUSBNode.sh $major $minor $attr{bDeviceClass} vboxusers"&lt;/li&gt;
+&lt;li&gt;SUBSYSTEM=="usb", ACTION=="add", ENV{DEVTYPE}=="usb_device", RUN+="/usr/share/virtualbox/VBoxCreateUSBNode.sh $major $minor $attr{bDeviceClass} vboxusers"&lt;/li&gt;
+&lt;li&gt;SUBSYSTEM=="usb_device", ACTION=="remove", RUN+="/usr/share/virtualbox/VBoxCreateUSBNode.sh --remove $major $minor"&lt;/li&gt;
+&lt;li&gt;SUBSYSTEM=="usb", ACTION=="remove", ENV{DEVTYPE}=="usb_device", RUN+="/usr/share/virtualbox/VBoxCreateUSBNode.sh --remove $major $minor"&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;闲话几句:&lt;code&gt;Linux&lt;/code&gt;就这点不方便，各个发行版有自己的打包方式，结果在使用上总是有细微差别。每次换一个发行版总要折腾一些莫名其妙的问题。&lt;/p&gt;</content><category term="linux"></category><category term="virtualbox"></category><category term="openSUSE"></category><category term="USB"></category></entry><entry><title>在实时计算框架Storm集群上运行Storm-Starter例子</title><link href="https://blog.chih.me/storm-starter.html" rel="alternate"></link><published>2015-02-22T00:00:00+08:00</published><updated>2015-02-22T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2015-02-22:/storm-starter.html</id><summary type="html">&lt;blockquote&gt;
+&lt;p&gt;官方文档待翻译，个人实践在下面&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;Example Storm Topologies&lt;/h1&gt;
+&lt;p&gt;Learn to use Storm!&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Table of Contents&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#getting-started"&gt;Getting started&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#maven"&gt;Using storm-starter with Maven&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#intellij-idea"&gt;Using storm-starter with IntelliJ IDEA&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;a name="getting-started"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;Getting started&lt;/h1&gt;
+&lt;h2&gt;Prerequisites&lt;/h2&gt;
+&lt;p&gt;First, you need &lt;code&gt;java&lt;/code&gt; and &lt;code&gt;git&lt;/code&gt; installed and in your user's &lt;code&gt;PATH&lt;/code&gt;.  Also, two of the examples in storm-starter
+require Python and Ruby.&lt;/p&gt;
+&lt;p&gt;Next …&lt;/p&gt;</summary><content type="html">&lt;blockquote&gt;
+&lt;p&gt;官方文档待翻译，个人实践在下面&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;Example Storm Topologies&lt;/h1&gt;
+&lt;p&gt;Learn to use Storm!&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Table of Contents&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#getting-started"&gt;Getting started&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#maven"&gt;Using storm-starter with Maven&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#intellij-idea"&gt;Using storm-starter with IntelliJ IDEA&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;a name="getting-started"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;Getting started&lt;/h1&gt;
+&lt;h2&gt;Prerequisites&lt;/h2&gt;
+&lt;p&gt;First, you need &lt;code&gt;java&lt;/code&gt; and &lt;code&gt;git&lt;/code&gt; installed and in your user's &lt;code&gt;PATH&lt;/code&gt;.  Also, two of the examples in storm-starter
+require Python and Ruby.&lt;/p&gt;
+&lt;p&gt;Next, make sure you have the storm-starter code available on your machine.  Git/GitHub beginners may want to use the
+following command to download the latest storm-starter code and change to the new directory that contains the downloaded
+code.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git clone git://github.com/apache/incubator-storm.git &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;cd&lt;/span&gt; incubator-storm/examples/storm-starter
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;storm-starter overview&lt;/h2&gt;
+&lt;p&gt;storm-starter contains a variety of examples of using Storm.  If this is your first time working with Storm, check out
+these topologies first:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="src/jvm/storm/starter/ExclamationTopology.java"&gt;ExclamationTopology&lt;/a&gt;:  Basic topology written in all Java&lt;/li&gt;
+&lt;li&gt;&lt;a href="src/jvm/storm/starter/WordCountTopology.java"&gt;WordCountTopology&lt;/a&gt;:  Basic topology that makes use of multilang by
+   implementing one bolt in Python&lt;/li&gt;
+&lt;li&gt;&lt;a href="src/jvm/storm/starter/ReachTopology.java"&gt;ReachTopology&lt;/a&gt;: Example of complex DRPC on top of Storm&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;After you have familiarized yourself with these topologies, take a look at the other topopologies in
+&lt;a href="src/jvm/storm/starter/"&gt;src/jvm/storm/starter/&lt;/a&gt; such as &lt;a href="src/jvm/storm/starter/RollingTopWords.java"&gt;RollingTopWords&lt;/a&gt;
+for more advanced implementations.&lt;/p&gt;
+&lt;p&gt;If you want to learn more about how Storm works, please head over to the
+&lt;a href="http://storm.incubator.apache.org"&gt;Storm project page&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a name="maven"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;Using storm-starter with Maven&lt;/h1&gt;
+&lt;h2&gt;Install Maven&lt;/h2&gt;
+&lt;p&gt;Install &lt;a href="http://maven.apache.org/"&gt;Maven&lt;/a&gt; (preferably version 3.x) by following
+the &lt;a href="http://maven.apache.org/download.cgi"&gt;Maven installation instructions&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Build and install Storm jars locally&lt;/h2&gt;
+&lt;p&gt;If you are using the latest development version of Storm, e.g. by having cloned the Storm git repository,
+then you must first perform a local build of Storm itself.  Otherwise you will run into Maven errors such as
+"Could not resolve dependencies for project &lt;code&gt;org.apache.storm:storm-starter:&amp;lt;storm-version&amp;gt;-SNAPSHOT&lt;/code&gt;".&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Must be run from the top-level directory of the Storm code repository
+$ mvn clean install -DskipTests=true
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This command will build Storm locally and install its jar files to your user's &lt;code&gt;$HOME/.m2/repository/&lt;/code&gt;.  When you run
+the Maven command to build and run storm-starter (see below), Maven will then be able to find the corresponding version
+of Storm in this local Maven repository at &lt;code&gt;$HOME/.m2/repository&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;Running topologies with Maven&lt;/h2&gt;
+&lt;p&gt;storm-starter topologies can be run with the maven-exec-plugin. For example, to
+compile and run &lt;code&gt;WordCountTopology&lt;/code&gt; in local mode, use the command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ mvn compile exec:java -Dstorm.topology&lt;span class="o"&gt;=&lt;/span&gt;storm.starter.WordCountTopology
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You can also run clojure topologies with Maven:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ mvn compile exec:java -Dstorm.topology&lt;span class="o"&gt;=&lt;/span&gt;storm.starter.clj.word_count
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In Windows parameter should be quoted, like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ mvn compile exec:java &lt;span class="s2"&gt;&amp;quot;-Dstorm.topology=storm.starter.clj.word_count&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Packaging storm-starter for use on a Storm cluster&lt;/h2&gt;
+&lt;p&gt;You can package a jar suitable for submitting to a Storm cluster with the command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ mvn package
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This will package your code and all the non-Storm dependencies into a single "uberjar" at the path
+&lt;code&gt;target/storm-starter-{version}-jar-with-dependencies.jar&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;Running unit tests&lt;/h2&gt;
+&lt;p&gt;Use the following Maven command to run the unit tests that ship with storm-starter.  Unfortunately &lt;code&gt;lein test&lt;/code&gt; does not
+yet run the included unit tests.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ mvn &lt;span class="nb"&gt;test&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a name="intellij-idea"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;Using storm-starter with IntelliJ IDEA&lt;/h1&gt;
+&lt;h2&gt;Importing storm-starter as a project in IDEA&lt;/h2&gt;
+&lt;p&gt;The following instructions will import storm-starter as a new project in IntelliJ IDEA.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Open &lt;em&gt;File &amp;gt; Import Project...&lt;/em&gt; and navigate to the storm-starter directory of your storm clone (e.g.
+  &lt;code&gt;~/git/incubator-storm/examples/storm-starter&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;Select &lt;em&gt;Import project from external model&lt;/em&gt;, select "Maven", and click &lt;em&gt;Next&lt;/em&gt;.&lt;/li&gt;
+&lt;li&gt;In the following screen, enable the checkbox &lt;em&gt;Import Maven projects automatically&lt;/em&gt;.  Leave all other values at their
+  defaults.  Click &lt;em&gt;Next&lt;/em&gt;.&lt;/li&gt;
+&lt;li&gt;Click &lt;em&gt;Next&lt;/em&gt; on the following screen about selecting Maven projects to import.&lt;/li&gt;
+&lt;li&gt;Select the JDK to be used by IDEA for storm-starter, then click &lt;em&gt;Next&lt;/em&gt;.&lt;ul&gt;
+&lt;li&gt;At the time of this writing you should use JDK 6.&lt;/li&gt;
+&lt;li&gt;It is strongly recommended to use Sun/Oracle JDK 6 rather than OpenJDK 6.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;You may now optionally change the name of the project in IDEA.  The default name suggested by IDEA is "storm-starter".
+  Click &lt;em&gt;Finish&lt;/em&gt; once you are done.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h1&gt;个人实践&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;默认通过sudo -s 进入root环境&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;安装环境 git ，maven&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# apt-get install git maven
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;通过git clone 项目&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# git clone git://github.com/apache/incubator-storm.git
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="3-1" src="http://chih.me/images/3-1.png"&gt;&lt;/p&gt;
+&lt;h3&gt;进入项目目录&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# cd incubator-storm/examples/storm-starter
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;编译&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# mvn compile
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="3-2" src="http://chih.me/images/3-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;第一次出现错误，去google了一下，找到一种办法&lt;/p&gt;
+&lt;p&gt;&lt;img alt="3-8" src="http://chih.me/images/3-8.png"&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;不使用最新的代码而使用apache-storm-0.9.2-incubating中的例子，这是我们在安装storm时下载的
+进入apache-storm-0.9.2-incubating/examples/storm-starter&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;执行&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# mvn compile
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="3-3" src="http://chih.me/images/3-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;成功!&lt;/p&gt;
+&lt;h3&gt;打包所有的依赖&lt;/h3&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# mvn package
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="3-4" src="http://chih.me/images/3-4.png"&gt;&lt;/p&gt;
+&lt;p&gt;进入target目录，可以看到&lt;code&gt;storm-starter-0.9.2-incubating-jar-with-dependencies.jar&lt;/code&gt;&lt;/p&gt;
+&lt;h3&gt;提交到storm(以WordCountTopology为例)&lt;/h3&gt;
+&lt;p&gt;在nimbus上运行&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# ./bin/storm jar storm-starter-0.9.2-incubating-jar-with-dependencies.jar  storm.starter.WordCountTopology test
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;可以看到console的输出，当然可以在storm ui的http上查看topology状态。例子已经被提交到集群。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="3-6" src="http://chih.me/images/3-6.png"&gt;&lt;/p&gt;</content><category term="linux"></category><category term="Storm"></category><category term="大数据"></category><category term="实时计算"></category></entry><entry><title>实时计算框架Storm集群搭建</title><link href="https://blog.chih.me/Setting-up-a-Storm-Cluster-in-3-machines.html" rel="alternate"></link><published>2015-02-20T00:00:00+08:00</published><updated>2015-02-20T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2015-02-20:/Setting-up-a-Storm-Cluster-in-3-machines.html</id><summary type="html">&lt;h3&gt;首先对三台ubuntu14.04进行任务分配:&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="4-1" src="http://chih.me/images/4-1.jpg"&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;nimbus：
+ip：192.168.56.102&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;zookeeper：
+ip：192.168.56.102；192.168.56.103；192.168.56.104&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;supervisor：
+ip：192.168.56.103 192.168.56.104&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;此三台虚拟机分别用作Storm集群中的&lt;code&gt;nimbus&lt;/code&gt;节点、&lt;code&gt;Zookeeper&lt;/code&gt;集群（一台机器开多个zookeeper进程，当然也可以多台机器）、&lt;code&gt;supervisor&lt;/code&gt;节点。&lt;/p&gt;
+&lt;p&gt;在这里我为方便起见 直接从单机安装的virtualbox虚拟机clone了三台一样的机器进行配置，每台上的配置过程见&lt;a href="http://chih.me/Setting-up-a-Storm-Cluster.html"&gt;实时计算框架Storm本地模式搭建&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;下面针对每一个节点进行具体的配置&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="4-2" src="http://chih.me/images/4-2.png"&gt;&lt;/p&gt;
+&lt;h4&gt;搭建一个Zookeeper集群&lt;/h4&gt;
+&lt;p&gt;三台机器同时作为&lt;code&gt;zookeeper&lt;/code&gt;集群 …&lt;/p&gt;</summary><content type="html">&lt;h3&gt;首先对三台ubuntu14.04进行任务分配:&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="4-1" src="http://chih.me/images/4-1.jpg"&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;nimbus：
+ip：192.168.56.102&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;zookeeper：
+ip：192.168.56.102；192.168.56.103；192.168.56.104&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;supervisor：
+ip：192.168.56.103 192.168.56.104&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;此三台虚拟机分别用作Storm集群中的&lt;code&gt;nimbus&lt;/code&gt;节点、&lt;code&gt;Zookeeper&lt;/code&gt;集群（一台机器开多个zookeeper进程，当然也可以多台机器）、&lt;code&gt;supervisor&lt;/code&gt;节点。&lt;/p&gt;
+&lt;p&gt;在这里我为方便起见 直接从单机安装的virtualbox虚拟机clone了三台一样的机器进行配置，每台上的配置过程见&lt;a href="http://chih.me/Setting-up-a-Storm-Cluster.html"&gt;实时计算框架Storm本地模式搭建&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;下面针对每一个节点进行具体的配置&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="4-2" src="http://chih.me/images/4-2.png"&gt;&lt;/p&gt;
+&lt;h4&gt;搭建一个Zookeeper集群&lt;/h4&gt;
+&lt;p&gt;三台机器同时作为&lt;code&gt;zookeeper&lt;/code&gt;集群。&lt;/p&gt;
+&lt;p&gt;对机器均修改&lt;code&gt;conf/zoo.cfg&lt;/code&gt;（可以直接将zoo_sample.cfg重命名为zoo.cfg）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# The number of milliseconds of each tick
+tickTime=2000
+# The number of ticks that the initial
+# synchronization phase can take
+initLimit=10
+# The number of ticks that can pass between
+# sending a request and getting an acknowledgement
+syncLimit=5
+# the directory where the snapshot is stored.
+# do not use /tmp for storage, /tmp here is just
+# example sakes.
+dataDir=/var/zookeeper
+# the port at which the clients will connect
+clientPort=2181
+server.1=192.168.56.102:2888:3888
+server.2=192.168.56.103:2888:3888
+server.3=192.168.56.104:2888:3888
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;最后三行是ip:port:port的形式，&lt;code&gt;Zookeeper&lt;/code&gt;需要2个端口通信。有多少台机器就写多少个server.X=ip:port:port。X从1到255。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="4-3" src="http://chih.me/images/4-3.png"&gt;&lt;/p&gt;
+&lt;h4&gt;接下来设置myid&lt;/h4&gt;
+&lt;p&gt;在设置的&lt;code&gt;dataDir&lt;/code&gt;目录下新建myid文件，如上面设置的/var/zookeeper目录下。
+myid文件中只有一行数字，即与zoo.cfg设置的主机与id对应的id，
+(默认每台机器通过&lt;code&gt;sudo -s&lt;/code&gt; 进入root环境， 缺失的目录通过&lt;code&gt;mkdir&lt;/code&gt; 补全)&lt;/p&gt;
+&lt;p&gt;在 192.168.56.102 上执行：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# echo 1 &amp;gt;/var/zookeeper/myid
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;在 192.168.56.103 上执行：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# echo 2 &amp;gt; /var/zookeeper/myid
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;在 192.168.56.104 上执行：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# echo 3 &amp;gt; /var/zookeeper/myid
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;最后启动集群的ZooKeeper&lt;/p&gt;
+&lt;p&gt;对每台机器均执行&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ bin/zkServer start
+$ zkServer.sh status
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;查看状态&lt;/p&gt;
+&lt;p&gt;&lt;img alt="4-4" src="http://chih.me/images/4-4.png"&gt;&lt;/p&gt;
+&lt;p&gt;保证server节点的zookeeper服务全部启动好&lt;/p&gt;
+&lt;p&gt;&lt;img alt="4-5" src="http://chih.me/images/4-5.png"&gt;&lt;/p&gt;
+&lt;h4&gt;在nimbus、supervisor节点安装依赖包（jdk，python）&lt;/h4&gt;
+&lt;h4&gt;下载并解压Storm到nimbus、supervisor节点&lt;/h4&gt;
+&lt;h4&gt;修改nimbus、supervisor节点的配置文件（storm.yaml），每台机器相同配置。&lt;/h4&gt;
+&lt;p&gt;Storm的配置文件位于storm主目录下的&lt;code&gt;conf/storm.yaml&lt;/code&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;storm.zookeeper.servers&lt;/code&gt;：指定zookeeper集群中的主机列表。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;nimbus.host&lt;/code&gt;:指定nimbus节点对应的主机。
+配置如下：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;storm.zookeeper.servers:
+      - &amp;quot;192.168.56.102&amp;quot;
+      - &amp;quot;192.168.56.103&amp;quot;
+      - &amp;quot;192.168.56.104&amp;quot;
+
+nimbus.host: &amp;quot;192.168.56.102&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="4-6" src="http://chih.me/images/4-6.png"&gt;
+ &lt;code&gt;supervisor.slots.ports&lt;/code&gt;:对于每个supervisor节点，需要指定一些端口，来运行相应数目的JVM进程。下面的配置开发了四个端口，即在supervisor节点上运行了四个JVM进程（4个worker、此处涉及到Storm中的并行化机制）。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;supervisor.slots.ports:
+
+- 6700
+
+- 6701
+
+- 6702
+
+- 6703
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;注：nimbus节点和supervisor节点上的storm.yaml均需要配置。&lt;/p&gt;
+&lt;h4&gt;使用storm脚本启动守护进程（包括nimbus、supervisor、ui）&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;nimbus：在nimbus节点上运行&lt;code&gt;storm nimbus&lt;/code&gt;命令 192.168.56.102&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;supervisor：在supervisor节点上运行&lt;code&gt;storm supervisor&lt;/code&gt;命令 103 104&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;ui：在nimbus上重新开个console，运行&lt;code&gt;storm ui&lt;/code&gt;命令，并访问&lt;a href="http://192.168.56.102:8088"&gt;http://192.168.56.102:8088&lt;/a&gt;，出现如下界面则表明集群搭建成功：&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="4-7" src="http://chih.me/images/4-7.png"&gt;&lt;/p&gt;</content><category term="linux"></category><category term="Storm"></category><category term="大数据"></category><category term="实时计算"></category></entry><entry><title>实时计算框架Storm本地模式搭建</title><link href="https://blog.chih.me/Setting-up-a-Storm-Cluster.html" rel="alternate"></link><published>2015-02-02T00:00:00+08:00</published><updated>2015-02-02T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2015-02-02:/Setting-up-a-Storm-Cluster.html</id><summary type="html">&lt;blockquote&gt;
+&lt;p&gt;平台：Ubuntu14.04&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;安装依赖&lt;/h2&gt;
+&lt;p&gt;通过ubuntu自带的软件包管理器安装java环境。
+安装Java：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo apt-get install openjdk-7-jdk
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;检查是否安装完成:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ java -version
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="1-1" src="http://chih.me/images/1-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;检查python版本:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python -V
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="1-2" src="http://chih.me/images/1-2.png"&gt;&lt;/p&gt;
+&lt;h2&gt;安装ZooKeeper&lt;/h2&gt;
+&lt;p&gt;为了避免每次获取超级权限重复输入sudo
+临时进入超级用户:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo -s
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;使用&lt;code&gt;ctrl+d&lt;/code&gt;退出&lt;/p&gt;
+&lt;p&gt;定位目录:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# cd /usr/local/src
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;从阿里的源下载:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# wget http://mirrors.aliyun.com/apache/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="1-3" src="http://chih.me/images/1-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;使用命令解压:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# tar -xzvf zookeeper-3 …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;blockquote&gt;
+&lt;p&gt;平台：Ubuntu14.04&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;安装依赖&lt;/h2&gt;
+&lt;p&gt;通过ubuntu自带的软件包管理器安装java环境。
+安装Java：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo apt-get install openjdk-7-jdk
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;检查是否安装完成:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ java -version
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="1-1" src="http://chih.me/images/1-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;检查python版本:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python -V
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="1-2" src="http://chih.me/images/1-2.png"&gt;&lt;/p&gt;
+&lt;h2&gt;安装ZooKeeper&lt;/h2&gt;
+&lt;p&gt;为了避免每次获取超级权限重复输入sudo
+临时进入超级用户:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo -s
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;使用&lt;code&gt;ctrl+d&lt;/code&gt;退出&lt;/p&gt;
+&lt;p&gt;定位目录:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# cd /usr/local/src
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;从阿里的源下载:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# wget http://mirrors.aliyun.com/apache/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="1-3" src="http://chih.me/images/1-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;使用命令解压:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# tar -xzvf zookeeper-3.4.6.tar.gz
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;进入解压后的目录：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# cd zookeeper-3.4.6
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="1-4" src="http://chih.me/images/1-4.png"&gt;&lt;/p&gt;
+&lt;p&gt;从配置文件模板复制一份配置文件，这里无需修改：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# cp conf/zoo_sample.cfg conf/zoo.cfg
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;环境变量：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# export ZOOKEEPER_HOME=/usr/local/src/zookeeper-3.4.6
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;环境变量：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# export PATH=$ZOOKEEPER_HOME/bin:$PATH
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;启动服务器:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# ./bin/zkServer.sh start
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;测试:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# ./bin/zkCli.sh -server 127.0.0.1:2181
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;安装Storm&lt;/h2&gt;
+&lt;p&gt;定位目录:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# cd /usr/local/src
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;下载（从阿里的源下载0.9.2版本）:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# wget http://mirrors.aliyun.com/apache/storm/apache-storm-0.9.2-incubating/apache-storm-0.9.2-incubating.tar.gz
+# tar -xzvf apache-storm-0.9.2-incubating.tar.gz
+# cd ./apache-storm-0.9.2-incubating/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="1-5" src="http://chih.me/images/1-5.png"&gt;&lt;/p&gt;
+&lt;p&gt;配置storm.yaml:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# vim ./conf/storm.yaml
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;(这里我使用vim，也可以使用如何文件编辑器，复制以下内容到文件，原先的内容全部注释）&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;storm.zookeeper.servers:
+      - &amp;quot;localhost&amp;quot;
+nimbus.host: &amp;quot;localhost&amp;quot;
+storm.local.dir : &amp;quot;/var/storm&amp;quot;
+ui.port : 8080
+storm.messaging.transport: &amp;quot;backtype.storm.messaging.netty.Context&amp;quot; #--指定传输协议
+storm.messaging.netty.server_worker_threads: 1   #--指定netty服务器工作线程数量
+storm.messaging.netty.client_worker_threads: 1   #--指定netty客户端工作线程数量
+storm.messaging.netty.buffer_size: 5242880    #--指定netty缓存大小
+storm.messaging.netty.max_retries: 100   #--指定最大重试次数
+storm.messaging.netty.max_wait_ms: 1000  #--指定最大等待时间（毫秒）
+storm.messaging.netty.min_wait_ms: 100   #--指定最小等待时间（毫秒）
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="1-6" src="http://chih.me/images/1-6.png"&gt;&lt;/p&gt;
+&lt;p&gt;后台（通过命令后加&amp;amp;使进程后台执行，标准输出全部进入黑洞/dev/null）启动Storm服务：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# ./bin/storm nimbus &amp;gt;/dev/null 2&amp;gt;&amp;amp;1 &amp;amp;
+# ./bin/storm supervisor&amp;gt;/dev/null 2&amp;gt;&amp;amp;1 &amp;amp;
+# ./bin/storm ui &amp;gt;/dev/null 2&amp;gt;&amp;amp;1 &amp;amp;
+# ./bin/storm logviewer &amp;gt; /dev/null 2&amp;gt;&amp;amp;1 &amp;amp;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;访问ip:port即可进入Storm UI&lt;/p&gt;
+&lt;p&gt;&lt;img alt="1-7" src="http://chih.me/images/1-7.png"&gt;&lt;/p&gt;
+&lt;p&gt;-EOF-&lt;/p&gt;</content><category term="linux"></category><category term="Storm"></category><category term="大数据"></category><category term="实时计算"></category></entry><entry><title>ubuntu突然出现打开系统设置慢 sudo时出现无法解析主机的解决办法</title><link href="https://blog.chih.me/ubuntutu-ran-chu-xian-da-kai-xi-tong-she-zhi-man-sudoshi-chu-xian-wu-fa-jie-xi-zhu-ji-de-jie-jue-ban-fa.html" rel="alternate"></link><published>2014-04-06T00:00:00+08:00</published><updated>2014-04-06T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2014-04-06:/ubuntutu-ran-chu-xian-da-kai-xi-tong-she-zhi-man-sudoshi-chu-xian-wu-fa-jie-xi-zhu-ji-de-jie-jue-ban-fa.html</id><summary type="html">&lt;p&gt;突然间发现我的&lt;code&gt;ubuntu12.04&lt;/code&gt;打开系统设置变得非常慢，正不知如何解决的时候。发现sudo时出现“无法解析的主机 XXXX" 的提示。马上就联想到不久前改过hosts，原来是主机名无法解析了，这样问题就好解决了&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo vim /etc/hosts
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;加入以下行&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;127.0.0.1       （你现在的主机名）
+127.0.1.1       （你现在的主机名）
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;之后 打开系统设置就非常快了&lt;/p&gt;</summary><content type="html">&lt;p&gt;突然间发现我的&lt;code&gt;ubuntu12.04&lt;/code&gt;打开系统设置变得非常慢，正不知如何解决的时候。发现sudo时出现“无法解析的主机 XXXX" 的提示。马上就联想到不久前改过hosts，原来是主机名无法解析了，这样问题就好解决了&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo vim /etc/hosts
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;加入以下行&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;127.0.0.1       （你现在的主机名）
+127.0.1.1       （你现在的主机名）
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;之后 打开系统设置就非常快了&lt;/p&gt;</content><category term="Hosts"></category><category term="ubuntu"></category><category term="linux"></category></entry><entry><title>virtualbox主机访问虚拟机</title><link href="https://blog.chih.me/virtualboxzhu-ji-fang-wen-xu-ni-ji.html" rel="alternate"></link><published>2014-03-02T00:00:00+08:00</published><updated>2014-03-02T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2014-03-02:/virtualboxzhu-ji-fang-wen-xu-ni-ji.html</id><summary type="html">&lt;p&gt;在&lt;code&gt;virtualbox&lt;/code&gt;中，如果选择默认的网卡设置，也就是网络地址转换(NAT)，是不能让宿主机访问到虚拟机的，如果想让两者相互连通，可以在保留默认的&lt;code&gt;NAT&lt;/code&gt;网卡的基础上增加一张&lt;code&gt;Host-Only&lt;/code&gt;的网卡。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="NAT" src="http://chih.me/images/58081e7f-677a-47f9-8fc5-a7ec0435e7b1.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Host-Only" src="http://chih.me/images/7695d614d15ad02edfd564e4b32810fc.png"&gt;&lt;/p&gt;
+&lt;p&gt;需要注意的是，如果你的宿主机是Linux的话，安装virtualbox后是没有一张Host-Only的网卡的，你需要在virtualbox的设置里添加这张网卡。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="add-Host-Only" src="http://chih.me/images/snapshot2.png"&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;在&lt;code&gt;virtualbox&lt;/code&gt;中，如果选择默认的网卡设置，也就是网络地址转换(NAT)，是不能让宿主机访问到虚拟机的，如果想让两者相互连通，可以在保留默认的&lt;code&gt;NAT&lt;/code&gt;网卡的基础上增加一张&lt;code&gt;Host-Only&lt;/code&gt;的网卡。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="NAT" src="http://chih.me/images/58081e7f-677a-47f9-8fc5-a7ec0435e7b1.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Host-Only" src="http://chih.me/images/7695d614d15ad02edfd564e4b32810fc.png"&gt;&lt;/p&gt;
+&lt;p&gt;需要注意的是，如果你的宿主机是Linux的话，安装virtualbox后是没有一张Host-Only的网卡的，你需要在virtualbox的设置里添加这张网卡。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="add-Host-Only" src="http://chih.me/images/snapshot2.png"&gt;&lt;/p&gt;</content><category term="Hosts"></category><category term="virtualbox"></category><category term="linux"></category><category term="网络"></category></entry></feed>
