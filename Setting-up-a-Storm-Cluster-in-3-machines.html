@@ -89,7 +89,7 @@
 
   <div>
     <h3>首先对三台ubuntu14.04进行任务分配:</h3>
-<p><img alt="4-1" src="http://chih.me/images/4-1.jpg"></p>
+<p><img alt="4-1" src="http://blog.chih.me/images/4-1.jpg"></p>
 <ul>
 <li>
 <p>nimbus：
@@ -105,9 +105,9 @@ ip：192.168.56.103 192.168.56.104</p>
 </li>
 </ul>
 <p>此三台虚拟机分别用作Storm集群中的<code>nimbus</code>节点、<code>Zookeeper</code>集群（一台机器开多个zookeeper进程，当然也可以多台机器）、<code>supervisor</code>节点。</p>
-<p>在这里我为方便起见 直接从单机安装的virtualbox虚拟机clone了三台一样的机器进行配置，每台上的配置过程见<a href="http://chih.me/Setting-up-a-Storm-Cluster.html">实时计算框架Storm本地模式搭建</a></p>
+<p>在这里我为方便起见 直接从单机安装的virtualbox虚拟机clone了三台一样的机器进行配置，每台上的配置过程见<a href="http://blog.chih.me/Setting-up-a-Storm-Cluster.html">实时计算框架Storm本地模式搭建</a></p>
 <h3>下面针对每一个节点进行具体的配置</h3>
-<p><img alt="4-2" src="http://chih.me/images/4-2.png"></p>
+<p><img alt="4-2" src="http://blog.chih.me/images/4-2.png"></p>
 <h4>搭建一个Zookeeper集群</h4>
 <p>三台机器同时作为<code>zookeeper</code>集群。</p>
 <p>对机器均修改<code>conf/zoo.cfg</code>（可以直接将zoo_sample.cfg重命名为zoo.cfg）</p>
@@ -132,7 +132,7 @@ server.3=192.168.56.104:2888:3888
 
 
 <p>最后三行是ip:port:port的形式，<code>Zookeeper</code>需要2个端口通信。有多少台机器就写多少个server.X=ip:port:port。X从1到255。</p>
-<p><img alt="4-3" src="http://chih.me/images/4-3.png"></p>
+<p><img alt="4-3" src="http://blog.chih.me/images/4-3.png"></p>
 <h4>接下来设置myid</h4>
 <p>在设置的<code>dataDir</code>目录下新建myid文件，如上面设置的/var/zookeeper目录下。
 myid文件中只有一行数字，即与zoo.cfg设置的主机与id对应的id，
@@ -160,9 +160,9 @@ $ zkServer.sh status
 
 
 <p>查看状态</p>
-<p><img alt="4-4" src="http://chih.me/images/4-4.png"></p>
+<p><img alt="4-4" src="http://blog.chih.me/images/4-4.png"></p>
 <p>保证server节点的zookeeper服务全部启动好</p>
-<p><img alt="4-5" src="http://chih.me/images/4-5.png"></p>
+<p><img alt="4-5" src="http://blog.chih.me/images/4-5.png"></p>
 <h4>在nimbus、supervisor节点安装依赖包（jdk，python）</h4>
 <h4>下载并解压Storm到nimbus、supervisor节点</h4>
 <h4>修改nimbus、supervisor节点的配置文件（storm.yaml），每台机器相同配置。</h4>
@@ -179,7 +179,7 @@ nimbus.host: &quot;192.168.56.102&quot;
 </pre></div>
 
 
-<p><img alt="4-6" src="http://chih.me/images/4-6.png">
+<p><img alt="4-6" src="http://blog.chih.me/images/4-6.png">
  <code>supervisor.slots.ports</code>:对于每个supervisor节点，需要指定一些端口，来运行相应数目的JVM进程。下面的配置开发了四个端口，即在supervisor节点上运行了四个JVM进程（4个worker、此处涉及到Storm中的并行化机制）。</p>
 <div class="highlight"><pre><span></span>supervisor.slots.ports:
 
@@ -206,7 +206,7 @@ nimbus.host: &quot;192.168.56.102&quot;
 <p>ui：在nimbus上重新开个console，运行<code>storm ui</code>命令，并访问<a href="http://192.168.56.102:8088">http://192.168.56.102:8088</a>，出现如下界面则表明集群搭建成功：</p>
 </li>
 </ul>
-<p><img alt="4-7" src="http://chih.me/images/4-7.png"></p>
+<p><img alt="4-7" src="http://blog.chih.me/images/4-7.png"></p>
   </div>
   <div class="tag-cloud">
     <p>

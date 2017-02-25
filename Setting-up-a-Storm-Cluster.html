@@ -103,13 +103,13 @@
 </pre></div>
 
 
-<p><img alt="1-1" src="http://chih.me/images/1-1.png"></p>
+<p><img alt="1-1" src="http://blog.chih.me/images/1-1.png"></p>
 <p>检查python版本:</p>
 <div class="highlight"><pre><span></span>$ python -V
 </pre></div>
 
 
-<p><img alt="1-2" src="http://chih.me/images/1-2.png"></p>
+<p><img alt="1-2" src="http://blog.chih.me/images/1-2.png"></p>
 <h2>安装ZooKeeper</h2>
 <p>为了避免每次获取超级权限重复输入sudo
 临时进入超级用户:</p>
@@ -128,7 +128,7 @@
 </pre></div>
 
 
-<p><img alt="1-3" src="http://chih.me/images/1-3.png"></p>
+<p><img alt="1-3" src="http://blog.chih.me/images/1-3.png"></p>
 <p>使用命令解压:</p>
 <div class="highlight"><pre><span></span># tar -xzvf zookeeper-3.4.6.tar.gz
 </pre></div>
@@ -139,7 +139,7 @@
 </pre></div>
 
 
-<p><img alt="1-4" src="http://chih.me/images/1-4.png"></p>
+<p><img alt="1-4" src="http://blog.chih.me/images/1-4.png"></p>
 <p>从配置文件模板复制一份配置文件，这里无需修改：</p>
 <div class="highlight"><pre><span></span># cp conf/zoo_sample.cfg conf/zoo.cfg
 </pre></div>
@@ -178,7 +178,7 @@
 </pre></div>
 
 
-<p><img alt="1-5" src="http://chih.me/images/1-5.png"></p>
+<p><img alt="1-5" src="http://blog.chih.me/images/1-5.png"></p>
 <p>配置storm.yaml:</p>
 <div class="highlight"><pre><span></span># vim ./conf/storm.yaml
 </pre></div>
@@ -200,7 +200,7 @@ storm.messaging.netty.min_wait_ms: 100   #--指定最小等待时间（毫秒）
 </pre></div>
 
 
-<p><img alt="1-6" src="http://chih.me/images/1-6.png"></p>
+<p><img alt="1-6" src="http://blog.chih.me/images/1-6.png"></p>
 <p>后台（通过命令后加&amp;使进程后台执行，标准输出全部进入黑洞/dev/null）启动Storm服务：</p>
 <div class="highlight"><pre><span></span># ./bin/storm nimbus &gt;/dev/null 2&gt;&amp;1 &amp;
 # ./bin/storm supervisor&gt;/dev/null 2&gt;&amp;1 &amp;
@@ -210,7 +210,7 @@ storm.messaging.netty.min_wait_ms: 100   #--指定最小等待时间（毫秒）
 
 
 <p>访问ip:port即可进入Storm UI</p>
-<p><img alt="1-7" src="http://chih.me/images/1-7.png"></p>
+<p><img alt="1-7" src="http://blog.chih.me/images/1-7.png"></p>
 <p>-EOF-</p>
   </div>
   <div class="tag-cloud">

@@ -1024,7 +1024,7 @@ yet run the included unit tests.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="3-1" src="http://chih.me/images/3-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="3-1" src="http://blog.chih.me/images/3-1.png"&gt;&lt;/p&gt;
 &lt;h3&gt;进入项目目录&lt;/h3&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# cd incubator-storm/examples/storm-starter
 &lt;/pre&gt;&lt;/div&gt;
@@ -1035,9 +1035,9 @@ yet run the included unit tests.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="3-2" src="http://chih.me/images/3-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="3-2" src="http://blog.chih.me/images/3-2.png"&gt;&lt;/p&gt;
 &lt;p&gt;第一次出现错误，去google了一下，找到一种办法&lt;/p&gt;
-&lt;p&gt;&lt;img alt="3-8" src="http://chih.me/images/3-8.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="3-8" src="http://blog.chih.me/images/3-8.png"&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;不使用最新的代码而使用apache-storm-0.9.2-incubating中的例子，这是我们在安装storm时下载的
 进入apache-storm-0.9.2-incubating/examples/storm-starter&lt;/li&gt;
@@ -1047,14 +1047,14 @@ yet run the included unit tests.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="3-3" src="http://chih.me/images/3-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="3-3" src="http://blog.chih.me/images/3-3.png"&gt;&lt;/p&gt;
 &lt;p&gt;成功!&lt;/p&gt;
 &lt;h3&gt;打包所有的依赖&lt;/h3&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# mvn package
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="3-4" src="http://chih.me/images/3-4.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="3-4" src="http://blog.chih.me/images/3-4.png"&gt;&lt;/p&gt;
 &lt;p&gt;进入target目录，可以看到&lt;code&gt;storm-starter-0.9.2-incubating-jar-with-dependencies.jar&lt;/code&gt;&lt;/p&gt;
 &lt;h3&gt;提交到storm(以WordCountTopology为例)&lt;/h3&gt;
 &lt;p&gt;在nimbus上运行&lt;/p&gt;
@@ -1063,8 +1063,8 @@ yet run the included unit tests.&lt;/p&gt;
 
 
 &lt;p&gt;可以看到console的输出，当然可以在storm ui的http上查看topology状态。例子已经被提交到集群。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="3-6" src="http://chih.me/images/3-6.png"&gt;&lt;/p&gt;</content><category term="linux"></category><category term="Storm"></category><category term="大数据"></category><category term="实时计算"></category></entry><entry><title>实时计算框架Storm集群搭建</title><link href="http://blog.chih.me/Setting-up-a-Storm-Cluster-in-3-machines.html" rel="alternate"></link><published>2015-02-20T00:00:00+08:00</published><updated>2015-02-20T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2015-02-20:/Setting-up-a-Storm-Cluster-in-3-machines.html</id><summary type="html">&lt;h3&gt;首先对三台ubuntu14.04进行任务分配:&lt;/h3&gt;
-&lt;p&gt;&lt;img alt="4-1" src="http://chih.me/images/4-1.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="3-6" src="http://blog.chih.me/images/3-6.png"&gt;&lt;/p&gt;</content><category term="linux"></category><category term="Storm"></category><category term="大数据"></category><category term="实时计算"></category></entry><entry><title>实时计算框架Storm集群搭建</title><link href="http://blog.chih.me/Setting-up-a-Storm-Cluster-in-3-machines.html" rel="alternate"></link><published>2015-02-20T00:00:00+08:00</published><updated>2015-02-20T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2015-02-20:/Setting-up-a-Storm-Cluster-in-3-machines.html</id><summary type="html">&lt;h3&gt;首先对三台ubuntu14.04进行任务分配:&lt;/h3&gt;
+&lt;p&gt;&lt;img alt="4-1" src="http://blog.chih.me/images/4-1.jpg"&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;nimbus：
@@ -1080,12 +1080,12 @@ ip：192.168.56.103 192.168.56.104&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;此三台虚拟机分别用作Storm集群中的&lt;code&gt;nimbus&lt;/code&gt;节点、&lt;code&gt;Zookeeper&lt;/code&gt;集群（一台机器开多个zookeeper进程，当然也可以多台机器）、&lt;code&gt;supervisor&lt;/code&gt;节点。&lt;/p&gt;
-&lt;p&gt;在这里我为方便起见 直接从单机安装的virtualbox虚拟机clone了三台一样的机器进行配置，每台上的配置过程见&lt;a href="http://chih.me/Setting-up-a-Storm-Cluster.html"&gt;实时计算框架Storm本地模式搭建&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;在这里我为方便起见 直接从单机安装的virtualbox虚拟机clone了三台一样的机器进行配置，每台上的配置过程见&lt;a href="http://blog.chih.me/Setting-up-a-Storm-Cluster.html"&gt;实时计算框架Storm本地模式搭建&lt;/a&gt;&lt;/p&gt;
 &lt;h3&gt;下面针对每一个节点进行具体的配置&lt;/h3&gt;
-&lt;p&gt;&lt;img alt="4-2" src="http://chih.me/images/4-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="4-2" src="http://blog.chih.me/images/4-2.png"&gt;&lt;/p&gt;
 &lt;h4&gt;搭建一个Zookeeper集群&lt;/h4&gt;
 &lt;p&gt;三台机器同时作为&lt;code&gt;zookeeper&lt;/code&gt;集群 …&lt;/p&gt;</summary><content type="html">&lt;h3&gt;首先对三台ubuntu14.04进行任务分配:&lt;/h3&gt;
-&lt;p&gt;&lt;img alt="4-1" src="http://chih.me/images/4-1.jpg"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="4-1" src="http://blog.chih.me/images/4-1.jpg"&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;nimbus：
@@ -1101,9 +1101,9 @@ ip：192.168.56.103 192.168.56.104&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;此三台虚拟机分别用作Storm集群中的&lt;code&gt;nimbus&lt;/code&gt;节点、&lt;code&gt;Zookeeper&lt;/code&gt;集群（一台机器开多个zookeeper进程，当然也可以多台机器）、&lt;code&gt;supervisor&lt;/code&gt;节点。&lt;/p&gt;
-&lt;p&gt;在这里我为方便起见 直接从单机安装的virtualbox虚拟机clone了三台一样的机器进行配置，每台上的配置过程见&lt;a href="http://chih.me/Setting-up-a-Storm-Cluster.html"&gt;实时计算框架Storm本地模式搭建&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;在这里我为方便起见 直接从单机安装的virtualbox虚拟机clone了三台一样的机器进行配置，每台上的配置过程见&lt;a href="http://blog.chih.me/Setting-up-a-Storm-Cluster.html"&gt;实时计算框架Storm本地模式搭建&lt;/a&gt;&lt;/p&gt;
 &lt;h3&gt;下面针对每一个节点进行具体的配置&lt;/h3&gt;
-&lt;p&gt;&lt;img alt="4-2" src="http://chih.me/images/4-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="4-2" src="http://blog.chih.me/images/4-2.png"&gt;&lt;/p&gt;
 &lt;h4&gt;搭建一个Zookeeper集群&lt;/h4&gt;
 &lt;p&gt;三台机器同时作为&lt;code&gt;zookeeper&lt;/code&gt;集群。&lt;/p&gt;
 &lt;p&gt;对机器均修改&lt;code&gt;conf/zoo.cfg&lt;/code&gt;（可以直接将zoo_sample.cfg重命名为zoo.cfg）&lt;/p&gt;
@@ -1128,7 +1128,7 @@ server.3=192.168.56.104:2888:3888
 
 
 &lt;p&gt;最后三行是ip:port:port的形式，&lt;code&gt;Zookeeper&lt;/code&gt;需要2个端口通信。有多少台机器就写多少个server.X=ip:port:port。X从1到255。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="4-3" src="http://chih.me/images/4-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="4-3" src="http://blog.chih.me/images/4-3.png"&gt;&lt;/p&gt;
 &lt;h4&gt;接下来设置myid&lt;/h4&gt;
 &lt;p&gt;在设置的&lt;code&gt;dataDir&lt;/code&gt;目录下新建myid文件，如上面设置的/var/zookeeper目录下。
 myid文件中只有一行数字，即与zoo.cfg设置的主机与id对应的id，
@@ -1156,9 +1156,9 @@ $ zkServer.sh status
 
 
 &lt;p&gt;查看状态&lt;/p&gt;
-&lt;p&gt;&lt;img alt="4-4" src="http://chih.me/images/4-4.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="4-4" src="http://blog.chih.me/images/4-4.png"&gt;&lt;/p&gt;
 &lt;p&gt;保证server节点的zookeeper服务全部启动好&lt;/p&gt;
-&lt;p&gt;&lt;img alt="4-5" src="http://chih.me/images/4-5.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="4-5" src="http://blog.chih.me/images/4-5.png"&gt;&lt;/p&gt;
 &lt;h4&gt;在nimbus、supervisor节点安装依赖包（jdk，python）&lt;/h4&gt;
 &lt;h4&gt;下载并解压Storm到nimbus、supervisor节点&lt;/h4&gt;
 &lt;h4&gt;修改nimbus、supervisor节点的配置文件（storm.yaml），每台机器相同配置。&lt;/h4&gt;
@@ -1175,7 +1175,7 @@ nimbus.host: &amp;quot;192.168.56.102&amp;quot;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="4-6" src="http://chih.me/images/4-6.png"&gt;
+&lt;p&gt;&lt;img alt="4-6" src="http://blog.chih.me/images/4-6.png"&gt;
  &lt;code&gt;supervisor.slots.ports&lt;/code&gt;:对于每个supervisor节点，需要指定一些端口，来运行相应数目的JVM进程。下面的配置开发了四个端口，即在supervisor节点上运行了四个JVM进程（4个worker、此处涉及到Storm中的并行化机制）。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;supervisor.slots.ports:
 
@@ -1202,7 +1202,7 @@ nimbus.host: &amp;quot;192.168.56.102&amp;quot;
 &lt;p&gt;ui：在nimbus上重新开个console，运行&lt;code&gt;storm ui&lt;/code&gt;命令，并访问&lt;a href="http://192.168.56.102:8088"&gt;http://192.168.56.102:8088&lt;/a&gt;，出现如下界面则表明集群搭建成功：&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;&lt;img alt="4-7" src="http://chih.me/images/4-7.png"&gt;&lt;/p&gt;</content><category term="linux"></category><category term="Storm"></category><category term="大数据"></category><category term="实时计算"></category></entry><entry><title>实时计算框架Storm本地模式搭建</title><link href="http://blog.chih.me/Setting-up-a-Storm-Cluster.html" rel="alternate"></link><published>2015-02-02T00:00:00+08:00</published><updated>2015-02-02T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2015-02-02:/Setting-up-a-Storm-Cluster.html</id><summary type="html">&lt;blockquote&gt;
+&lt;p&gt;&lt;img alt="4-7" src="http://blog.chih.me/images/4-7.png"&gt;&lt;/p&gt;</content><category term="linux"></category><category term="Storm"></category><category term="大数据"></category><category term="实时计算"></category></entry><entry><title>实时计算框架Storm本地模式搭建</title><link href="http://blog.chih.me/Setting-up-a-Storm-Cluster.html" rel="alternate"></link><published>2015-02-02T00:00:00+08:00</published><updated>2015-02-02T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2015-02-02:/Setting-up-a-Storm-Cluster.html</id><summary type="html">&lt;blockquote&gt;
 &lt;p&gt;平台：Ubuntu14.04&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h2&gt;安装依赖&lt;/h2&gt;
@@ -1217,13 +1217,13 @@ nimbus.host: &amp;quot;192.168.56.102&amp;quot;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="1-1" src="http://chih.me/images/1-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="1-1" src="http://blog.chih.me/images/1-1.png"&gt;&lt;/p&gt;
 &lt;p&gt;检查python版本:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python -V
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="1-2" src="http://chih.me/images/1-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="1-2" src="http://blog.chih.me/images/1-2.png"&gt;&lt;/p&gt;
 &lt;h2&gt;安装ZooKeeper&lt;/h2&gt;
 &lt;p&gt;为了避免每次获取超级权限重复输入sudo
 临时进入超级用户:&lt;/p&gt;
@@ -1242,7 +1242,7 @@ nimbus.host: &amp;quot;192.168.56.102&amp;quot;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="1-3" src="http://chih.me/images/1-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="1-3" src="http://blog.chih.me/images/1-3.png"&gt;&lt;/p&gt;
 &lt;p&gt;使用命令解压:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# tar -xzvf zookeeper-3 …&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;blockquote&gt;
 &lt;p&gt;平台：Ubuntu14.04&lt;/p&gt;
@@ -1259,13 +1259,13 @@ nimbus.host: &amp;quot;192.168.56.102&amp;quot;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="1-1" src="http://chih.me/images/1-1.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="1-1" src="http://blog.chih.me/images/1-1.png"&gt;&lt;/p&gt;
 &lt;p&gt;检查python版本:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ python -V
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="1-2" src="http://chih.me/images/1-2.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="1-2" src="http://blog.chih.me/images/1-2.png"&gt;&lt;/p&gt;
 &lt;h2&gt;安装ZooKeeper&lt;/h2&gt;
 &lt;p&gt;为了避免每次获取超级权限重复输入sudo
 临时进入超级用户:&lt;/p&gt;
@@ -1284,7 +1284,7 @@ nimbus.host: &amp;quot;192.168.56.102&amp;quot;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="1-3" src="http://chih.me/images/1-3.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="1-3" src="http://blog.chih.me/images/1-3.png"&gt;&lt;/p&gt;
 &lt;p&gt;使用命令解压:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# tar -xzvf zookeeper-3.4.6.tar.gz
 &lt;/pre&gt;&lt;/div&gt;
@@ -1295,7 +1295,7 @@ nimbus.host: &amp;quot;192.168.56.102&amp;quot;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="1-4" src="http://chih.me/images/1-4.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="1-4" src="http://blog.chih.me/images/1-4.png"&gt;&lt;/p&gt;
 &lt;p&gt;从配置文件模板复制一份配置文件，这里无需修改：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# cp conf/zoo_sample.cfg conf/zoo.cfg
 &lt;/pre&gt;&lt;/div&gt;
@@ -1334,7 +1334,7 @@ nimbus.host: &amp;quot;192.168.56.102&amp;quot;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="1-5" src="http://chih.me/images/1-5.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="1-5" src="http://blog.chih.me/images/1-5.png"&gt;&lt;/p&gt;
 &lt;p&gt;配置storm.yaml:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# vim ./conf/storm.yaml
 &lt;/pre&gt;&lt;/div&gt;
@@ -1356,7 +1356,7 @@ storm.messaging.netty.min_wait_ms: 100   #--指定最小等待时间（毫秒）
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="1-6" src="http://chih.me/images/1-6.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="1-6" src="http://blog.chih.me/images/1-6.png"&gt;&lt;/p&gt;
 &lt;p&gt;后台（通过命令后加&amp;amp;使进程后台执行，标准输出全部进入黑洞/dev/null）启动Storm服务：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# ./bin/storm nimbus &amp;gt;/dev/null 2&amp;gt;&amp;amp;1 &amp;amp;
 # ./bin/storm supervisor&amp;gt;/dev/null 2&amp;gt;&amp;amp;1 &amp;amp;
@@ -1366,7 +1366,7 @@ storm.messaging.netty.min_wait_ms: 100   #--指定最小等待时间（毫秒）
 
 
 &lt;p&gt;访问ip:port即可进入Storm UI&lt;/p&gt;
-&lt;p&gt;&lt;img alt="1-7" src="http://chih.me/images/1-7.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="1-7" src="http://blog.chih.me/images/1-7.png"&gt;&lt;/p&gt;
 &lt;p&gt;-EOF-&lt;/p&gt;</content><category term="linux"></category><category term="Storm"></category><category term="大数据"></category><category term="实时计算"></category></entry><entry><title>ubuntu突然出现打开系统设置慢 sudo时出现无法解析主机的解决办法</title><link href="http://blog.chih.me/ubuntutu-ran-chu-xian-da-kai-xi-tong-she-zhi-man-sudoshi-chu-xian-wu-fa-jie-xi-zhu-ji-de-jie-jue-ban-fa.html" rel="alternate"></link><published>2014-04-06T00:00:00+08:00</published><updated>2014-04-06T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2014-04-06:/ubuntutu-ran-chu-xian-da-kai-xi-tong-she-zhi-man-sudoshi-chu-xian-wu-fa-jie-xi-zhu-ji-de-jie-jue-ban-fa.html</id><summary type="html">&lt;p&gt;突然间发现我的&lt;code&gt;ubuntu12.04&lt;/code&gt;打开系统设置变得非常慢，正不知如何解决的时候。发现sudo时出现“无法解析的主机 XXXX" 的提示。马上就联想到不久前改过hosts，原来是主机名无法解析了，这样问题就好解决了&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo vim /etc/hosts
 &lt;/pre&gt;&lt;/div&gt;
@@ -1390,11 +1390,11 @@ storm.messaging.netty.min_wait_ms: 100   #--指定最小等待时间（毫秒）
 
 
 &lt;p&gt;之后 打开系统设置就非常快了&lt;/p&gt;</content><category term="Hosts"></category><category term="ubuntu"></category><category term="linux"></category></entry><entry><title>virtualbox主机访问虚拟机</title><link href="http://blog.chih.me/virtualboxzhu-ji-fang-wen-xu-ni-ji.html" rel="alternate"></link><published>2014-03-02T00:00:00+08:00</published><updated>2014-03-02T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2014-03-02:/virtualboxzhu-ji-fang-wen-xu-ni-ji.html</id><summary type="html">&lt;p&gt;在&lt;code&gt;virtualbox&lt;/code&gt;中，如果选择默认的网卡设置，也就是网络地址转换(NAT)，是不能让宿主机访问到虚拟机的，如果想让两者相互连通，可以在保留默认的&lt;code&gt;NAT&lt;/code&gt;网卡的基础上增加一张&lt;code&gt;Host-Only&lt;/code&gt;的网卡。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="NAT" src="http://chih.me/images/58081e7f-677a-47f9-8fc5-a7ec0435e7b1.png"&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Host-Only" src="http://chih.me/images/7695d614d15ad02edfd564e4b32810fc.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="NAT" src="http://blog.chih.me/images/58081e7f-677a-47f9-8fc5-a7ec0435e7b1.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Host-Only" src="http://blog.chih.me/images/7695d614d15ad02edfd564e4b32810fc.png"&gt;&lt;/p&gt;
 &lt;p&gt;需要注意的是，如果你的宿主机是Linux的话，安装virtualbox后是没有一张Host-Only的网卡的，你需要在virtualbox的设置里添加这张网卡。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="add-Host-Only" src="http://chih.me/images/snapshot2.png"&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;在&lt;code&gt;virtualbox&lt;/code&gt;中，如果选择默认的网卡设置，也就是网络地址转换(NAT)，是不能让宿主机访问到虚拟机的，如果想让两者相互连通，可以在保留默认的&lt;code&gt;NAT&lt;/code&gt;网卡的基础上增加一张&lt;code&gt;Host-Only&lt;/code&gt;的网卡。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="NAT" src="http://chih.me/images/58081e7f-677a-47f9-8fc5-a7ec0435e7b1.png"&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt="Host-Only" src="http://chih.me/images/7695d614d15ad02edfd564e4b32810fc.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="add-Host-Only" src="http://blog.chih.me/images/snapshot2.png"&gt;&lt;/p&gt;</summary><content type="html">&lt;p&gt;在&lt;code&gt;virtualbox&lt;/code&gt;中，如果选择默认的网卡设置，也就是网络地址转换(NAT)，是不能让宿主机访问到虚拟机的，如果想让两者相互连通，可以在保留默认的&lt;code&gt;NAT&lt;/code&gt;网卡的基础上增加一张&lt;code&gt;Host-Only&lt;/code&gt;的网卡。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="NAT" src="http://blog.chih.me/images/58081e7f-677a-47f9-8fc5-a7ec0435e7b1.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Host-Only" src="http://blog.chih.me/images/7695d614d15ad02edfd564e4b32810fc.png"&gt;&lt;/p&gt;
 &lt;p&gt;需要注意的是，如果你的宿主机是Linux的话，安装virtualbox后是没有一张Host-Only的网卡的，你需要在virtualbox的设置里添加这张网卡。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="add-Host-Only" src="http://chih.me/images/snapshot2.png"&gt;&lt;/p&gt;</content><category term="Hosts"></category><category term="virtualbox"></category><category term="linux"></category><category term="网络"></category></entry></feed>
+&lt;p&gt;&lt;img alt="add-Host-Only" src="http://blog.chih.me/images/snapshot2.png"&gt;&lt;/p&gt;</content><category term="Hosts"></category><category term="virtualbox"></category><category term="linux"></category><category term="网络"></category></entry></feed>
