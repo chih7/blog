@@ -4,13 +4,13 @@
 <head>
   <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic' rel='stylesheet' type='text/css'>
 
-    <link rel="stylesheet" type="text/css" href="http://blog.chih.me/theme/stylesheet/style.min.css">
+    <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/stylesheet/style.min.css">
 
-  <link rel="stylesheet" type="text/css" href="http://blog.chih.me/theme/pygments/github.min.css">
-  <link rel="stylesheet" type="text/css" href="http://blog.chih.me/theme/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/pygments/github.min.css">
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/font-awesome/css/font-awesome.min.css">
 
 
-    <link href="http://blog.chih.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="chih's blog Atom">
+    <link href="https://blog.chih.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="chih's blog Atom">
 
 
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
@@ -30,11 +30,11 @@
 <meta property="og:title" content="实时计算框架Storm本地模式搭建"/>
 <meta property="og:description" content="平台：Ubuntu14.04 安装依赖 通过ubuntu自带的软件包管理器安装java环境。 安装Java： $ sudo apt-get install openjdk-7-jdk 检查是否安装完成: $ java -version 检查python版本: $ python -V 安装ZooKeeper 为了避免每次获取超级权限重复输入sudo 临时进入超级用户: $ sudo -s 使用ctrl+d退出 定位目录: # cd /usr/local/src 从阿里的源下载: # wget http://mirrors.aliyun.com/apache/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz 使用命令解压: # tar -xzvf zookeeper-3 …"/>
 <meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="http://blog.chih.me/Setting-up-a-Storm-Cluster.html"/>
+<meta property="og:url" content="https://blog.chih.me/Setting-up-a-Storm-Cluster.html"/>
 <meta property="og:type" content="article"/>
 <meta property="article:published_time" content="2015-02-02 00:00:00+08:00"/>
 <meta property="article:modified_time" content=""/>
-<meta property="article:author" content="http://blog.chih.me/author/chih.html">
+<meta property="article:author" content="https://blog.chih.me/author/chih.html">
 <meta property="article:section" content="Tech"/>
 <meta property="article:tag" content="linux"/>
 <meta property="article:tag" content="Storm"/>
@@ -48,15 +48,15 @@
 <body>
   <aside>
     <div>
-      <a href="http://blog.chih.me">
-        <img src="http://blog.chih.me/theme/img/profile.png" alt="" title="">
+      <a href="https://blog.chih.me">
+        <img src="https://blog.chih.me/theme/img/profile.png" alt="" title="">
       </a>
-      <h1><a href="http://blog.chih.me"></a></h1>
+      <h1><a href="https://blog.chih.me"></a></h1>
 
 
       <nav>
         <ul class="list">
-          <li><a href="http://blog.chih.me/pages/about-me.html#about-me">About Me</a></li>
+          <li><a href="https://blog.chih.me/pages/about-me.html#about-me">About Me</a></li>
 
           <li><a href="http://www.hjk.im/" target="_blank">HJK</a></li>
           <li><a href="http://imis.me/" target="_blank">记忆反射弧</a></li>
@@ -80,7 +80,7 @@
   <header>
     <h1 id="Setting-up-a-Storm-Cluster">实时计算框架Storm本地模式搭建</h1>
     <p>
-          Posted on Mon 02 February 2015 in <a href="http://blog.chih.me/category/tech.html">Tech</a>
+          Posted on Mon 02 February 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
 
 
     </p>
@@ -103,13 +103,13 @@
 </pre></div>
 
 
-<p><img alt="1-1" src="http://blog.chih.me/images/1-1.png"></p>
+<p><img alt="1-1" src="https://blog.chih.me/images/1-1.png"></p>
 <p>检查python版本:</p>
 <div class="highlight"><pre><span></span>$ python -V
 </pre></div>
 
 
-<p><img alt="1-2" src="http://blog.chih.me/images/1-2.png"></p>
+<p><img alt="1-2" src="https://blog.chih.me/images/1-2.png"></p>
 <h2>安装ZooKeeper</h2>
 <p>为了避免每次获取超级权限重复输入sudo
 临时进入超级用户:</p>
@@ -128,7 +128,7 @@
 </pre></div>
 
 
-<p><img alt="1-3" src="http://blog.chih.me/images/1-3.png"></p>
+<p><img alt="1-3" src="https://blog.chih.me/images/1-3.png"></p>
 <p>使用命令解压:</p>
 <div class="highlight"><pre><span></span># tar -xzvf zookeeper-3.4.6.tar.gz
 </pre></div>
@@ -139,7 +139,7 @@
 </pre></div>
 
 
-<p><img alt="1-4" src="http://blog.chih.me/images/1-4.png"></p>
+<p><img alt="1-4" src="https://blog.chih.me/images/1-4.png"></p>
 <p>从配置文件模板复制一份配置文件，这里无需修改：</p>
 <div class="highlight"><pre><span></span># cp conf/zoo_sample.cfg conf/zoo.cfg
 </pre></div>
@@ -178,7 +178,7 @@
 </pre></div>
 
 
-<p><img alt="1-5" src="http://blog.chih.me/images/1-5.png"></p>
+<p><img alt="1-5" src="https://blog.chih.me/images/1-5.png"></p>
 <p>配置storm.yaml:</p>
 <div class="highlight"><pre><span></span># vim ./conf/storm.yaml
 </pre></div>
@@ -200,7 +200,7 @@ storm.messaging.netty.min_wait_ms: 100   #--指定最小等待时间（毫秒）
 </pre></div>
 
 
-<p><img alt="1-6" src="http://blog.chih.me/images/1-6.png"></p>
+<p><img alt="1-6" src="https://blog.chih.me/images/1-6.png"></p>
 <p>后台（通过命令后加&amp;使进程后台执行，标准输出全部进入黑洞/dev/null）启动Storm服务：</p>
 <div class="highlight"><pre><span></span># ./bin/storm nimbus &gt;/dev/null 2&gt;&amp;1 &amp;
 # ./bin/storm supervisor&gt;/dev/null 2&gt;&amp;1 &amp;
@@ -210,15 +210,15 @@ storm.messaging.netty.min_wait_ms: 100   #--指定最小等待时间（毫秒）
 
 
 <p>访问ip:port即可进入Storm UI</p>
-<p><img alt="1-7" src="http://blog.chih.me/images/1-7.png"></p>
+<p><img alt="1-7" src="https://blog.chih.me/images/1-7.png"></p>
 <p>-EOF-</p>
   </div>
   <div class="tag-cloud">
     <p>
-      <a href="http://blog.chih.me/tag/linux.html">linux</a>
-      <a href="http://blog.chih.me/tag/storm.html">Storm</a>
-      <a href="http://blog.chih.me/tag/da-shu-ju.html">大数据</a>
-      <a href="http://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
+      <a href="https://blog.chih.me/tag/linux.html">linux</a>
+      <a href="https://blog.chih.me/tag/storm.html">Storm</a>
+      <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>
+      <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
     </p>
   </div>
 
@@ -265,7 +265,7 @@ storm.messaging.netty.min_wait_ms: 100   #--指定最小等待时间（毫秒）
   "@context" : "http://schema.org",
   "@type" : "Blog",
   "name": " chih's blog ",
-  "url" : "http://blog.chih.me",
+  "url" : "https://blog.chih.me",
   "image": "",
   "description": ""
 }

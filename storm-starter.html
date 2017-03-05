@@ -4,13 +4,13 @@
 <head>
   <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic' rel='stylesheet' type='text/css'>
 
-    <link rel="stylesheet" type="text/css" href="http://blog.chih.me/theme/stylesheet/style.min.css">
+    <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/stylesheet/style.min.css">
 
-  <link rel="stylesheet" type="text/css" href="http://blog.chih.me/theme/pygments/github.min.css">
-  <link rel="stylesheet" type="text/css" href="http://blog.chih.me/theme/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/pygments/github.min.css">
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/font-awesome/css/font-awesome.min.css">
 
 
-    <link href="http://blog.chih.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="chih's blog Atom">
+    <link href="https://blog.chih.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="chih's blog Atom">
 
 
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
@@ -30,11 +30,11 @@
 <meta property="og:title" content="在实时计算框架Storm集群上运行Storm-Starter例子"/>
 <meta property="og:description" content="官方文档待翻译，个人实践在下面 Example Storm Topologies Learn to use Storm! Table of Contents Getting started Using storm-starter with Maven Using storm-starter with IntelliJ IDEA Getting started Prerequisites First, you need java and git installed and in your user's PATH. Also, two of the examples in storm-starter require Python and Ruby. Next …"/>
 <meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="http://blog.chih.me/storm-starter.html"/>
+<meta property="og:url" content="https://blog.chih.me/storm-starter.html"/>
 <meta property="og:type" content="article"/>
 <meta property="article:published_time" content="2015-02-22 00:00:00+08:00"/>
 <meta property="article:modified_time" content=""/>
-<meta property="article:author" content="http://blog.chih.me/author/chih.html">
+<meta property="article:author" content="https://blog.chih.me/author/chih.html">
 <meta property="article:section" content="Tech"/>
 <meta property="article:tag" content="linux"/>
 <meta property="article:tag" content="Storm"/>
@@ -48,15 +48,15 @@
 <body>
   <aside>
     <div>
-      <a href="http://blog.chih.me">
-        <img src="http://blog.chih.me/theme/img/profile.png" alt="" title="">
+      <a href="https://blog.chih.me">
+        <img src="https://blog.chih.me/theme/img/profile.png" alt="" title="">
       </a>
-      <h1><a href="http://blog.chih.me"></a></h1>
+      <h1><a href="https://blog.chih.me"></a></h1>
 
 
       <nav>
         <ul class="list">
-          <li><a href="http://blog.chih.me/pages/about-me.html#about-me">About Me</a></li>
+          <li><a href="https://blog.chih.me/pages/about-me.html#about-me">About Me</a></li>
 
           <li><a href="http://www.hjk.im/" target="_blank">HJK</a></li>
           <li><a href="http://imis.me/" target="_blank">记忆反射弧</a></li>
@@ -80,7 +80,7 @@
   <header>
     <h1 id="storm-starter">在实时计算框架Storm集群上运行Storm-Starter例子</h1>
     <p>
-          Posted on Sun 22 February 2015 in <a href="http://blog.chih.me/category/tech.html">Tech</a>
+          Posted on Sun 22 February 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
 
 
     </p>
@@ -210,7 +210,7 @@ yet run the included unit tests.</p>
 </pre></div>
 
 
-<p><img alt="3-1" src="http://blog.chih.me/images/3-1.png"></p>
+<p><img alt="3-1" src="https://blog.chih.me/images/3-1.png"></p>
 <h3>进入项目目录</h3>
 <div class="highlight"><pre><span></span># cd incubator-storm/examples/storm-starter
 </pre></div>
@@ -221,9 +221,9 @@ yet run the included unit tests.</p>
 </pre></div>
 
 
-<p><img alt="3-2" src="http://blog.chih.me/images/3-2.png"></p>
+<p><img alt="3-2" src="https://blog.chih.me/images/3-2.png"></p>
 <p>第一次出现错误，去google了一下，找到一种办法</p>
-<p><img alt="3-8" src="http://blog.chih.me/images/3-8.png"></p>
+<p><img alt="3-8" src="https://blog.chih.me/images/3-8.png"></p>
 <ul>
 <li>不使用最新的代码而使用apache-storm-0.9.2-incubating中的例子，这是我们在安装storm时下载的
 进入apache-storm-0.9.2-incubating/examples/storm-starter</li>
@@ -233,14 +233,14 @@ yet run the included unit tests.</p>
 </pre></div>
 
 
-<p><img alt="3-3" src="http://blog.chih.me/images/3-3.png"></p>
+<p><img alt="3-3" src="https://blog.chih.me/images/3-3.png"></p>
 <p>成功!</p>
 <h3>打包所有的依赖</h3>
 <div class="highlight"><pre><span></span># mvn package
 </pre></div>
 
 
-<p><img alt="3-4" src="http://blog.chih.me/images/3-4.png"></p>
+<p><img alt="3-4" src="https://blog.chih.me/images/3-4.png"></p>
 <p>进入target目录，可以看到<code>storm-starter-0.9.2-incubating-jar-with-dependencies.jar</code></p>
 <h3>提交到storm(以WordCountTopology为例)</h3>
 <p>在nimbus上运行</p>
@@ -249,14 +249,14 @@ yet run the included unit tests.</p>
 
 
 <p>可以看到console的输出，当然可以在storm ui的http上查看topology状态。例子已经被提交到集群。</p>
-<p><img alt="3-6" src="http://blog.chih.me/images/3-6.png"></p>
+<p><img alt="3-6" src="https://blog.chih.me/images/3-6.png"></p>
   </div>
   <div class="tag-cloud">
     <p>
-      <a href="http://blog.chih.me/tag/linux.html">linux</a>
-      <a href="http://blog.chih.me/tag/storm.html">Storm</a>
-      <a href="http://blog.chih.me/tag/da-shu-ju.html">大数据</a>
-      <a href="http://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
+      <a href="https://blog.chih.me/tag/linux.html">linux</a>
+      <a href="https://blog.chih.me/tag/storm.html">Storm</a>
+      <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>
+      <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
     </p>
   </div>
 
@@ -303,7 +303,7 @@ yet run the included unit tests.</p>
   "@context" : "http://schema.org",
   "@type" : "Blog",
   "name": " chih's blog ",
-  "url" : "http://blog.chih.me",
+  "url" : "https://blog.chih.me",
   "image": "",
   "description": ""
 }
