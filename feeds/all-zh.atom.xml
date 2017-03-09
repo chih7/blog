@@ -1,5 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>chih's blog</title><link href="https://blog.chih.me/" rel="alternate"></link><link href="https://blog.chih.me/feeds/all-zh.atom.xml" rel="self"></link><id>https://blog.chih.me/</id><updated>2016-11-21T00:00:00+08:00</updated><entry><title>使用redsocks把shadowsocks转为全局代理</title><link href="https://blog.chih.me/global-proxy-within-redsocks-and-shadowsocks.html" rel="alternate"></link><published>2016-11-21T00:00:00+08:00</published><updated>2016-11-21T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2016-11-21:/global-proxy-within-redsocks-and-shadowsocks.html</id><summary type="html">&lt;h2&gt;前言&lt;/h2&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>chih's blog</title><link href="https://blog.chih.me/" rel="alternate"></link><link href="https://blog.chih.me/feeds/all-zh.atom.xml" rel="self"></link><id>https://blog.chih.me/</id><updated>2016-12-25T00:00:00+08:00</updated><entry><title>Ubuntu 16.04 下 CPU 频率与功耗关系</title><link href="https://blog.chih.me/power-with-different-cpufreq.html" rel="alternate"></link><published>2016-12-25T00:00:00+08:00</published><updated>2016-12-25T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2016-12-25:/power-with-different-cpufreq.html</id><summary type="html">&lt;h3&gt;硬件环境&lt;/h3&gt;
+&lt;p&gt;Intel® Xeon® Processor E5645 (12M Cache, 2.40 GHz, 5.86 GT/s Intel® QPI)
+https://ark.intel.com/products/48768/Intel-Xeon-Processor-E5645-12M-Cache-2_40-GHz-5_86-GTs-Intel-QPI&lt;/p&gt;
+&lt;p&gt;实验服务器搭载两颗 Intel E5645 处理器，24块 SAS+SATA 机械硬盘。E5645 为 6 核处理器，并支持超线程技术（Intel® Hyper-Threading Technology），服务器共 24 个逻辑核，基本时钟频率为 2.40 GHz 。&lt;/p&gt;
+&lt;h3&gt;软件环境&lt;/h3&gt;
+&lt;p&gt;Ubuntu Server 16 …&lt;/p&gt;</summary><content type="html">&lt;h3&gt;硬件环境&lt;/h3&gt;
+&lt;p&gt;Intel® Xeon® Processor E5645 (12M Cache, 2.40 GHz, 5.86 GT/s Intel® QPI)
+https://ark.intel.com/products/48768/Intel-Xeon-Processor-E5645-12M-Cache-2_40-GHz-5_86-GTs-Intel-QPI&lt;/p&gt;
+&lt;p&gt;实验服务器搭载两颗 Intel E5645 处理器，24块 SAS+SATA 机械硬盘。E5645 为 6 核处理器，并支持超线程技术（Intel® Hyper-Threading Technology），服务器共 24 个逻辑核，基本时钟频率为 2.40 GHz 。&lt;/p&gt;
+&lt;h3&gt;软件环境&lt;/h3&gt;
+&lt;p&gt;Ubuntu Server 16.04.1 LTS&lt;/p&gt;
+&lt;h2&gt;CPU 频率驱动程序与工具&lt;/h2&gt;
+&lt;p&gt;操作系统通过CPU调频可以根据负载动态调节CPU工作频率，达到省电的目的。这个过程可以自动进行，也可以由用户空间(userspace)程序手动调节。Linux 内核实现了CPU 调频，该架构被称为&lt;em&gt;cpufreq&lt;/em&gt;， 从 3.4 内核开始，内核会自动载入相应的内核模块，默认的频率调频器 &lt;strong&gt;ondemand&lt;/strong&gt; 会被启动（ Intel  Sandy Bridge 架构后 CPU 的功率驱动程序为 P-State，默认调频器为 powersave ）。用户调频工具有 cpufrequtils、  cpupower 等，这里使用 cpufrequtils 。&lt;/p&gt;
+&lt;p&gt;安装 &lt;code&gt;cpufrequtils&lt;/code&gt; 包。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# apt install cpufrequtils&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;cpufrequtils 包包含以下三个工具，其中 &lt;strong&gt;cpufreq-info&lt;/strong&gt; 用于查看cpu的相关信息，&lt;strong&gt;cpufreq-set&lt;/strong&gt; 用于修改CPU的频率配置，&lt;strong&gt;cpufreq-aperf&lt;/strong&gt; 用于计算一段时间内的平均频率。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;/usr/bin/cpufreq-info
+/usr/bin/cpufreq-set
+/usr/bin/cpufreq-aperf
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;cpufreq-info&lt;/strong&gt; 获得的信息包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;dirver&lt;/code&gt;: 实用的cpufreq内核驱动&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;hardware limits&lt;/code&gt;: 设定的cpu频率范围&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;available frequency steps&lt;/code&gt;: 可选的cpu频率&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;available cpufreq governors&lt;/code&gt;: 可选的cpu频率调速器:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;调速器&lt;/th&gt;
+&lt;th&gt;描述&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;ondemand&lt;/td&gt;
+&lt;td&gt;按需快速动态调整CPU频率， 一有cpu计算量的任务，就会立即达到最大频率运行，等执行完毕就立即回到最低频率（阙值为 95%）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;performance&lt;/td&gt;
+&lt;td&gt;运行于最大频率&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;conservative&lt;/td&gt;
+&lt;td&gt;按需快速动态调整CPU频率， 一有cpu计算量的任务，就会立即达到最大频率运行，等执行完毕就立即回到最低频率（阙值为 75%）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;powersave&lt;/td&gt;
+&lt;td&gt;运行于最小频率&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;userspace&lt;/td&gt;
+&lt;td&gt;运行于用户指定的频率&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;current CPU frequency&lt;/code&gt;: 当前的CPU频率&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;cpufreq stats&lt;/code&gt;: 统计cpu在每个频率下的工作时间&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这些信息也可以手动在sysfs文件中查看，位置为 &lt;code&gt;/sys/devices/system/cpu/cpuX/cpufreq/&lt;/code&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;chih@archlinux:/sys/devices/system/cpu/cpu0/cpufreq$ ls  
+affected_cpus               related_cpus                   scaling_max_freq  
+bios_limit                  scaling_available_frequencies  scaling_min_freq  
+cpuinfo_cur_freq            scaling_available_governors    scaling_setspeed  
+cpuinfo_max_freq            scaling_cur_freq               stats  
+cpuinfo_min_freq            scaling_driver  
+cpuinfo_transition_latency  scaling_governor 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;以上为CPU0的一些内核文件，前缀 cpuinfo 代表的是 cpu 硬件上支持的频率，而 scaling 前缀代表的是可以通过 CPUFreq 系统用软件进行调节时所支持的频率。cpuinfo_cur_freq 代表通过硬件实际上读到的频率值，而 scaling_cur_freq 则是软件当前的设置值，scaling_available_frequencies 表示当前软件支持的频率值，scaling_available_governors 表示当前软件支持的调频器，scaling_governor 表示当前使用的调频器，scaling_min_freq 与 scaling_max_freq 表示软件设置的最低频率与最高频率。scaling_set_speed 表示手动设置的特定频率。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;cpufreq-set&lt;/strong&gt; 允许用户手动设置CPU运行频率，相应的选项如下所示：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;-c --cpu&lt;/strong&gt; &lt;CPU&gt;
+  number of CPU where cpufreq settings shall be modified.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;-d --min&lt;/strong&gt; &lt;FREQ&gt;
+  new minimum CPU frequency the governor may select.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;-u --max&lt;/strong&gt; &lt;FREQ&gt;
+  new maximum CPU frequency the governor may select.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;-g --governor&lt;/strong&gt; &lt;GOV&gt;
+  new cpufreq governor.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;-f --freq&lt;/strong&gt; &lt;FREQ&gt;
+  specific frequency to be set. Requires userspace governor to be available and loaded.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;-r --related&lt;/strong&gt;
+  modify all hardware-related CPUs at the same time&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;-h --help&lt;/strong&gt;
+  Prints out the help screen.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;因为服务器上核数比较多，可通过以下名为&lt;code&gt;cpufreq-set-all&lt;/code&gt;的shell脚本方便的设置全部CPU核。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; i in &lt;span class="o"&gt;{&lt;/span&gt;&lt;span class="m"&gt;0&lt;/span&gt;..23&lt;span class="o"&gt;}&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    cpufreq-set -c &lt;span class="nv"&gt;$i&lt;/span&gt; &lt;span class="nv"&gt;$@&lt;/span&gt; 
+&lt;span class="k"&gt;done&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;-f&lt;/strong&gt; 选项要求使用 &lt;code&gt;userspace&lt;/code&gt; 调频器，使用下面的命令把所有CPU核的调频器都设置为 userspace 。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# cpufreq-set-all -g userspace&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;手动设定CPU的运行频率，注意，频率值必须是 &lt;code&gt;scaling_available_frequencies&lt;/code&gt;中列出的。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# cpufreq-set-all -f 2.0Ghz&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;负载&lt;/h3&gt;
+&lt;p&gt;由于服务器无图形界面，使用了stress作为负载，stress 可以进行综合（内存占用、磁盘 IO）压力测试，可以反映典型用途下的服务器负载情况。&lt;/p&gt;
+&lt;p&gt;安装 stress&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# aptitude install stress&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;产生24个cpu进程，对应服务器的总核数，可以确保100%跑满服务器CPU全部负载。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# stress -c 24&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;结果&lt;/h2&gt;
+&lt;p&gt;如视频 1600Mhz.mp4、2000Mhz.mp4、2400Mhz.mp4 所示，实验选取了 1.6Ghz、2.0Ghz、2.4Ghz 三组CPU工作频率，对应的服务器整机功率如下表所示：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align="center"&gt;CPU频率&lt;/th&gt;
+&lt;th align="center"&gt;CPU满载整机功率&lt;/th&gt;
+&lt;th align="center"&gt;CPU空载整机功率&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align="center"&gt;1.6Ghz&lt;/td&gt;
+&lt;td align="center"&gt;575W&lt;/td&gt;
+&lt;td align="center"&gt;507W&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align="center"&gt;2.0Ghz&lt;/td&gt;
+&lt;td align="center"&gt;612W&lt;/td&gt;
+&lt;td align="center"&gt;519W&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td align="center"&gt;2.4Ghz&lt;/td&gt;
+&lt;td align="center"&gt;652W&lt;/td&gt;
+&lt;td align="center"&gt;507W&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;这里的功耗是整机功耗，受磁盘、主板等的功耗影响，其实可以通过 &lt;code&gt;RAPL&lt;/code&gt; 单独读取 CPU 的功耗。&lt;/p&gt;</content><category term="linux"></category><category term="cpufreq"></category><category term="CPU"></category><category term="power"></category></entry><entry><title>使用redsocks把shadowsocks转为全局代理</title><link href="https://blog.chih.me/global-proxy-within-redsocks-and-shadowsocks.html" rel="alternate"></link><published>2016-11-21T00:00:00+08:00</published><updated>2016-11-21T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2016-11-21:/global-proxy-within-redsocks-and-shadowsocks.html</id><summary type="html">&lt;h2&gt;前言&lt;/h2&gt;
 &lt;p&gt;shadowsocks是个非常棒的翻墙代理，它可以在本地提供一个socks5端口供软件使用代理。比如启动chrome的时候加上&lt;code&gt;--proxy-server="socks5://myproxy:1080"&lt;/code&gt;这条参数就可以让chrome走代理；然而，有些软件不支持设置代理的功能。所以有时候，我们需要一个全局代理的环境，使用VPN是一个通常的选择，不过一般购买的VPN的速度不如shadowsocks，同时，VPN更容易受到GFW的干扰。为什么不把正在使用的shadowsocks利用起来作为一个全局代理呢？&lt;/p&gt;
 &lt;p&gt;本文介绍了一种利用&lt;a href="https://github.com/darkk/redsocks"&gt;redsocks&lt;/a&gt;与iptables实现全局代理的方法，其基本原理如下：&lt;/p&gt;
 &lt;ol&gt;

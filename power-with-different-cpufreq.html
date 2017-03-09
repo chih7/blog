@@ -1,0 +1,312 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/pygments/github.min.css">
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/font-awesome/css/font-awesome.min.css">
+
+
+    <link href="https://blog.chih.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="chih's blog Atom">
+
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+<meta name="author" content="chih" />
+<meta name="description" content="硬件环境 Intel® Xeon® Processor E5645 (12M Cache, 2.40 GHz, 5.86 GT/s Intel® QPI) https://ark.intel.com/products/48768/Intel-Xeon-Processor-E5645-12M-Cache-2_40-GHz-5_86-GTs-Intel-QPI 实验服务器搭载两颗 Intel E5645 处理器，24块 SAS+SATA 机械硬盘。E5645 为 6 核处理器，并支持超线程技术（Intel® Hyper-Threading Technology），服务器共 24 个逻辑核，基本时钟频率为 2.40 GHz 。 软件环境 Ubuntu Server 16 …" />
+<meta name="keywords" content="linux, cpufreq, CPU, power">
+<meta property="og:site_name" content="chih's blog"/>
+<meta property="og:title" content="Ubuntu 16.04 下 CPU 频率与功耗关系"/>
+<meta property="og:description" content="硬件环境 Intel® Xeon® Processor E5645 (12M Cache, 2.40 GHz, 5.86 GT/s Intel® QPI) https://ark.intel.com/products/48768/Intel-Xeon-Processor-E5645-12M-Cache-2_40-GHz-5_86-GTs-Intel-QPI 实验服务器搭载两颗 Intel E5645 处理器，24块 SAS+SATA 机械硬盘。E5645 为 6 核处理器，并支持超线程技术（Intel® Hyper-Threading Technology），服务器共 24 个逻辑核，基本时钟频率为 2.40 GHz 。 软件环境 Ubuntu Server 16 …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://blog.chih.me/power-with-different-cpufreq.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2016-12-25 00:00:00+08:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://blog.chih.me/author/chih.html">
+<meta property="article:section" content="Tech"/>
+<meta property="article:tag" content="linux"/>
+<meta property="article:tag" content="cpufreq"/>
+<meta property="article:tag" content="CPU"/>
+<meta property="article:tag" content="power"/>
+<meta property="og:image" content="">
+
+  <title>chih's blog &ndash; Ubuntu 16.04 下 CPU 频率与功耗关系</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://blog.chih.me">
+        <img src="https://blog.chih.me/theme/img/profile.png" alt="" title="">
+      </a>
+      <h1><a href="https://blog.chih.me"></a></h1>
+
+
+      <nav>
+        <ul class="list">
+          <li><a href="https://blog.chih.me/pages/about-me.html#about-me">About Me</a></li>
+
+          <li><a href="http://www.hjk.im/" target="_blank">HJK</a></li>
+          <li><a href="http://imis.me/" target="_blank">记忆反射弧</a></li>
+          <li><a href="http://mijack.github.io/" target="_blank">mijack</a></li>
+        </ul>
+      </nav>
+
+      <ul class="social">
+      </ul>
+    </div>
+
+
+  </aside>
+  <main>
+
+
+<article class="single">
+  <header>
+    <h1 id="power-with-different-cpufreq">Ubuntu 16.04 下 CPU 频率与功耗关系</h1>
+    <p>
+          Posted on Sun 25 December 2016 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+    </p>
+  </header>
+
+
+  <div>
+    <h3>硬件环境</h3>
+<p>Intel® Xeon® Processor E5645 (12M Cache, 2.40 GHz, 5.86 GT/s Intel® QPI)
+https://ark.intel.com/products/48768/Intel-Xeon-Processor-E5645-12M-Cache-2_40-GHz-5_86-GTs-Intel-QPI</p>
+<p>实验服务器搭载两颗 Intel E5645 处理器，24块 SAS+SATA 机械硬盘。E5645 为 6 核处理器，并支持超线程技术（Intel® Hyper-Threading Technology），服务器共 24 个逻辑核，基本时钟频率为 2.40 GHz 。</p>
+<h3>软件环境</h3>
+<p>Ubuntu Server 16.04.1 LTS</p>
+<h2>CPU 频率驱动程序与工具</h2>
+<p>操作系统通过CPU调频可以根据负载动态调节CPU工作频率，达到省电的目的。这个过程可以自动进行，也可以由用户空间(userspace)程序手动调节。Linux 内核实现了CPU 调频，该架构被称为<em>cpufreq</em>， 从 3.4 内核开始，内核会自动载入相应的内核模块，默认的频率调频器 <strong>ondemand</strong> 会被启动（ Intel  Sandy Bridge 架构后 CPU 的功率驱动程序为 P-State，默认调频器为 powersave ）。用户调频工具有 cpufrequtils、  cpupower 等，这里使用 cpufrequtils 。</p>
+<p>安装 <code>cpufrequtils</code> 包。</p>
+<div class="highlight"><pre><span></span><span class="c1"># apt install cpufrequtils</span>
+</pre></div>
+
+
+<p>cpufrequtils 包包含以下三个工具，其中 <strong>cpufreq-info</strong> 用于查看cpu的相关信息，<strong>cpufreq-set</strong> 用于修改CPU的频率配置，<strong>cpufreq-aperf</strong> 用于计算一段时间内的平均频率。</p>
+<div class="highlight"><pre><span></span>/usr/bin/cpufreq-info
+/usr/bin/cpufreq-set
+/usr/bin/cpufreq-aperf
+</pre></div>
+
+
+<p><strong>cpufreq-info</strong> 获得的信息包括：</p>
+<ul>
+<li><code>dirver</code>: 实用的cpufreq内核驱动</li>
+<li><code>hardware limits</code>: 设定的cpu频率范围</li>
+<li><code>available frequency steps</code>: 可选的cpu频率</li>
+<li><code>available cpufreq governors</code>: 可选的cpu频率调速器:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>调速器</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ondemand</td>
+<td>按需快速动态调整CPU频率， 一有cpu计算量的任务，就会立即达到最大频率运行，等执行完毕就立即回到最低频率（阙值为 95%）</td>
+</tr>
+<tr>
+<td>performance</td>
+<td>运行于最大频率</td>
+</tr>
+<tr>
+<td>conservative</td>
+<td>按需快速动态调整CPU频率， 一有cpu计算量的任务，就会立即达到最大频率运行，等执行完毕就立即回到最低频率（阙值为 75%）</td>
+</tr>
+<tr>
+<td>powersave</td>
+<td>运行于最小频率</td>
+</tr>
+<tr>
+<td>userspace</td>
+<td>运行于用户指定的频率</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>current CPU frequency</code>: 当前的CPU频率</li>
+<li><code>cpufreq stats</code>: 统计cpu在每个频率下的工作时间</li>
+</ul>
+<p>这些信息也可以手动在sysfs文件中查看，位置为 <code>/sys/devices/system/cpu/cpuX/cpufreq/</code></p>
+<div class="highlight"><pre><span></span>chih@archlinux:/sys/devices/system/cpu/cpu0/cpufreq$ ls  
+affected_cpus               related_cpus                   scaling_max_freq  
+bios_limit                  scaling_available_frequencies  scaling_min_freq  
+cpuinfo_cur_freq            scaling_available_governors    scaling_setspeed  
+cpuinfo_max_freq            scaling_cur_freq               stats  
+cpuinfo_min_freq            scaling_driver  
+cpuinfo_transition_latency  scaling_governor 
+</pre></div>
+
+
+<p>以上为CPU0的一些内核文件，前缀 cpuinfo 代表的是 cpu 硬件上支持的频率，而 scaling 前缀代表的是可以通过 CPUFreq 系统用软件进行调节时所支持的频率。cpuinfo_cur_freq 代表通过硬件实际上读到的频率值，而 scaling_cur_freq 则是软件当前的设置值，scaling_available_frequencies 表示当前软件支持的频率值，scaling_available_governors 表示当前软件支持的调频器，scaling_governor 表示当前使用的调频器，scaling_min_freq 与 scaling_max_freq 表示软件设置的最低频率与最高频率。scaling_set_speed 表示手动设置的特定频率。</p>
+<p><strong>cpufreq-set</strong> 允许用户手动设置CPU运行频率，相应的选项如下所示：</p>
+<ul>
+<li>
+<p><strong>-c --cpu</strong> <CPU>
+  number of CPU where cpufreq settings shall be modified.</p>
+</li>
+<li>
+<p><strong>-d --min</strong> <FREQ>
+  new minimum CPU frequency the governor may select.</p>
+</li>
+<li>
+<p><strong>-u --max</strong> <FREQ>
+  new maximum CPU frequency the governor may select.</p>
+</li>
+<li>
+<p><strong>-g --governor</strong> <GOV>
+  new cpufreq governor.</p>
+</li>
+<li>
+<p><strong>-f --freq</strong> <FREQ>
+  specific frequency to be set. Requires userspace governor to be available and loaded.</p>
+</li>
+<li>
+<p><strong>-r --related</strong>
+  modify all hardware-related CPUs at the same time</p>
+</li>
+<li>
+<p><strong>-h --help</strong>
+  Prints out the help screen.</p>
+</li>
+</ul>
+<p>因为服务器上核数比较多，可通过以下名为<code>cpufreq-set-all</code>的shell脚本方便的设置全部CPU核。</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+
+<span class="k">for</span> i in <span class="o">{</span><span class="m">0</span>..23<span class="o">}</span><span class="p">;</span> <span class="k">do</span>
+    cpufreq-set -c <span class="nv">$i</span> <span class="nv">$@</span> 
+<span class="k">done</span>
+</pre></div>
+
+
+<p><strong>-f</strong> 选项要求使用 <code>userspace</code> 调频器，使用下面的命令把所有CPU核的调频器都设置为 userspace 。</p>
+<div class="highlight"><pre><span></span><span class="c1"># cpufreq-set-all -g userspace</span>
+</pre></div>
+
+
+<p>手动设定CPU的运行频率，注意，频率值必须是 <code>scaling_available_frequencies</code>中列出的。</p>
+<div class="highlight"><pre><span></span><span class="c1"># cpufreq-set-all -f 2.0Ghz</span>
+</pre></div>
+
+
+<h3>负载</h3>
+<p>由于服务器无图形界面，使用了stress作为负载，stress 可以进行综合（内存占用、磁盘 IO）压力测试，可以反映典型用途下的服务器负载情况。</p>
+<p>安装 stress</p>
+<div class="highlight"><pre><span></span><span class="c1"># aptitude install stress</span>
+</pre></div>
+
+
+<p>产生24个cpu进程，对应服务器的总核数，可以确保100%跑满服务器CPU全部负载。</p>
+<div class="highlight"><pre><span></span><span class="c1"># stress -c 24</span>
+</pre></div>
+
+
+<h2>结果</h2>
+<p>如视频 1600Mhz.mp4、2000Mhz.mp4、2400Mhz.mp4 所示，实验选取了 1.6Ghz、2.0Ghz、2.4Ghz 三组CPU工作频率，对应的服务器整机功率如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th align="center">CPU频率</th>
+<th align="center">CPU满载整机功率</th>
+<th align="center">CPU空载整机功率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">1.6Ghz</td>
+<td align="center">575W</td>
+<td align="center">507W</td>
+</tr>
+<tr>
+<td align="center">2.0Ghz</td>
+<td align="center">612W</td>
+<td align="center">519W</td>
+</tr>
+<tr>
+<td align="center">2.4Ghz</td>
+<td align="center">652W</td>
+<td align="center">507W</td>
+</tr>
+</tbody>
+</table>
+<p>这里的功耗是整机功耗，受磁盘、主板等的功耗影响，其实可以通过 <code>RAPL</code> 单独读取 CPU 的功耗。</p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://blog.chih.me/tag/linux.html">linux</a>
+      <a href="https://blog.chih.me/tag/cpufreq.html">cpufreq</a>
+      <a href="https://blog.chih.me/tag/cpu.html">CPU</a>
+      <a href="https://blog.chih.me/tag/power.html">power</a>
+    </p>
+  </div>
+
+
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'chihsblog';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+</article>
+
+    <footer>
+<p>&copy; chih </p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-61054351-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " chih's blog ",
+  "url" : "https://blog.chih.me",
+  "image": "",
+  "description": ""
+}
+</script>
+  
+</body>
+</html>
