@@ -1,0 +1,400 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/pygments/github.min.css">
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/font-awesome/css/font-awesome.min.css">
+
+
+    <link href="https://blog.chih.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="chih's blog Atom">
+
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+<meta name="author" content="chih" />
+<meta name="description" content="Energy measurements in Linux RAPL RAPL provides a set of counters providing energy and power consumption information. RAPL is not an analog power meter, but rather uses a software power model. This software power model estimates energy usage by using hardware performance counters and I/O models. Based on our …" />
+<meta name="keywords" content="linux, intel, CPU, power, kernel, rapl">
+<meta property="og:site_name" content="chih's blog"/>
+<meta property="og:title" content="Energy measurements in Linux"/>
+<meta property="og:description" content="Energy measurements in Linux RAPL RAPL provides a set of counters providing energy and power consumption information. RAPL is not an analog power meter, but rather uses a software power model. This software power model estimates energy usage by using hardware performance counters and I/O models. Based on our …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://blog.chih.me/read-cpu-power-with-RAPL.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2017-01-31 00:00:00+08:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://blog.chih.me/author/chih.html">
+<meta property="article:section" content="Tech"/>
+<meta property="article:tag" content="linux"/>
+<meta property="article:tag" content="intel"/>
+<meta property="article:tag" content="CPU"/>
+<meta property="article:tag" content="power"/>
+<meta property="article:tag" content="kernel"/>
+<meta property="article:tag" content="rapl"/>
+<meta property="og:image" content="">
+
+  <title>chih's blog &ndash; Energy measurements in Linux</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://blog.chih.me">
+        <img src="https://blog.chih.me/theme/img/profile.png" alt="" title="">
+      </a>
+      <h1><a href="https://blog.chih.me"></a></h1>
+
+
+      <nav>
+        <ul class="list">
+          <li><a href="https://blog.chih.me/pages/about-me.html#about-me">About Me</a></li>
+
+          <li><a href="http://www.hjk.im/" target="_blank">HJK</a></li>
+          <li><a href="http://imis.me/" target="_blank">记忆反射弧</a></li>
+          <li><a href="http://mijack.github.io/" target="_blank">mijack</a></li>
+        </ul>
+      </nav>
+
+      <ul class="social">
+      </ul>
+    </div>
+
+
+  </aside>
+  <main>
+
+
+<article class="single">
+  <header>
+    <h1 id="read-cpu-power-with-RAPL">Energy measurements in Linux</h1>
+    <p>
+          Posted on Tue 31 January 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+    </p>
+  </header>
+
+
+  <div>
+    <h2>Energy measurements in Linux</h2>
+<h3>RAPL</h3>
+<p>RAPL provides a set of counters providing energy and power consumption information. RAPL is not an analog power meter, but rather uses a software power model. This software power model estimates energy usage by using hardware performance counters and I/O models. Based on our measurements, they match actual power measurements.</p>
+<ul>
+<li>The processor has one or more <em>packages</em>. These are part of the actual processor that you buy from Intel. Client processors (e.g. Core i3/i5/i7) have one package. Server processors (e.g. Xeon) typically have two or more packages.</li>
+<li>Each package contains multiple <em>cores</em>.</li>
+<li>Each core typically has hyper-threading, which means it contains two logical <em>CPUs</em>.</li>
+<li>The part of the package outside the cores is called the <em>uncore</em> our <em>system agent</em>. It includes various components including the L3 cache, memory controller, and, for processors that have one, the integrated GPU.</li>
+<li>RAM is separate from the processor.</li>
+</ul>
+<p><img alt="power-planes" src="images/power-planes.jpg"></p>
+<p>Recent (Sandy Bridge and later) Intel processors that implement the <em>RAPL</em> (Running Average Power Limit) interface that provides MSRs containing energy consumption estimates for up to four <em>power planes</em> or <em>domains</em> of a machine, as seen in the diagram above.</p>
+<ul>
+<li>PKG: The entire package.</li>
+<li>PP0: The cores.</li>
+<li>PP1: An uncore device, usually the GPU (not available on all processor models.)</li>
+<li>DRAM: main memory (not available on all processor models.)</li>
+</ul>
+<p>The following relationship holds: PP0 + PP1 &lt;= PKG. DRAM is independent of the other three domains.</p>
+<p>Tools that can take RAPL readings include the following.</p>
+<ul>
+<li><code>mozilla_rapl</code>: all planes; Linux and Mac.</li>
+<li><code>Intel Power Gadget</code>: PKG and PP0 planes; Windows, Mac and Linux.</li>
+<li><code>perf</code>: all planes; Linux.</li>
+<li><code>turbostat</code>: PKG, PP0 and PP1 planes; Linux.</li>
+<li><code>PAPI</code>: read RAPL events</li>
+</ul>
+<blockquote>
+<p><strong>MSR</strong></p>
+<p>A model-specific register (MSR) is any of various control registers in the x86 instruction set used for debugging, program execution tracing, computer performance monitoring, and toggling certain CPU features.</p>
+</blockquote>
+<p>https://lwn.net/Articles/545745/</p>
+<p>https://01.org/blogs/2014/running-average-power-limit-%E2%80%93-rapl</p>
+<p>https://developer.mozilla.org/en-US/docs/Mozilla/Performance/Power_profiling_overview</p>
+<p>https://access.redhat.com/documentation/zh-CN/Red_Hat_Enterprise_Linux/7/html/Power_Management_Guide/Core_Infrastructure.html</p>
+<h3>mozilla_rapl</h3>
+<p>原先是firefox中的一个性能、功耗分析软件，我去除了与Linux无关的代码，添加了编译脚本，现在可以独立于firefox编译运行。</p>
+<p>https://github.com/chih7/rapl</p>
+<div class="highlight"><pre><span></span><span class="c1"># chih @ archlinux in ~/PMU/firefox_power [18:08:31] C:1</span>
+$ sudo ./rapl
+<span class="o">[</span>sudo<span class="o">]</span> password <span class="k">for</span> chih: 
+    total <span class="nv">W</span> <span class="o">=</span> _pkg_ <span class="o">(</span>cores + _gpu_ + other<span class="o">)</span> + _ram_ W
+<span class="c1">#01  1.90 W =  1.45 ( 0.20 +  0.02 +  1.22) +  0.45 W</span>
+<span class="c1">#02  1.77 W =  1.35 ( 0.11 +  0.03 +  1.21) +  0.42 W</span>
+<span class="c1">#03  1.80 W =  1.39 ( 0.17 +  0.02 +  1.19) +  0.41 W</span>
+<span class="c1">#04  1.87 W =  1.42 ( 0.17 +  0.02 +  1.23) +  0.45 W</span>
+<span class="c1">#05  1.77 W =  1.36 ( 0.16 +  0.02 +  1.19) +  0.41 W</span>
+^C
+<span class="m">13</span> samples taken over a period of <span class="m">13</span>.000 seconds
+
+Distribution of <span class="s1">&#39;total&#39;</span> values:
+            <span class="nv">mean</span> <span class="o">=</span>  <span class="m">1</span>.83 W
+         std <span class="nv">dev</span> <span class="o">=</span>  <span class="m">0</span>.04 W
+  0th <span class="nv">percentile</span> <span class="o">=</span>  <span class="m">1</span>.77 W <span class="o">(</span>min<span class="o">)</span>
+  5th <span class="nv">percentile</span> <span class="o">=</span>  <span class="m">1</span>.77 W
+ 25th <span class="nv">percentile</span> <span class="o">=</span>  <span class="m">1</span>.78 W
+ 50th <span class="nv">percentile</span> <span class="o">=</span>  <span class="m">1</span>.82 W
+ 75th <span class="nv">percentile</span> <span class="o">=</span>  <span class="m">1</span>.86 W
+ 95th <span class="nv">percentile</span> <span class="o">=</span>  <span class="m">1</span>.90 W
+100th <span class="nv">percentile</span> <span class="o">=</span>  <span class="m">1</span>.90 W <span class="o">(</span>max<span class="o">)</span>
+</pre></div>
+
+
+<h3>intel power gadget</h3>
+<div class="highlight"><pre><span></span>$ sudo ./power_gadget -e <span class="m">1000</span> -d <span class="m">10</span> 
+<span class="o">[</span>sudo<span class="o">]</span> password <span class="k">for</span> chih: 
+RAPL not supported, or machine model 406e3 not recognized.
+Init failed!
+</pre></div>
+
+
+<blockquote>
+<p>The power gadget doesn't support your CPU though: the RAPL initialisation code is table-driven, and it doesn't know about Skylake CPUs (or even Broadwell). It only knows about Sandy Bridge, Ivy Bridge and Haswell (and even then, not all Haswell CPUs)...</p>
+</blockquote>
+<p>由于linux下的intel power gadget版本未及时更新，对于新cpu，比如我使用的Skylake架构的cpu，需要打一个补丁。</p>
+<div class="highlight"><pre><span></span>    <span class="c1">//chih</span>
+    <span class="k">case</span> <span class="mh">0x406e0</span><span class="o">:</span> <span class="cm">/* Skylake */</span>
+    <span class="c1">//end</span>
+    <span class="k">case</span> <span class="mh">0x40660</span><span class="o">:</span> <span class="cm">/* Haswell:            0x4066X (Tables 35:11,12,14,17,19) */</span>
+    <span class="k">case</span> <span class="mh">0x40650</span><span class="o">:</span> <span class="cm">/* Haswell:            0x4065X (Tables 35:11,12,14,17,18,19) */</span>
+    <span class="k">case</span> <span class="mh">0x306c0</span><span class="o">:</span> <span class="cm">/* Haswell:            0x306cX (Tables 35:11,12,14,17,19) */</span>
+    <span class="k">case</span> <span class="mh">0x306a0</span><span class="o">:</span> <span class="cm">/* IvyBridge client:   0x306aX (Tables 35:11,12,14) */</span>
+    <span class="k">case</span> <span class="mh">0x206a0</span><span class="o">:</span> <span class="cm">/* SandyBridge client: 0x206aX (Tables 35:11,12) */</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="c1"># chih @ archlinux in ~/PMU/power_gadget [14:38:42] </span>
+$ sudo ./power_gadget -e <span class="m">1000</span> -d <span class="m">10</span> 
+System Time,RDTSC,Elapsed Time <span class="o">(</span>sec<span class="o">)</span>,IA Frequency_0 <span class="o">(</span>MHz<span class="o">)</span>,Processor Power_0 <span class="o">(</span>Watt<span class="o">)</span>,Cumulative Processor Energy_0 <span class="o">(</span>Joules<span class="o">)</span>,Cumulative Processor Energy_0 <span class="o">(</span>mWh<span class="o">)</span>,IA Power_0 <span class="o">(</span>Watt<span class="o">)</span>,Cumulative IA Energy_0 <span class="o">(</span>Joules<span class="o">)</span>,Cumulative IA Energy_0<span class="o">(</span>mWh<span class="o">)</span>,GT Power_0 <span class="o">(</span>Watt<span class="o">)</span>,Cumulative GT Energy_0 <span class="o">(</span>Joules<span class="o">)</span>,Cumulative GT Energy_0<span class="o">(</span>mWh<span class="o">)</span>
+
+......
+
+Total Elapsed Time<span class="o">(</span>sec<span class="o">)=</span><span class="m">10</span>.0297
+
+Total Processor Energy_0<span class="o">(</span>Joules<span class="o">)=</span><span class="m">17</span>.8525
+Total Processor Energy_0<span class="o">(</span>mWh<span class="o">)=</span><span class="m">4</span>.9590
+Average Processor Power_0<span class="o">(</span>Watt<span class="o">)=</span><span class="m">1</span>.7800
+
+Total IA Energy_0<span class="o">(</span>Joules<span class="o">)=</span><span class="m">3</span>.7968
+Total IA Energy_0<span class="o">(</span>mWh<span class="o">)=</span><span class="m">1</span>.0547
+Average IA Power_0<span class="o">(</span>Watt<span class="o">)=</span><span class="m">0</span>.3786
+
+Total GT Energy_0<span class="o">(</span>Joules<span class="o">)=</span><span class="m">40348802750122148682202448929579954083587538418336263106019013328588433891916342955629569820500905624381003637605195948399507838978513675817091564240213448540197430240015810560</span>.0000
+Total GT Energy_0<span class="o">(</span>mWh<span class="o">)=</span><span class="m">11208000763922819273654924813042885804926161178964146820669218906461918837197055882285886611228023711591975233705039549465180590407264871893995315391999381929938313125054906368</span>.0000
+Average GT Power_0<span class="o">(</span>Watt<span class="o">)=</span><span class="m">4022936931619314615522564571277674057729988879436087598206455402730989779423177023450588030905067401122709863565105607495828398364105878169848967030480708805215802925837713408</span>.0000
+
+<span class="nv">TSC</span><span class="o">=</span><span class="m">21411847472916</span>
+</pre></div>
+
+
+<h3>rapl-read</h3>
+<p><a href="http://web.eece.maine.edu/~vweaver/projects/rapl/index.html">http://web.eece.maine.edu/~vweaver/projects/rapl/index.html</a></p>
+<p>There are currently <em>three</em> ways to read RAPL results using the Linux kernel:</p>
+<ol>
+<li>Reading the files under <code>/sys/class/powercap/intel-rapl/intel-rapl:0</code> using the powercap interface. This requires no special permissions, and was introduced in Linux 3.13</li>
+<li>Using the perf_event interface with Linux 3.14 or newer. This requires root or a paranoid less than 1 (as do all system wide measurements with -a) <code>sudo perf stat -a -e "power/energy-cores/" /bin/ls</code> Available events can be found via <code>perf list</code> or under<code>/sys/bus/event_source/devices/power/events/</code></li>
+<li>Using raw-access to the underlying MSRs under <code>/dev/msr</code>. This requires root.</li>
+</ol>
+<p>Not that you cannot get readings for individual processes, the results are for the entire CPU socket. </p>
+<div class="highlight"><pre><span></span><span class="c1"># chih @ archlinux in ~/PMU/uarch-configure/rapl-read on git:master x [14:41:53] </span>
+$ ./rapl-read -s 
+
+RAPL <span class="nb">read</span> -- use -s <span class="k">for</span> sysfs, -p <span class="k">for</span> perf_event, -m <span class="k">for</span> msr
+
+Found Skylake Processor <span class="nb">type</span>
+        <span class="m">0</span> <span class="o">(</span><span class="m">0</span><span class="o">)</span>, <span class="m">1</span> <span class="o">(</span><span class="m">0</span><span class="o">)</span>, <span class="m">2</span> <span class="o">(</span><span class="m">0</span><span class="o">)</span>, <span class="m">3</span> <span class="o">(</span><span class="m">0</span><span class="o">)</span>, 
+        Detected <span class="m">4</span> cores in <span class="m">1</span> packages
+
+
+Trying sysfs powercap interface to gather results
+
+        Sleeping <span class="m">1</span> second
+
+        Package <span class="m">0</span>
+                package-0       : <span class="m">1</span>.606746J
+                core    : <span class="m">0</span>.327941J
+                uncore  : <span class="m">0</span>.040039J
+                dram    : <span class="m">0</span>.481933J
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="c1"># chih @ archlinux in ~/PMU/uarch-configure/rapl-read on git:master x [14:42:28] C:127</span>
+$ sudo ./rapl-read -p 
+
+RAPL <span class="nb">read</span> -- use -s <span class="k">for</span> sysfs, -p <span class="k">for</span> perf_event, -m <span class="k">for</span> msr
+
+Found Skylake Processor <span class="nb">type</span>
+        <span class="m">0</span> <span class="o">(</span><span class="m">0</span><span class="o">)</span>, <span class="m">1</span> <span class="o">(</span><span class="m">0</span><span class="o">)</span>, <span class="m">2</span> <span class="o">(</span><span class="m">0</span><span class="o">)</span>, <span class="m">3</span> <span class="o">(</span><span class="m">0</span><span class="o">)</span>, 
+        Detected <span class="m">4</span> cores in <span class="m">1</span> packages
+
+
+Trying perf_event interface to gather results
+
+        <span class="nv">Event</span><span class="o">=</span>energy-cores <span class="nv">Config</span><span class="o">=</span><span class="m">1</span> <span class="nv">scale</span><span class="o">=</span><span class="m">2</span>.32831e-10 <span class="nv">units</span><span class="o">=</span>Joules 
+        <span class="nv">Event</span><span class="o">=</span>energy-gpu <span class="nv">Config</span><span class="o">=</span><span class="m">4</span> <span class="nv">scale</span><span class="o">=</span><span class="m">2</span>.32831e-10 <span class="nv">units</span><span class="o">=</span>Joules 
+        <span class="nv">Event</span><span class="o">=</span>energy-pkg <span class="nv">Config</span><span class="o">=</span><span class="m">2</span> <span class="nv">scale</span><span class="o">=</span><span class="m">2</span>.32831e-10 <span class="nv">units</span><span class="o">=</span>Joules 
+        <span class="nv">Event</span><span class="o">=</span>energy-ram <span class="nv">Config</span><span class="o">=</span><span class="m">3</span> <span class="nv">scale</span><span class="o">=</span><span class="m">2</span>.32831e-10 <span class="nv">units</span><span class="o">=</span>Joules 
+        <span class="nv">Event</span><span class="o">=</span>energy-psys <span class="nv">Config</span><span class="o">=</span><span class="m">5</span> <span class="nv">scale</span><span class="o">=</span><span class="m">2</span>.32831e-10 <span class="nv">units</span><span class="o">=</span>Joules 
+
+        Sleeping <span class="m">1</span> second
+
+        Package <span class="m">0</span>:
+                energy-cores Energy Consumed: <span class="m">0</span>.364807 Joules
+                energy-gpu Energy Consumed: <span class="m">0</span>.079407 Joules
+                energy-pkg Energy Consumed: <span class="m">1</span>.690308 Joules
+                energy-ram Energy Consumed: <span class="m">0</span>.502747 Joules
+                energy-psys Energy Consumed: <span class="m">5</span>.918152 Joules
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="c1"># chih @ archlinux in ~/PMU/uarch-configure/rapl-read on git:master x [14:43:02] </span>
+$ sudo ./rapl-read -m
+
+RAPL <span class="nb">read</span> -- use -s <span class="k">for</span> sysfs, -p <span class="k">for</span> perf_event, -m <span class="k">for</span> msr
+
+Found Skylake Processor <span class="nb">type</span>
+        <span class="m">0</span> <span class="o">(</span><span class="m">0</span><span class="o">)</span>, <span class="m">1</span> <span class="o">(</span><span class="m">0</span><span class="o">)</span>, <span class="m">2</span> <span class="o">(</span><span class="m">0</span><span class="o">)</span>, <span class="m">3</span> <span class="o">(</span><span class="m">0</span><span class="o">)</span>, 
+        Detected <span class="m">4</span> cores in <span class="m">1</span> packages
+
+
+Trying /dev/msr interface to gather results
+
+        Listing paramaters <span class="k">for</span> package <span class="c1">#0</span>
+                Power <span class="nv">units</span> <span class="o">=</span> <span class="m">0</span>.125W
+                CPU Energy <span class="nv">units</span> <span class="o">=</span> <span class="m">0</span>.00006104J
+                DRAM Energy <span class="nv">units</span> <span class="o">=</span> <span class="m">0</span>.00006104J
+                Time <span class="nv">units</span> <span class="o">=</span> <span class="m">0</span>.00097656s
+
+                Package thermal spec: <span class="m">15</span>.000W
+                Package minimum power: <span class="m">0</span>.000W
+                Package maximum power: <span class="m">0</span>.000W
+                Package maximum <span class="nb">time</span> window: <span class="m">0</span>.000000s
+                Package power limits are unlocked
+                Package power limit <span class="c1">#1: 25.000W for 0.107422s (enabled, clamped)</span>
+                Package power limit <span class="c1">#2: 25.000W for 0.032227s (enabled, not_clamped)</span>
+
+
+        Sleeping <span class="m">1</span> second
+
+        Package <span class="m">0</span>:
+                Package energy: <span class="m">1</span>.657654J
+                PowerPlane0 <span class="o">(</span>cores<span class="o">)</span>: <span class="m">0</span>.353638J
+
+Note: the energy measurements can overflow in 60s or so
+      so try to sample the counters more often than that.
+</pre></div>
+
+
+<h3>rapl_basic</h3>
+<div class="highlight"><pre><span></span><span class="c1"># chih @ archlinux in ~/PMU/papi-5.5.1/src [21:38:11] </span>
+$ ./configure --with-components<span class="o">=</span>rapl <span class="o">&amp;&amp;</span> make <span class="c1"># compile papi</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="c1"># chih @ archlinux in ~/PMU/papi-5.5.1/src/components/rapl/tests [21:39:09] </span>
+$ sudo ./rapl_basic
+Trying all RAPL events
+Found rapl component at cid <span class="m">2</span>
+
+Starting measurements...
+
+Sleeping <span class="m">1</span> second...
+
+Stopping measurements, took <span class="m">1</span>.000s, gathering results...
+
+Scaled energy measurements:
+rapl:::PACKAGE_ENERGY:PACKAGE0              <span class="m">1</span>.150513 J  <span class="o">(</span>Average Power <span class="m">1</span>.2W<span class="o">)</span>
+rapl:::DRAM_ENERGY:PACKAGE0                 <span class="m">0</span>.640137 J  <span class="o">(</span>Average Power <span class="m">0</span>.6W<span class="o">)</span>
+rapl:::PP0_ENERGY:PACKAGE0                  <span class="m">0</span>.379883 J  <span class="o">(</span>Average Power <span class="m">0</span>.4W<span class="o">)</span>
+
+Energy measurement counts:
+rapl:::PACKAGE_ENERGY_CNT:PACKAGE0             <span class="m">18850</span>    0x0049a2
+rapl:::DRAM_ENERGY_CNT:PACKAGE0                <span class="m">10488</span>    0x0028f8
+rapl:::PP0_ENERGY_CNT:PACKAGE0                  <span class="m">6223</span>    0x00184f
+
+Scaled Fixed values:
+rapl:::THERMAL_SPEC:PACKAGE0                  <span class="m">15</span>.000 W
+rapl:::MINIMUM_POWER:PACKAGE0                  <span class="m">0</span>.000 W
+rapl:::MAXIMUM_POWER:PACKAGE0                  <span class="m">0</span>.000 W
+rapl:::MAXIMUM_TIME_WINDOW:PACKAGE0            <span class="m">0</span>.000 s
+
+Fixed value counts:
+rapl:::THERMAL_SPEC_CNT:PACKAGE0                 <span class="m">120</span>    0x000078
+rapl:::MINIMUM_POWER_CNT:PACKAGE0                  <span class="m">0</span>    <span class="m">00000000</span>
+rapl:::MAXIMUM_POWER_CNT:PACKAGE0                  <span class="m">0</span>    <span class="m">00000000</span>
+rapl:::MAXIMUM_TIME_WINDOW_CNT:PACKAGE0            <span class="m">0</span>    <span class="m">00000000</span>
+rapl_basic.c                           PASSED
+</pre></div>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://blog.chih.me/tag/linux.html">linux</a>
+      <a href="https://blog.chih.me/tag/intel.html">intel</a>
+      <a href="https://blog.chih.me/tag/cpu.html">CPU</a>
+      <a href="https://blog.chih.me/tag/power.html">power</a>
+      <a href="https://blog.chih.me/tag/kernel.html">kernel</a>
+      <a href="https://blog.chih.me/tag/rapl.html">rapl</a>
+    </p>
+  </div>
+
+
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'chihsblog';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+</article>
+
+    <footer>
+<p>&copy; chih </p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-61054351-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " chih's blog ",
+  "url" : "https://blog.chih.me",
+  "image": "",
+  "description": ""
+}
+</script>
+  
+</body>
+</html>
