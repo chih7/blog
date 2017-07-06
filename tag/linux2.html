@@ -69,6 +69,39 @@
 
 <article>
   <header>
+    <h2><a href="https://blog.chih.me/socks-for-minecraft.html#socks-for-minecraft">为MineCraft启动器挂上代理</a></h2>
+    <p>
+          Posted on Sat 14 March 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/java.html">Java</a>,              <a href="https://blog.chih.me/tag/minecraft.html">Minecraft</a>,              <a href="https://blog.chih.me/tag/shadowsocks.html">shadowsocks</a>,              <a href="https://blog.chih.me/tag/dai-li.html">代理</a>
+    </p>
+  </header>
+  <div>
+      <p><code>MineCraft</code>官方启动器在启动的时候会从以下地址获取更新:</p>
+<div class="highlight"><pre><span></span>https://s3.amazonaws.com/Minecraft.Download/launcher/launcher.pack.lzma
+</pre></div>
+
+
+<p>如你所见，用的是Amazon EC2，Amazon AWS云服务，这两个服务在国内都是部分被屏蔽的。</p>
+<p>但是如果你有shadowsocks等socks代理的话是可以给<code>MineCraft</code>挂上代理的，虽然官方启动器并未提供代理设置。</p>
+<p>我在这里用的是<code>java</code>提供的代理选项:</p>
+<div class="highlight"><pre><span></span>$ java -DsocksProxyHost<span class="o">=</span><span class="m">127</span>.0.0.1 -DsocksProxyPort<span class="o">=</span><span class="m">1080</span> -jar ~/.minecraft/Minecraft.jar
+</pre></div>
+
+
+<p>这样子打开<code>MineCraft</code>启动器就可以很快的登录、更新、下游戏了。但需要注意的是你通过启动器打开<code>Minecraft</code>游戏本体之后，游戏是不走代理的。</p>
+<p>-EOF-</p>
+      <br>
+      <a class="btn" href="https://blog.chih.me/socks-for-minecraft.html#socks-for-minecraft">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://blog.chih.me/Compiler-WizNote-in-openSUSE.html#Compiler-WizNote-in-openSUSE">在openSUSE上编译WizNote(为知笔记)</a></h2>
     <p>
           Posted on Wed 11 March 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
@@ -293,33 +326,13 @@ ip：192.168.56.103 192.168.56.104</p>
       <a class="btn" href="https://blog.chih.me/ubuntutu-ran-chu-xian-da-kai-xi-tong-she-zhi-man-sudoshi-chu-xian-wu-fa-jie-xi-zhu-ji-de-jie-jue-ban-fa.html#ubuntutu-ran-chu-xian-da-kai-xi-tong-she-zhi-man-sudoshi-chu-xian-wu-fa-jie-xi-zhu-ji-de-jie-jue-ban-fa">    Continue reading
 </a>
   </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://blog.chih.me/virtualboxzhu-ji-fang-wen-xu-ni-ji.html#virtualboxzhu-ji-fang-wen-xu-ni-ji">virtualbox主机访问虚拟机</a></h2>
-    <p>
-          Posted on Sun 02 March 2014 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
-
-
-          &#8226;     Tagged with
-
-              <a href="https://blog.chih.me/tag/hosts.html">Hosts</a>,              <a href="https://blog.chih.me/tag/virtualbox.html">virtualbox</a>,              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/wang-luo.html">网络</a>
-    </p>
-  </header>
-  <div>
-      <p>在<code>virtualbox</code>中，如果选择默认的网卡设置，也就是网络地址转换(NAT)，是不能让宿主机访问到虚拟机的，如果想让两者相互连通，可以在保留默认的<code>NAT</code>网卡的基础上增加一张<code>Host-Only</code>的网卡。</p>
-<p><img alt="NAT" src="https://blog.chih.me/images/58081e7f-677a-47f9-8fc5-a7ec0435e7b1.png"></p>
-<p><img alt="Host-Only" src="https://blog.chih.me/images/7695d614d15ad02edfd564e4b32810fc.png"></p>
-<p>需要注意的是，如果你的宿主机是Linux的话，安装virtualbox后是没有一张Host-Only的网卡的，你需要在virtualbox的设置里添加这张网卡。</p>
-<p><img alt="add-Host-Only" src="https://blog.chih.me/images/snapshot2.png"></p>
-      <br>
-      <a class="btn" href="https://blog.chih.me/virtualboxzhu-ji-fang-wen-xu-ni-ji.html#virtualboxzhu-ji-fang-wen-xu-ni-ji">    Continue reading
-</a>
-  </div>
 </article>
 
   <div class="pagination">
+    <a class="btn float-left" href="https://blog.chih.me/tag/linux3.html">
+      <i class="fa fa-angle-left"></i>     Older Posts
+
+    </a>
     <a class="btn float-right" href="https://blog.chih.me/tag/linux.html">
           Newer Posts
  <i class="fa fa-angle-right"></i>

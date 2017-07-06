@@ -69,6 +69,37 @@
 
 <article>
   <header>
+    <h2><a href="https://blog.chih.me/ubuntutu-ran-chu-xian-da-kai-xi-tong-she-zhi-man-sudoshi-chu-xian-wu-fa-jie-xi-zhu-ji-de-jie-jue-ban-fa.html#ubuntutu-ran-chu-xian-da-kai-xi-tong-she-zhi-man-sudoshi-chu-xian-wu-fa-jie-xi-zhu-ji-de-jie-jue-ban-fa">ubuntu突然出现打开系统设置慢 sudo时出现无法解析主机的解决办法</a></h2>
+    <p>
+          Posted on Sun 06 April 2014 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/hosts.html">Hosts</a>,              <a href="https://blog.chih.me/tag/ubuntu.html">ubuntu</a>,              <a href="https://blog.chih.me/tag/linux.html">linux</a>
+    </p>
+  </header>
+  <div>
+      <p>突然间发现我的<code>ubuntu12.04</code>打开系统设置变得非常慢，正不知如何解决的时候。发现sudo时出现“无法解析的主机 XXXX" 的提示。马上就联想到不久前改过hosts，原来是主机名无法解析了，这样问题就好解决了</p>
+<div class="highlight"><pre><span></span>$ sudo vim /etc/hosts
+</pre></div>
+
+
+<p>加入以下行</p>
+<div class="highlight"><pre><span></span>127.0.0.1       （你现在的主机名）
+127.0.1.1       （你现在的主机名）
+</pre></div>
+
+
+<p>之后 打开系统设置就非常快了</p>
+      <br>
+      <a class="btn" href="https://blog.chih.me/ubuntutu-ran-chu-xian-da-kai-xi-tong-she-zhi-man-sudoshi-chu-xian-wu-fa-jie-xi-zhu-ji-de-jie-jue-ban-fa.html#ubuntutu-ran-chu-xian-da-kai-xi-tong-she-zhi-man-sudoshi-chu-xian-wu-fa-jie-xi-zhu-ji-de-jie-jue-ban-fa">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://blog.chih.me/virtualboxzhu-ji-fang-wen-xu-ni-ji.html#virtualboxzhu-ji-fang-wen-xu-ni-ji">virtualbox主机访问虚拟机</a></h2>
     <p>
           Posted on Sun 02 March 2014 in <a href="https://blog.chih.me/category/tech.html">Tech</a>

@@ -69,6 +69,47 @@
 
 <article>
   <header>
+    <h2><a href="https://blog.chih.me/vldb-downloader.html#vldb-downloader">抓取网页中所有PDF链接并下载的Python脚本</a></h2>
+    <p>
+          Posted on Wed 05 July 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/python.html">python</a>,              <a href="https://blog.chih.me/tag/crawler.html">crawler</a>
+    </p>
+  </header>
+  <div>
+      <h3>说点什么</h3>
+<p>没什么好说的，工具脚本，代码都在下面，可能改一下后可以适用于其他地方。</p>
+<h3>代码</h3>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jul  6 11:04:53 2017</span>
+
+<span class="sd">@author: chih</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">BASE_URL</span> <span class="o">=</span> <span class="s1">&#39;http://www.vldb.org/pvldb/vol10.html&#39;</span>
+
+<span class="k">class</span> <span class="nc">VldbCrawler</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="n">BASE_URL</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="n">base_url</span>
+
+    <span class="k">def</span> <span class="nf">fetch_download_link</span><span class="p">(</span><span class="bp">self …</span></pre></div>
+      <br>
+      <a class="btn" href="https://blog.chih.me/vldb-downloader.html#vldb-downloader">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://blog.chih.me/read-cpu-power-with-RAPL.html#read-cpu-power-with-RAPL">Energy measurements in Linux</a></h2>
     <p>
           Posted on Tue 31 January 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
@@ -262,32 +303,6 @@
 <p>$ aria2c http …</p></li></ul>
       <br>
       <a class="btn" href="https://blog.chih.me/download-use-aria2.html#download-use-aria2">    Continue reading
-</a>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://blog.chih.me/fixbug-grub2-in-archlinux.html#fixbug-grub2-in-archlinux">Arch Linux 修复grub2 引导过程中的花屏</a></h2>
-    <p>
-          Posted on Sun 15 March 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
-
-
-          &#8226;     Tagged with
-
-              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/grub2.html">grub2</a>
-    </p>
-  </header>
-  <div>
-      <p>前几天 <code>opensuse 13.2</code> 被我强关了几次，结果用 <code>XFS</code> 挂载的 <code>/home</code> 每次都丢文件， 这样实在是让人难以安心，再加上opensuse 的一些操作始终感觉有些麻烦，官方仓库的软件也少。种种不便之处， 让我想起以前用 <code>Arch Linux</code>时的舒心，于是备份重装。所有的文件系统用了 <code>Ext4</code>(opensuse 上的<code>Btrfs</code>的确先进，但很多功能我也没怎么去用)。</p>
-<p>​<code>Arch Linux</code>的安装过程先略去不表。安装基本系统和<code>KDE</code>都没有发现问题，但安装完基本系统重启的时候就发现有个小问题了喵。</p>
-<div class="highlight"><pre><span></span>从BIOS自检完成到桌面启动直接的那段过程中屏幕一直都是花的，就是那种黑白电视机雪花屏的样子。
-</pre></div>
-
-
-<p>这只是一个小问题，反正进入桌面之后就没影响了，但对于强迫症患者真是太难受了啊! 于是去Google找解决方案，翻了几页之后还真的被我找到类似的问题了—— <a href="https://forum.suse.org.cn/viewtopic.php?f=2&amp;t=2365">https://forum.suse.org.cn/viewtopic.php?f=2 …</a></p>
-      <br>
-      <a class="btn" href="https://blog.chih.me/fixbug-grub2-in-archlinux.html#fixbug-grub2-in-archlinux">    Continue reading
 </a>
   </div>
 </article>

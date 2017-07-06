@@ -32,7 +32,7 @@
 <meta property="og:locale" content="en_US"/>
 <meta property="og:url" content="https://blog.chih.me"/>
 
-  <title>chih's blog &ndash;     Tag Python
+  <title>chih's blog &ndash;     Tag python
 </title>
 
 </head>
@@ -67,6 +67,47 @@
 
 
 
+<article>
+  <header>
+    <h2><a href="https://blog.chih.me/vldb-downloader.html#vldb-downloader">抓取网页中所有PDF链接并下载的Python脚本</a></h2>
+    <p>
+          Posted on Wed 05 July 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/python.html">python</a>,              <a href="https://blog.chih.me/tag/crawler.html">crawler</a>
+    </p>
+  </header>
+  <div>
+      <h3>说点什么</h3>
+<p>没什么好说的，工具脚本，代码都在下面，可能改一下后可以适用于其他地方。</p>
+<h3>代码</h3>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jul  6 11:04:53 2017</span>
+
+<span class="sd">@author: chih</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">BASE_URL</span> <span class="o">=</span> <span class="s1">&#39;http://www.vldb.org/pvldb/vol10.html&#39;</span>
+
+<span class="k">class</span> <span class="nc">VldbCrawler</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="n">BASE_URL</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="n">base_url</span>
+
+    <span class="k">def</span> <span class="nf">fetch_download_link</span><span class="p">(</span><span class="bp">self …</span></pre></div>
+      <br>
+      <a class="btn" href="https://blog.chih.me/vldb-downloader.html#vldb-downloader">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
 <article>
   <header>
     <h2><a href="https://blog.chih.me/use-SymPy-get-max-effectiveness-of-ALOHA.html#use-SymPy-get-max-effectiveness-of-ALOHA">使用Python求解分隙ALOHA最大效率</a></h2>

@@ -69,6 +69,47 @@
 
 <article>
   <header>
+    <h2><a href="https://blog.chih.me/vldb-downloader.html#vldb-downloader">抓取网页中所有PDF链接并下载的Python脚本</a></h2>
+    <p>
+          Posted on Wed 05 July 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/python.html">python</a>,              <a href="https://blog.chih.me/tag/crawler.html">crawler</a>
+    </p>
+  </header>
+  <div>
+      <h3>说点什么</h3>
+<p>没什么好说的，工具脚本，代码都在下面，可能改一下后可以适用于其他地方。</p>
+<h3>代码</h3>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jul  6 11:04:53 2017</span>
+
+<span class="sd">@author: chih</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">BASE_URL</span> <span class="o">=</span> <span class="s1">&#39;http://www.vldb.org/pvldb/vol10.html&#39;</span>
+
+<span class="k">class</span> <span class="nc">VldbCrawler</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="n">BASE_URL</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="n">base_url</span>
+
+    <span class="k">def</span> <span class="nf">fetch_download_link</span><span class="p">(</span><span class="bp">self …</span></pre></div>
+      <br>
+      <a class="btn" href="https://blog.chih.me/vldb-downloader.html#vldb-downloader">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://blog.chih.me/read-cpu-power-with-RAPL.html#read-cpu-power-with-RAPL">Energy measurements in Linux</a></h2>
     <p>
           Posted on Tue 31 January 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
@@ -246,39 +287,6 @@
 <p>这只是一个小问题，反正进入桌面之后就没影响了，但对于强迫症患者真是太难受了啊! 于是去Google找解决方案，翻了几页之后还真的被我找到类似的问题了—— <a href="https://forum.suse.org.cn/viewtopic.php?f=2&amp;t=2365">https://forum.suse.org.cn/viewtopic.php?f=2 …</a></p>
       <br>
       <a class="btn" href="https://blog.chih.me/fixbug-grub2-in-archlinux.html#fixbug-grub2-in-archlinux">    Continue reading
-</a>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://blog.chih.me/socks-for-minecraft.html#socks-for-minecraft">为MineCraft启动器挂上代理</a></h2>
-    <p>
-          Posted on Sat 14 March 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
-
-
-          &#8226;     Tagged with
-
-              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/java.html">Java</a>,              <a href="https://blog.chih.me/tag/minecraft.html">Minecraft</a>,              <a href="https://blog.chih.me/tag/shadowsocks.html">shadowsocks</a>,              <a href="https://blog.chih.me/tag/dai-li.html">代理</a>
-    </p>
-  </header>
-  <div>
-      <p><code>MineCraft</code>官方启动器在启动的时候会从以下地址获取更新:</p>
-<div class="highlight"><pre><span></span>https://s3.amazonaws.com/Minecraft.Download/launcher/launcher.pack.lzma
-</pre></div>
-
-
-<p>如你所见，用的是Amazon EC2，Amazon AWS云服务，这两个服务在国内都是部分被屏蔽的。</p>
-<p>但是如果你有shadowsocks等socks代理的话是可以给<code>MineCraft</code>挂上代理的，虽然官方启动器并未提供代理设置。</p>
-<p>我在这里用的是<code>java</code>提供的代理选项:</p>
-<div class="highlight"><pre><span></span>$ java -DsocksProxyHost<span class="o">=</span><span class="m">127</span>.0.0.1 -DsocksProxyPort<span class="o">=</span><span class="m">1080</span> -jar ~/.minecraft/Minecraft.jar
-</pre></div>
-
-
-<p>这样子打开<code>MineCraft</code>启动器就可以很快的登录、更新、下游戏了。但需要注意的是你通过启动器打开<code>Minecraft</code>游戏本体之后，游戏是不走代理的。</p>
-<p>-EOF-</p>
-      <br>
-      <a class="btn" href="https://blog.chih.me/socks-for-minecraft.html#socks-for-minecraft">    Continue reading
 </a>
   </div>
 </article>

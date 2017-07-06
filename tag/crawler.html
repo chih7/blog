@@ -32,7 +32,7 @@
 <meta property="og:locale" content="en_US"/>
 <meta property="og:url" content="https://blog.chih.me"/>
 
-  <title>chih's blog &ndash;     Archives
+  <title>chih's blog &ndash;     Tag crawler
 </title>
 
 </head>
@@ -65,50 +65,54 @@
   <main>
 
 
-<article class="single">
+
+
+<article>
   <header>
-    <h1>    Archives
-</h1>
+    <h2><a href="https://blog.chih.me/vldb-downloader.html#vldb-downloader">抓取网页中所有PDF链接并下载的Python脚本</a></h2>
+    <p>
+          Posted on Wed 05 July 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/python.html">python</a>,              <a href="https://blog.chih.me/tag/crawler.html">crawler</a>
+    </p>
   </header>
   <div>
-    <dl>
-      <dt>Wed 05 July 2017</dt>
-      <dd><a href="https://blog.chih.me/vldb-downloader.html">抓取网页中所有PDF链接并下载的Python脚本</a></dd>
-      <dt>Tue 31 January 2017</dt>
-      <dd><a href="https://blog.chih.me/read-cpu-power-with-RAPL.html">Energy measurements in Linux</a></dd>
-      <dt>Sun 25 December 2016</dt>
-      <dd><a href="https://blog.chih.me/power-with-different-cpufreq.html">Ubuntu 16.04 下 CPU 频率与功耗关系</a></dd>
-      <dt>Mon 21 November 2016</dt>
-      <dd><a href="https://blog.chih.me/global-proxy-within-redsocks-and-shadowsocks.html">使用redsocks把shadowsocks转为全局代理</a></dd>
-      <dt>Mon 17 October 2016</dt>
-      <dd><a href="https://blog.chih.me/chang-openwtr-ppoe-password.html">使用LuCI的RPC接口修改openwrt配置</a></dd>
-      <dt>Sat 08 October 2016</dt>
-      <dd><a href="https://blog.chih.me/use-SymPy-get-max-effectiveness-of-ALOHA.html">使用Python求解分隙ALOHA最大效率</a></dd>
-      <dt>Mon 01 June 2015</dt>
-      <dd><a href="https://blog.chih.me/64.html">无题</a></dd>
-      <dt>Tue 31 March 2015</dt>
-      <dd><a href="https://blog.chih.me/download-use-aria2.html">我的硬盘不可能这么空~aria2篇</a></dd>
-      <dt>Sun 15 March 2015</dt>
-      <dd><a href="https://blog.chih.me/fixbug-grub2-in-archlinux.html">Arch Linux 修复grub2 引导过程中的花屏</a></dd>
-      <dt>Sat 14 March 2015</dt>
-      <dd><a href="https://blog.chih.me/socks-for-minecraft.html">为MineCraft启动器挂上代理</a></dd>
-      <dt>Wed 11 March 2015</dt>
-      <dd><a href="https://blog.chih.me/Compiler-WizNote-in-openSUSE.html">在openSUSE上编译WizNote(为知笔记)</a></dd>
-      <dt>Mon 02 March 2015</dt>
-      <dd><a href="https://blog.chih.me/use-USB-in-virtualbox-at-openSUSE.html">解决在opensuse下virtualbox无法挂载主机USB设备的问题</a></dd>
-      <dt>Sun 22 February 2015</dt>
-      <dd><a href="https://blog.chih.me/storm-starter.html">在实时计算框架Storm集群上运行Storm-Starter例子</a></dd>
-      <dt>Fri 20 February 2015</dt>
-      <dd><a href="https://blog.chih.me/Setting-up-a-Storm-Cluster-in-3-machines.html">实时计算框架Storm集群搭建</a></dd>
-      <dt>Mon 02 February 2015</dt>
-      <dd><a href="https://blog.chih.me/Setting-up-a-Storm-Cluster.html">实时计算框架Storm本地模式搭建</a></dd>
-      <dt>Sun 06 April 2014</dt>
-      <dd><a href="https://blog.chih.me/ubuntutu-ran-chu-xian-da-kai-xi-tong-she-zhi-man-sudoshi-chu-xian-wu-fa-jie-xi-zhu-ji-de-jie-jue-ban-fa.html">ubuntu突然出现打开系统设置慢 sudo时出现无法解析主机的解决办法</a></dd>
-      <dt>Sun 02 March 2014</dt>
-      <dd><a href="https://blog.chih.me/virtualboxzhu-ji-fang-wen-xu-ni-ji.html">virtualbox主机访问虚拟机</a></dd>
-    </dl>
+      <h3>说点什么</h3>
+<p>没什么好说的，工具脚本，代码都在下面，可能改一下后可以适用于其他地方。</p>
+<h3>代码</h3>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jul  6 11:04:53 2017</span>
+
+<span class="sd">@author: chih</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">BASE_URL</span> <span class="o">=</span> <span class="s1">&#39;http://www.vldb.org/pvldb/vol10.html&#39;</span>
+
+<span class="k">class</span> <span class="nc">VldbCrawler</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="n">BASE_URL</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="n">base_url</span>
+
+    <span class="k">def</span> <span class="nf">fetch_download_link</span><span class="p">(</span><span class="bp">self …</span></pre></div>
+      <br>
+      <a class="btn" href="https://blog.chih.me/vldb-downloader.html#vldb-downloader">    Continue reading
+</a>
   </div>
 </article>
+
+  <div class="pagination">
+  </div>
+
+
+
 
     <footer>
 <p>&copy; chih </p>

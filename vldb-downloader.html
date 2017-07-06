@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/pygments/github.min.css">
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/font-awesome/css/font-awesome.min.css">
+
+
+    <link href="https://blog.chih.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="chih's blog Atom">
+
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+<meta name="author" content="chih" />
+<meta name="description" content="说点什么 没什么好说的，工具脚本，代码都在下面，可能改一下后可以适用于其他地方。 代码 #!/usr/bin/env python3 # -*- coding: utf-8 -*- """ Created on Thu Jul 6 11:04:53 2017 @author: chih """ from bs4 import BeautifulSoup import requests BASE_URL = 'http://www.vldb.org/pvldb/vol10.html' class VldbCrawler: def __init__(self, base_url=BASE_URL): self.base_url = base_url def fetch_download_link(self …" />
+<meta name="keywords" content="linux, python, crawler">
+<meta property="og:site_name" content="chih's blog"/>
+<meta property="og:title" content="抓取网页中所有PDF链接并下载的Python脚本"/>
+<meta property="og:description" content="说点什么 没什么好说的，工具脚本，代码都在下面，可能改一下后可以适用于其他地方。 代码 #!/usr/bin/env python3 # -*- coding: utf-8 -*- """ Created on Thu Jul 6 11:04:53 2017 @author: chih """ from bs4 import BeautifulSoup import requests BASE_URL = 'http://www.vldb.org/pvldb/vol10.html' class VldbCrawler: def __init__(self, base_url=BASE_URL): self.base_url = base_url def fetch_download_link(self …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://blog.chih.me/vldb-downloader.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2017-07-05 00:00:00+08:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://blog.chih.me/author/chih.html">
+<meta property="article:section" content="Tech"/>
+<meta property="article:tag" content="linux"/>
+<meta property="article:tag" content="python"/>
+<meta property="article:tag" content="crawler"/>
+<meta property="og:image" content="">
+
+  <title>chih's blog &ndash; 抓取网页中所有PDF链接并下载的Python脚本</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://blog.chih.me">
+        <img src="https://blog.chih.me/theme/img/profile.png" alt="" title="">
+      </a>
+      <h1><a href="https://blog.chih.me"></a></h1>
+
+
+      <nav>
+        <ul class="list">
+          <li><a href="https://blog.chih.me/pages/about-me.html#about-me">About Me</a></li>
+
+          <li><a href="http://www.hjk.im/" target="_blank">HJK</a></li>
+          <li><a href="http://imis.me/" target="_blank">记忆反射弧</a></li>
+          <li><a href="http://mijack.github.io/" target="_blank">mijack</a></li>
+          <li><a href="http://datahcong.cn/" target="_blank">whl的博客园</a></li>
+        </ul>
+      </nav>
+
+      <ul class="social">
+      </ul>
+    </div>
+
+
+  </aside>
+  <main>
+
+
+<article class="single">
+  <header>
+    <h1 id="vldb-downloader">抓取网页中所有PDF链接并下载的Python脚本</h1>
+    <p>
+          Posted on Wed 05 July 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+    </p>
+  </header>
+
+
+  <div>
+    <h3>说点什么</h3>
+<p>没什么好说的，工具脚本，代码都在下面，可能改一下后可以适用于其他地方。</p>
+<h3>代码</h3>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jul  6 11:04:53 2017</span>
+
+<span class="sd">@author: chih</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">BASE_URL</span> <span class="o">=</span> <span class="s1">&#39;http://www.vldb.org/pvldb/vol10.html&#39;</span>
+
+<span class="k">class</span> <span class="nc">VldbCrawler</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="n">BASE_URL</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="n">base_url</span>
+
+    <span class="k">def</span> <span class="nf">fetch_download_link</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">BASE_URL</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">page</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;lxml&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">findAll</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+        <span class="n">pdf_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="p">{</span><span class="n">i</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">i</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;href&#39;</span><span class="p">]},</span> <span class="n">a</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">pdf_map</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;.pdf&quot;</span> <span class="ow">in</span> <span class="n">pdf_map</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="ow">and</span> <span class="s2">&quot;www.vldb.org&quot;</span> <span class="ow">in</span> <span class="n">pdf_map</span><span class="p">[</span><span class="n">item</span><span class="p">]:</span>
+                <span class="n">pdf_r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pdf_map</span><span class="p">[</span><span class="n">item</span><span class="p">])</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">item</span> <span class="o">+</span> <span class="s2">&quot;.pdf&quot;</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pdf_file</span><span class="p">:</span>
+                    <span class="n">pdf_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pdf_r</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fetch_download_link</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">vc</span> <span class="o">=</span> <span class="n">VldbCrawler</span><span class="p">()</span>
+    <span class="n">vc</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://blog.chih.me/tag/linux.html">linux</a>
+      <a href="https://blog.chih.me/tag/python.html">python</a>
+      <a href="https://blog.chih.me/tag/crawler.html">crawler</a>
+    </p>
+  </div>
+
+
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'chihsblog';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+</article>
+
+    <footer>
+<p>&copy; chih </p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-61054351-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " chih's blog ",
+  "url" : "https://blog.chih.me",
+  "image": "",
+  "description": ""
+}
+</script>
+  
+</body>
+</html>

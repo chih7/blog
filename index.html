@@ -68,6 +68,47 @@
 
 <article>
   <header>
+    <h2><a href="https://blog.chih.me/vldb-downloader.html#vldb-downloader">抓取网页中所有PDF链接并下载的Python脚本</a></h2>
+    <p>
+          Posted on Wed 05 July 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/python.html">python</a>,              <a href="https://blog.chih.me/tag/crawler.html">crawler</a>
+    </p>
+  </header>
+  <div>
+      <h3>说点什么</h3>
+<p>没什么好说的，工具脚本，代码都在下面，可能改一下后可以适用于其他地方。</p>
+<h3>代码</h3>
+<div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Created on Thu Jul  6 11:04:53 2017</span>
+
+<span class="sd">@author: chih</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">BASE_URL</span> <span class="o">=</span> <span class="s1">&#39;http://www.vldb.org/pvldb/vol10.html&#39;</span>
+
+<span class="k">class</span> <span class="nc">VldbCrawler</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="n">BASE_URL</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span> <span class="o">=</span> <span class="n">base_url</span>
+
+    <span class="k">def</span> <span class="nf">fetch_download_link</span><span class="p">(</span><span class="bp">self …</span></pre></div>
+      <br>
+      <a class="btn" href="https://blog.chih.me/vldb-downloader.html#vldb-downloader">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://blog.chih.me/read-cpu-power-with-RAPL.html#read-cpu-power-with-RAPL">Energy measurements in Linux</a></h2>
     <p>
           Posted on Tue 31 January 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
@@ -241,48 +282,6 @@
 <p>-EOF-</p>
       <br>
       <a class="btn" href="https://blog.chih.me/64.html#64">    Continue reading
-</a>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://blog.chih.me/download-use-aria2.html#download-use-aria2">我的硬盘不可能这么空~aria2篇</a></h2>
-    <p>
-          Posted on Tue 31 March 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
-
-
-          &#8226;     Tagged with
-
-              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/xia-zai.html">下载</a>,              <a href="https://blog.chih.me/tag/aria2.html">aria2</a>,              <a href="https://blog.chih.me/tag/systemd.html">systemd</a>
-    </p>
-  </header>
-  <div>
-      <p>对于单纯的Aria2程序来说，它是一个轻量级、支持多种协议的命令行下载工具。</p>
-<ul>
-<li>支持的协议包括HTTP(S), FTP, BitTorrent, Metalink</li>
-<li>aria2可以并发的进行下载，并尝试将下载带宽利用率最大化</li>
-<li>分片与续传，自动中止并替换慢的线程</li>
-</ul>
-<p>看到命令行可能有人会想:“恩，又是那种强大到用起来要查手册写命令的玩意”。其实不然，由于aria2 支持 JSON-RPC和XML-RPC远程调用，可以通过web前端或客户端方便地进行管理。</p>
-<h3>安装</h3>
-<p>在Linux下，可以很方便地通过包管理进行安装，比如Arch Linux</p>
-<div class="highlight"><pre><span></span>$ sudo pacman -S aria2
-</pre></div>
-
-
-<p>如果是Windows，可以下载编译好的二进制文件，放在<code>C:\WINDOWS\system32</code>目录下，就可以通过<code>aria2c</code>命令执行程序了</p>
-<p>可以直接运行命令进行下载:</p>
-<ul>
-<li>
-<p>HTTP下载</p>
-<p>$ aria2c http://example.org/test.bin</p>
-</li>
-<li>
-<p>从两个源同时下载</p>
-<p>$ aria2c http …</p></li></ul>
-      <br>
-      <a class="btn" href="https://blog.chih.me/download-use-aria2.html#download-use-aria2">    Continue reading
 </a>
   </div>
 </article>
