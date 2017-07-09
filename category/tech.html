@@ -198,6 +198,46 @@
 </article>
 <article>
   <header>
+    <h2><a href="https://blog.chih.me/hadoop-install.html#hadoop-install">Hadoop 安装笔记</a></h2>
+    <p>
+          Posted on Thu 17 November 2016 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/hadoop.html">Hadoop</a>,              <a href="https://blog.chih.me/tag/java-big-data.html">Java， Big Data</a>
+    </p>
+  </header>
+  <div>
+      <h2>The building blocks of Hadoop</h2>
+<ul>
+<li>NameNode</li>
+<li>DataNode</li>
+<li>Secondary NameNode</li>
+<li>~~JobTracker~~</li>
+<li>~~TaskTracker~~</li>
+<li>ResourceManager</li>
+<li>NodeManager</li>
+</ul>
+<p><img alt="Screenshot_20161117_185744" src="images/Screenshot_20161117_185744.png"></p>
+<p><img alt="Screenshot_20161117_190357" src="images/Screenshot_20161117_190357.png"></p>
+<h3>NameNode</h3>
+<p>NameNode主要是用来保存HDFS的<strong>元数据</strong>信息，比如命名空间信息，块信息等。当它运行的时候，这些信息是存在内存中的。但是这些信息也可以持久化到磁盘上。没有Namenode，HDFS就不能工作。事实上，如果运行namenode的机器坏掉的话，系统中的文件将会完全丢失，因为没有其他方法能够将位于不同datanode上的文件块(blocks)重建文件。因此，Hadoop存在单点故障。为了解决单点故障，Hadoop提供了两套机制：</p>
+<ol>
+<li>第一种方式是将持久化存 储在本地硬盘的文件系统元数据备份。Hadoop可以通过配置来让Namenode将他的持久化状态文件写到不同的文件系统中。一般是镜像到网络文件系统或单独的磁盘中。</li>
+<li>第二种方式是运行一个辅助的Namenode(Secondary Namenode)。下面会具体说明。</li>
+</ol>
+<h3>DataNode</h3>
+<p>Datanode是文件系统的工作节点，他们根据客户端或者是namenode的调度存储和检索数据，并且定期向namenode发送他们所存储的块(block)的<strong>列表</strong>。</p>
+<p>集群中的每个服务器都运 …</p>
+      <br>
+      <a class="btn" href="https://blog.chih.me/hadoop-install.html#hadoop-install">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://blog.chih.me/chang-openwtr-ppoe-password.html#chang-openwtr-ppoe-password">使用LuCI的RPC接口修改openwrt配置</a></h2>
     <p>
           Posted on Mon 17 October 2016 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
@@ -261,48 +301,6 @@
 <p>在SymPy中，数学符号是Symbol类的对象，要明确声明符号变量，我们新建了<code>N</code>与<code>p</code>符号 …</p>
       <br>
       <a class="btn" href="https://blog.chih.me/use-SymPy-get-max-effectiveness-of-ALOHA.html#use-SymPy-get-max-effectiveness-of-ALOHA">    Continue reading
-</a>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://blog.chih.me/download-use-aria2.html#download-use-aria2">我的硬盘不可能这么空~aria2篇</a></h2>
-    <p>
-          Posted on Tue 31 March 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
-
-
-          &#8226;     Tagged with
-
-              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/xia-zai.html">下载</a>,              <a href="https://blog.chih.me/tag/aria2.html">aria2</a>,              <a href="https://blog.chih.me/tag/systemd.html">systemd</a>
-    </p>
-  </header>
-  <div>
-      <p>对于单纯的Aria2程序来说，它是一个轻量级、支持多种协议的命令行下载工具。</p>
-<ul>
-<li>支持的协议包括HTTP(S), FTP, BitTorrent, Metalink</li>
-<li>aria2可以并发的进行下载，并尝试将下载带宽利用率最大化</li>
-<li>分片与续传，自动中止并替换慢的线程</li>
-</ul>
-<p>看到命令行可能有人会想:“恩，又是那种强大到用起来要查手册写命令的玩意”。其实不然，由于aria2 支持 JSON-RPC和XML-RPC远程调用，可以通过web前端或客户端方便地进行管理。</p>
-<h3>安装</h3>
-<p>在Linux下，可以很方便地通过包管理进行安装，比如Arch Linux</p>
-<div class="highlight"><pre><span></span>$ sudo pacman -S aria2
-</pre></div>
-
-
-<p>如果是Windows，可以下载编译好的二进制文件，放在<code>C:\WINDOWS\system32</code>目录下，就可以通过<code>aria2c</code>命令执行程序了</p>
-<p>可以直接运行命令进行下载:</p>
-<ul>
-<li>
-<p>HTTP下载</p>
-<p>$ aria2c http://example.org/test.bin</p>
-</li>
-<li>
-<p>从两个源同时下载</p>
-<p>$ aria2c http …</p></li></ul>
-      <br>
-      <a class="btn" href="https://blog.chih.me/download-use-aria2.html#download-use-aria2">    Continue reading
 </a>
   </div>
 </article>

@@ -1,0 +1,421 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/pygments/github.min.css">
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/font-awesome/css/font-awesome.min.css">
+
+
+    <link href="https://blog.chih.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="chih's blog Atom">
+
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+<meta name="author" content="chih" />
+<meta name="description" content="The building blocks of Hadoop NameNode DataNode Secondary NameNode ~~JobTracker~~ ~~TaskTracker~~ ResourceManager NodeManager NameNode NameNode主要是用来保存HDFS的元数据信息，比如命名空间信息，块信息等。当它运行的时候，这些信息是存在内存中的。但是这些信息也可以持久化到磁盘上。没有Namenode，HDFS就不能工作。事实上，如果运行namenode的机器坏掉的话，系统中的文件将会完全丢失，因为没有其他方法能够将位于不同datanode上的文件块(blocks)重建文件。因此，Hadoop存在单点故障。为了解决单点故障，Hadoop提供了两套机制： 第一种方式是将持久化存 储在本地硬盘的文件系统元数据备份。Hadoop可以通过配置来让Namenode将他的持久化状态文件写到不同的文件系统中。一般是镜像到网络文件系统或单独的磁盘中。 第二种方式是运行一个辅助的Namenode(Secondary Namenode)。下面会具体说明。 DataNode Datanode是文件系统的工作节点，他们根据客户端或者是namenode的调度存储和检索数据，并且定期向namenode发送他们所存储的块(block)的列表。 集群中的每个服务器都运 …" />
+<meta name="keywords" content="linux, Hadoop, Java， Big Data">
+<meta property="og:site_name" content="chih's blog"/>
+<meta property="og:title" content="Hadoop 安装笔记"/>
+<meta property="og:description" content="The building blocks of Hadoop NameNode DataNode Secondary NameNode ~~JobTracker~~ ~~TaskTracker~~ ResourceManager NodeManager NameNode NameNode主要是用来保存HDFS的元数据信息，比如命名空间信息，块信息等。当它运行的时候，这些信息是存在内存中的。但是这些信息也可以持久化到磁盘上。没有Namenode，HDFS就不能工作。事实上，如果运行namenode的机器坏掉的话，系统中的文件将会完全丢失，因为没有其他方法能够将位于不同datanode上的文件块(blocks)重建文件。因此，Hadoop存在单点故障。为了解决单点故障，Hadoop提供了两套机制： 第一种方式是将持久化存 储在本地硬盘的文件系统元数据备份。Hadoop可以通过配置来让Namenode将他的持久化状态文件写到不同的文件系统中。一般是镜像到网络文件系统或单独的磁盘中。 第二种方式是运行一个辅助的Namenode(Secondary Namenode)。下面会具体说明。 DataNode Datanode是文件系统的工作节点，他们根据客户端或者是namenode的调度存储和检索数据，并且定期向namenode发送他们所存储的块(block)的列表。 集群中的每个服务器都运 …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://blog.chih.me/hadoop-install.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2016-11-17 00:00:00+08:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://blog.chih.me/author/chih.html">
+<meta property="article:section" content="Tech"/>
+<meta property="article:tag" content="linux"/>
+<meta property="article:tag" content="Hadoop"/>
+<meta property="article:tag" content="Java， Big Data"/>
+<meta property="og:image" content="">
+
+  <title>chih's blog &ndash; Hadoop 安装笔记</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://blog.chih.me">
+        <img src="https://blog.chih.me/theme/img/profile.png" alt="" title="">
+      </a>
+      <h1><a href="https://blog.chih.me"></a></h1>
+
+
+      <nav>
+        <ul class="list">
+          <li><a href="https://blog.chih.me/pages/about-me.html#about-me">About Me</a></li>
+
+          <li><a href="http://www.hjk.im/" target="_blank">HJK</a></li>
+          <li><a href="http://imis.me/" target="_blank">记忆反射弧</a></li>
+          <li><a href="http://mijack.github.io/" target="_blank">mijack</a></li>
+          <li><a href="http://datahcong.cn/" target="_blank">whl的博客园</a></li>
+        </ul>
+      </nav>
+
+      <ul class="social">
+      </ul>
+    </div>
+
+
+  </aside>
+  <main>
+
+
+<article class="single">
+  <header>
+    <h1 id="hadoop-install">Hadoop 安装笔记</h1>
+    <p>
+          Posted on Thu 17 November 2016 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+    </p>
+  </header>
+
+
+  <div>
+    <h2>The building blocks of Hadoop</h2>
+<ul>
+<li>NameNode</li>
+<li>DataNode</li>
+<li>Secondary NameNode</li>
+<li>~~JobTracker~~</li>
+<li>~~TaskTracker~~</li>
+<li>ResourceManager</li>
+<li>NodeManager</li>
+</ul>
+<p><img alt="Screenshot_20161117_185744" src="images/Screenshot_20161117_185744.png"></p>
+<p><img alt="Screenshot_20161117_190357" src="images/Screenshot_20161117_190357.png"></p>
+<h3>NameNode</h3>
+<p>NameNode主要是用来保存HDFS的<strong>元数据</strong>信息，比如命名空间信息，块信息等。当它运行的时候，这些信息是存在内存中的。但是这些信息也可以持久化到磁盘上。没有Namenode，HDFS就不能工作。事实上，如果运行namenode的机器坏掉的话，系统中的文件将会完全丢失，因为没有其他方法能够将位于不同datanode上的文件块(blocks)重建文件。因此，Hadoop存在单点故障。为了解决单点故障，Hadoop提供了两套机制：</p>
+<ol>
+<li>第一种方式是将持久化存 储在本地硬盘的文件系统元数据备份。Hadoop可以通过配置来让Namenode将他的持久化状态文件写到不同的文件系统中。一般是镜像到网络文件系统或单独的磁盘中。</li>
+<li>第二种方式是运行一个辅助的Namenode(Secondary Namenode)。下面会具体说明。</li>
+</ol>
+<h3>DataNode</h3>
+<p>Datanode是文件系统的工作节点，他们根据客户端或者是namenode的调度存储和检索数据，并且定期向namenode发送他们所存储的块(block)的<strong>列表</strong>。</p>
+<p>集群中的每个服务器都运 行一个DataNode后台程序，这个后台程序负责把HDFS数据块读写到本地的文件系统。当需要通过客户端读/写某个 数据时，先由NameNode告诉客户端去哪个DataNode进行具体的读/写操作，然后，<strong>客户端直接</strong>与这个DataNode服务器上的后台程序进行通信，并且对相关的数据块进行读/写操作。</p>
+<p>数据会以多个副本的形式存在于多个DataNode中。因此，DataNode不存在单点故障。</p>
+<p><img alt="Screenshot_20161117_181939" src="images/Screenshot_20161117_181939.png"></p>
+<h3>Secondary NameNode</h3>
+<p>~~Secondary NameNode不是NameNode的备份。它是一个用来监控HDFS状态的<strong>辅助后台程序</strong>。Secondary  NameNode不同于NameNode，它不接受或者记录任何实时的数据变化，但是，它会与NameNode进行通信，周期性的合并fsimage和edits日志，保持edits文件大小在一个限定的范围内，并定期地保存HDFS元数据的快照。~~</p>
+<p>SNN的作用 现在 （Hadoop2.x）可以被两个节点替换CheckpointNode和BackupNode。
+CheckpointNode可以理解为与Secondary NameNode的作用一致。
+BackupNode：NameNode的完全备份。</p>
+<h3>JobTracker &amp; TaskTracker</h3>
+<p>JobTracker后台程序用来连接应用程序与Hadoop。用户代码提交到集群以后，由JobTracker决定哪个文件将被处理，并且为不同的<strong>task</strong>分配节点。同时，它还监控所有的task，一旦某个task失败了，JobTracker就会自动重新开启这个task。</p>
+<p>TaskTracker与负责存储数据的DataNode相结合，其处理结构上也遵循主/从架构。JobTracker位于主节点，统领 MapReduce工作；而TaskTrackers位于从节点，独立管理各自的task。每个TaskTracker负责独立执行具体的task，而 JobTracker负责分配task。虽然每个从节点仅有一个唯一的一个TaskTracker，但是每个TaskTracker可以产生多个java 虚拟机（JVM），用于<strong>并行</strong>处理多个map以及reduce任务。TaskTracker的一个重要职责就是与JobTracker交互。如果 JobTracker无法准时地获取TaskTracker提交的信息，JobTracker就判定TaskTracker已经崩溃，并将任务分配给其他 节点处理。</p>
+<p><img alt="Screenshot_20161117_182155" src="images/Screenshot_20161117_182155.png"></p>
+<p><img alt="Screenshot_20161117_182220" src="images/Screenshot_20161117_182220.png"></p>
+<h3>ResourceManager &amp; NodeManager</h3>
+<ul>
+<li>ResourceManager：负责整个集群的资源管理和调度，将各个资源部分（计算、内存、带宽等）精心安排给基础 NodeManager（YARN 的每节点代理）</li>
+<li>处理客户端请求</li>
+<li>启动或监控ApplicationMaster</li>
+<li>监控NodeManager</li>
+<li>资源的分配与调度</li>
+<li>ApplicationMaster：负责应用程序相关事务，比如任务调度、任务监控和容错等，负责协调来自 ResourceManager 的资源，并通过 NodeManager 监视容器的执行和资源使用（CPU、内存等的资源分配）</li>
+<li>负责数据的切分</li>
+<li>为应用程序申请资源并分配给内部的任务</li>
+<li>任务的监控与容错</li>
+<li>NodeManager： NodeManager管理YARN集群中的每个节点。NodeManager 提供针对集群中每个节点的服务，从监督对一个容器的终生管理到监视资源和跟踪节点健康。</li>
+<li>管理单个节点上的资源</li>
+<li>处理来自ResourceManager的命令</li>
+<li>处理来自ApplicationMaster的命令</li>
+</ul>
+<p>Hadoop的master和slave分别运行在不同的服务器中，其中hadoop-master中运行NameNode和ResourceManager，hadoop-slave中运行DataNode和NodeManager。NameNode和DataNode是Hadoop分布式文件系统HDFS的组件，负责储存输入以及输出数据，而ResourceManager和NodeManager是Hadoop集群资源管理系统YARN的组件，负责CPU和内存资源的调度。 </p>
+<p><img alt="Screenshot_20161106_200858" src="images/Screenshot_20161106_200858.png"></p>
+<h2>Running Hadoop</h2>
+<h3>Local (standalone) mode</h3>
+<p>With empty configuration files, Hadoop will run completely on the local machine.Because there’s no need to communicate with other nodes, the standalone mode doesn't use HDFS, nor will it launch any of the Hadoop daemons.</p>
+<h3>Pseudo-distributed mode</h3>
+<p>running Hadoop in a “cluster of one”  with all daemons running on a single machine.</p>
+<h3>Fully distributed mode</h3>
+<ul>
+<li>master—The master node of the cluster and host of the NameNode and Job-Tracker daemons</li>
+<li>backup—The server that hosts the Secondary NameNode daemon</li>
+<li>hadoop1, hadoop2, hadoop3, ...—The slave boxes of the cluster running both DataNode and TaskTracker daemons</li>
+</ul>
+<blockquote>
+<p><strong>About Java</strong></p>
+<p>Version 2.7 and later of Apache Hadoop requires Java 7. It is built and tested on both OpenJDK and Oracle (<a href="https://wiki.apache.org/hadoop/HotSpot">HotSpot</a>)'s JDK/JRE. Earlier versions (2.6 and earlier) support Java 6. </p>
+<p>OpenJDK has been used to qualify Hadoop 2.2 -and the rest of the Hortonworks bundle- on RHEL6. No problems were noted. </p>
+</blockquote>
+<h2>基于虚拟机搭建Hadoop集群</h2>
+<blockquote>
+<p>基于平台：Ubuntu server 16.04</p>
+</blockquote>
+<h3>准备虚拟机</h3>
+<p>使用Virtualbox安装ubuntu，为了便于多虚拟机之间、宿主机与虚拟机之间连接，增加一张使用<code>Host-only</code>的虚拟网卡。</p>
+<p><img alt="Screenshot_20161116_144933" src="images/Screenshot_20161116_144933.png"></p>
+<h3>手动安装教程</h3>
+<p>参见 https://www.digitalocean.com/community/tutorials/how-to-install-hadoop-in-stand-alone-mode-on-ubuntu-16-04</p>
+<h3>单节点脚本安装</h3>
+<p>使用以下脚本安装，脚本测试过的环境为ubuntu server 16.04。</p>
+<p>https://github.com/chih7/hadoop_install</p>
+<h3>分布式运行</h3>
+<p>直接从单机安装的virtualbox虚拟机clone了两台一样的机器，确保ip如脚本配置：</p>
+<blockquote>
+<p>MASTER_IP="192.168.56.101"
+SLAVE_IP1="192.168.56.102"
+SLAVE_IP2="192.168.56.103"</p>
+</blockquote>
+<p>进入了hadoop-master的/root目录，直接运行<code>start-hadoop.sh</code>脚本即可。</p>
+<h2>基于Docker搭建Hadoop集群</h2>
+<p><strong>标准的交付件</strong></p>
+<p><img alt="01-docker-container" src="images/01-docker-container.jpg"></p>
+<h3>优势</h3>
+<ul>
+<li>存储驱动-层叠镜像模型</li>
+<li>以应用为中心的云计算新模式-以容器为标准交付件</li>
+<li>版本控制-对接代码仓库，自动化测试和构建</li>
+</ul>
+<p><img alt="uScreenshot_20161110_120920" src="images/Screenshot_20161110_120920.png"></p>
+<h3>安装过程</h3>
+<h4>3节点Hadoop集群搭建步骤</h4>
+<h5>pull docker image</h5>
+<div class="highlight"><pre><span></span>sudo docker pull kiwenlau/hadoop:1.0
+</pre></div>
+
+
+<h5>clone github repository</h5>
+<div class="highlight"><pre><span></span>git clone https://github.com/kiwenlau/hadoop-cluster-docker
+</pre></div>
+
+
+<h5>create hadoop network</h5>
+<div class="highlight"><pre><span></span>sudo docker network create --driver=bridge hadoop
+</pre></div>
+
+
+<h5>start container</h5>
+<div class="highlight"><pre><span></span>cd hadoop-cluster-docker
+sudo ./start-container.sh
+</pre></div>
+
+
+<p><strong>output:</strong></p>
+<div class="highlight"><pre><span></span>start hadoop-master container...
+start hadoop-slave1 container...
+start hadoop-slave2 container...
+root@hadoop-master:~# 
+</pre></div>
+
+
+<ul>
+<li>start 3 containers with 1 master and 2 slaves</li>
+<li>you will get into the /root directory of hadoop-master container</li>
+</ul>
+<div class="highlight"><pre><span></span>$ docker info  
+Containers: <span class="m">3</span>
+ Running: <span class="m">3</span>
+ Paused: <span class="m">0</span>
+ Stopped: <span class="m">0</span>
+Images: <span class="m">1</span>
+...
+</pre></div>
+
+
+<p>查看docker的运行信息，可以看到基于一个镜像，运行了三个容器实例。</p>
+<div class="highlight"><pre><span></span>$ sudo du -chs ./docker/ 
+<span class="m">1</span>.7G    ./docker/
+<span class="m">1</span>.7G    total
+</pre></div>
+
+
+<p>查看整个docker集群的磁盘占用，全部只有3.3GB，可见基于层叠镜像模型，docker大大减少了磁盘占用。</p>
+<h5>start hadoop</h5>
+<div class="highlight"><pre><span></span>./start-hadoop.sh
+</pre></div>
+
+
+<h5>run wordcount</h5>
+<div class="highlight"><pre><span></span>./run-wordcount.sh
+</pre></div>
+
+
+<p><strong>output</strong></p>
+<div class="highlight"><pre><span></span>input file1.txt:
+Hello Hadoop
+
+input file2.txt:
+Hello Docker
+
+wordcount output:
+Docker    1
+Hadoop    1
+Hello    2
+</pre></div>
+
+
+<p>Hadoop网页管理地址:</p>
+<ul>
+<li>NameNode: <a href="http://127.0.0.1:50070/">http://127.0.0.1:50070/</a></li>
+<li>ResourceManager: <a href="http://127.0.0.1:8088/">http://127.0.0.1:8088/</a></li>
+</ul>
+<p><code>127.0.0.1</code>为运行容器的主机的IP。</p>
+<p><img alt="Screenshot_20161107_133024" src="images/Screenshot_20161107_133024.png"></p>
+<h4>N节点Hadoop集群搭建步骤</h4>
+<h5>先准备3节点Hadoop集群</h5>
+<h5>重新构建Docker镜像</h5>
+<div class="highlight"><pre><span></span>sudo ./resize-cluster.sh 5
+</pre></div>
+
+
+<ul>
+<li>指定任意N，增加slaves节点的数量</li>
+</ul>
+<h5>启动Docker容器</h5>
+<div class="highlight"><pre><span></span>sudo ./start-container.sh 5
+</pre></div>
+
+
+<ul>
+<li>与第2步中的N保持一致。</li>
+</ul>
+<p>参考： https://github.com/kiwenlau/hadoop-cluster-docker</p>
+<h3>Docker集群</h3>
+<ul>
+<li>Kubernetes  </li>
+<li>Docker Swarm </li>
+</ul>
+<h2>基于云的hadoop集群</h2>
+<h3>青云</h3>
+<p>https://www.qingcloud.com/hadoop</p>
+<ul>
+<li><a href="https://www.qingcloud.com/hadoop#hdfs">集成 Yarn</a></li>
+<li><a href="https://www.qingcloud.com/hadoop#scaling">在线伸缩</a></li>
+<li><a href="https://www.qingcloud.com/hadoop#monitor">实时监控</a></li>
+<li><a href="https://www.qingcloud.com/hadoop#alarm">监控告警</a></li>
+</ul>
+<h4>价格</h4>
+<p><img alt="Screenshot_20161107_210119" src="images/Screenshot_20161107_210119.png"></p>
+<h3>Azure中国</h3>
+<p>https://www.azure.cn/home/features/hdinsight/</p>
+<p>国内首家100%基于 Apache Hadoop 的云服务</p>
+<ul>
+<li>按需扩展至 PB 级别</li>
+<li>处理非结构化和半结构化数据</li>
+<li>在 Java、.NET 等环境中开发</li>
+<li>无需购买和维护硬件</li>
+<li>仅为您使用的服务付费</li>
+<li>在几分钟内创建 Hadoop 群集</li>
+<li>在 Excel 中直观呈现您的 Hadoop 数据</li>
+<li>轻松集成本地 Hadoop 群集</li>
+</ul>
+<h4>价格</h4>
+<table>
+<thead>
+<tr>
+<th><strong>实例</strong></th>
+<th><strong>内核数</strong></th>
+<th><strong>内存数</strong></th>
+<th><strong>磁盘大小</strong></th>
+<th><strong>每节点价格</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A1</td>
+<td>1</td>
+<td>1.75GB</td>
+<td>70GB</td>
+<td>￥0.51 /小时（约合￥379.44 /月）</td>
+</tr>
+<tr>
+<td>A2</td>
+<td>2</td>
+<td>3.5GB</td>
+<td>135GB</td>
+<td>￥1.01 /小时（约合￥751.44 /月）</td>
+</tr>
+<tr>
+<td>A3</td>
+<td>4</td>
+<td>7GB</td>
+<td>285GB</td>
+<td>￥2.03 /小时（约合￥1,510.32 /月）</td>
+</tr>
+<tr>
+<td>A4</td>
+<td>8</td>
+<td>14GB</td>
+<td>605GB</td>
+<td>￥4.05 /小时（约合￥3,013.20 /月）</td>
+</tr>
+</tbody>
+</table>
+<h3>AWS中国</h3>
+<p>https://aws.amazon.com/cn/elasticmapreduce/</p>
+<p>Amazon EMR 简化了大数据的处理，提供的托管 <a href="https://aws.amazon.com/cn/elasticmapreduce/details/hadoop/">Hadoop</a> 框架可以让您轻松、快速、经济高效地在多个动态可扩展的 Amazon EC2 实例之间分发和处理大量数据。您还可以运行其他常用的分发框架（例如 Amazon EMR 中的 Spark 和 Presto）与其他 AWS 数据存储服务（例如 Amazon S3 和 Amazon DynamoDB）中的数据进行互动。</p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://blog.chih.me/tag/linux.html">linux</a>
+      <a href="https://blog.chih.me/tag/hadoop.html">Hadoop</a>
+      <a href="https://blog.chih.me/tag/java-big-data.html">Java， Big Data</a>
+    </p>
+  </div>
+
+
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'chihsblog';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+</article>
+
+    <footer>
+<p>&copy; chih </p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-61054351-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " chih's blog ",
+  "url" : "https://blog.chih.me",
+  "image": "",
+  "description": ""
+}
+</script>
+  
+</body>
+</html>

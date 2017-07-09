@@ -198,6 +198,46 @@
 </article>
 <article>
   <header>
+    <h2><a href="https://blog.chih.me/hadoop-install.html#hadoop-install">Hadoop 安装笔记</a></h2>
+    <p>
+          Posted on Thu 17 November 2016 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/hadoop.html">Hadoop</a>,              <a href="https://blog.chih.me/tag/java-big-data.html">Java， Big Data</a>
+    </p>
+  </header>
+  <div>
+      <h2>The building blocks of Hadoop</h2>
+<ul>
+<li>NameNode</li>
+<li>DataNode</li>
+<li>Secondary NameNode</li>
+<li>~~JobTracker~~</li>
+<li>~~TaskTracker~~</li>
+<li>ResourceManager</li>
+<li>NodeManager</li>
+</ul>
+<p><img alt="Screenshot_20161117_185744" src="images/Screenshot_20161117_185744.png"></p>
+<p><img alt="Screenshot_20161117_190357" src="images/Screenshot_20161117_190357.png"></p>
+<h3>NameNode</h3>
+<p>NameNode主要是用来保存HDFS的<strong>元数据</strong>信息，比如命名空间信息，块信息等。当它运行的时候，这些信息是存在内存中的。但是这些信息也可以持久化到磁盘上。没有Namenode，HDFS就不能工作。事实上，如果运行namenode的机器坏掉的话，系统中的文件将会完全丢失，因为没有其他方法能够将位于不同datanode上的文件块(blocks)重建文件。因此，Hadoop存在单点故障。为了解决单点故障，Hadoop提供了两套机制：</p>
+<ol>
+<li>第一种方式是将持久化存 储在本地硬盘的文件系统元数据备份。Hadoop可以通过配置来让Namenode将他的持久化状态文件写到不同的文件系统中。一般是镜像到网络文件系统或单独的磁盘中。</li>
+<li>第二种方式是运行一个辅助的Namenode(Secondary Namenode)。下面会具体说明。</li>
+</ol>
+<h3>DataNode</h3>
+<p>Datanode是文件系统的工作节点，他们根据客户端或者是namenode的调度存储和检索数据，并且定期向namenode发送他们所存储的块(block)的<strong>列表</strong>。</p>
+<p>集群中的每个服务器都运 …</p>
+      <br>
+      <a class="btn" href="https://blog.chih.me/hadoop-install.html#hadoop-install">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://blog.chih.me/chang-openwtr-ppoe-password.html#chang-openwtr-ppoe-password">使用LuCI的RPC接口修改openwrt配置</a></h2>
     <p>
           Posted on Mon 17 October 2016 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
@@ -261,32 +301,6 @@
 <p>$ aria2c http …</p></li></ul>
       <br>
       <a class="btn" href="https://blog.chih.me/download-use-aria2.html#download-use-aria2">    Continue reading
-</a>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://blog.chih.me/fixbug-grub2-in-archlinux.html#fixbug-grub2-in-archlinux">Arch Linux 修复grub2 引导过程中的花屏</a></h2>
-    <p>
-          Posted on Sun 15 March 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
-
-
-          &#8226;     Tagged with
-
-              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/grub2.html">grub2</a>
-    </p>
-  </header>
-  <div>
-      <p>前几天 <code>opensuse 13.2</code> 被我强关了几次，结果用 <code>XFS</code> 挂载的 <code>/home</code> 每次都丢文件， 这样实在是让人难以安心，再加上opensuse 的一些操作始终感觉有些麻烦，官方仓库的软件也少。种种不便之处， 让我想起以前用 <code>Arch Linux</code>时的舒心，于是备份重装。所有的文件系统用了 <code>Ext4</code>(opensuse 上的<code>Btrfs</code>的确先进，但很多功能我也没怎么去用)。</p>
-<p>​<code>Arch Linux</code>的安装过程先略去不表。安装基本系统和<code>KDE</code>都没有发现问题，但安装完基本系统重启的时候就发现有个小问题了喵。</p>
-<div class="highlight"><pre><span></span>从BIOS自检完成到桌面启动直接的那段过程中屏幕一直都是花的，就是那种黑白电视机雪花屏的样子。
-</pre></div>
-
-
-<p>这只是一个小问题，反正进入桌面之后就没影响了，但对于强迫症患者真是太难受了啊! 于是去Google找解决方案，翻了几页之后还真的被我找到类似的问题了—— <a href="https://forum.suse.org.cn/viewtopic.php?f=2&amp;t=2365">https://forum.suse.org.cn/viewtopic.php?f=2 …</a></p>
-      <br>
-      <a class="btn" href="https://blog.chih.me/fixbug-grub2-in-archlinux.html#fixbug-grub2-in-archlinux">    Continue reading
 </a>
   </div>
 </article>

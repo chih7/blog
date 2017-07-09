@@ -197,6 +197,46 @@
 </article>
 <article>
   <header>
+    <h2><a href="https://blog.chih.me/hadoop-install.html#hadoop-install">Hadoop 安装笔记</a></h2>
+    <p>
+          Posted on Thu 17 November 2016 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/hadoop.html">Hadoop</a>,              <a href="https://blog.chih.me/tag/java-big-data.html">Java， Big Data</a>
+    </p>
+  </header>
+  <div>
+      <h2>The building blocks of Hadoop</h2>
+<ul>
+<li>NameNode</li>
+<li>DataNode</li>
+<li>Secondary NameNode</li>
+<li>~~JobTracker~~</li>
+<li>~~TaskTracker~~</li>
+<li>ResourceManager</li>
+<li>NodeManager</li>
+</ul>
+<p><img alt="Screenshot_20161117_185744" src="images/Screenshot_20161117_185744.png"></p>
+<p><img alt="Screenshot_20161117_190357" src="images/Screenshot_20161117_190357.png"></p>
+<h3>NameNode</h3>
+<p>NameNode主要是用来保存HDFS的<strong>元数据</strong>信息，比如命名空间信息，块信息等。当它运行的时候，这些信息是存在内存中的。但是这些信息也可以持久化到磁盘上。没有Namenode，HDFS就不能工作。事实上，如果运行namenode的机器坏掉的话，系统中的文件将会完全丢失，因为没有其他方法能够将位于不同datanode上的文件块(blocks)重建文件。因此，Hadoop存在单点故障。为了解决单点故障，Hadoop提供了两套机制：</p>
+<ol>
+<li>第一种方式是将持久化存 储在本地硬盘的文件系统元数据备份。Hadoop可以通过配置来让Namenode将他的持久化状态文件写到不同的文件系统中。一般是镜像到网络文件系统或单独的磁盘中。</li>
+<li>第二种方式是运行一个辅助的Namenode(Secondary Namenode)。下面会具体说明。</li>
+</ol>
+<h3>DataNode</h3>
+<p>Datanode是文件系统的工作节点，他们根据客户端或者是namenode的调度存储和检索数据，并且定期向namenode发送他们所存储的块(block)的<strong>列表</strong>。</p>
+<p>集群中的每个服务器都运 …</p>
+      <br>
+      <a class="btn" href="https://blog.chih.me/hadoop-install.html#hadoop-install">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://blog.chih.me/chang-openwtr-ppoe-password.html#chang-openwtr-ppoe-password">使用LuCI的RPC接口修改openwrt配置</a></h2>
     <p>
           Posted on Mon 17 October 2016 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
@@ -260,28 +300,6 @@
 <p>在SymPy中，数学符号是Symbol类的对象，要明确声明符号变量，我们新建了<code>N</code>与<code>p</code>符号 …</p>
       <br>
       <a class="btn" href="https://blog.chih.me/use-SymPy-get-max-effectiveness-of-ALOHA.html#use-SymPy-get-max-effectiveness-of-ALOHA">    Continue reading
-</a>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://blog.chih.me/64.html#64">无题</a></h2>
-    <p>
-          Posted on Mon 01 June 2015 in <a href="https://blog.chih.me/category/self.html">Self</a>
-
-
-          &#8226;     Tagged with
-
-              <a href="https://blog.chih.me/tag/64.html">64</a>
-    </p>
-  </header>
-  <div>
-      <p>“鲜活的生命，悄无声息地消失。他们的死，既不壮烈，也不浪漫，当时无人知晓，今后或许也不会再被提起。但只要仍有人记得，他们的死便并非毫无意义。这也是卡萝尔•莫莉拍摄这部记录片并制作游戏的目的。人，不能永远消失。他们的故事，应让世人知晓。”</p>
-<p>“‘我们的人性，由我们对待同胞的行为界定。’1961年诺贝尔文学奖得主伊沃•安德里奇写道。卡萝尔为乔伊丝留下一部电影，玛格丽特为乔伊丝留下一个网站。而更多的人，从这个世界消失，没人悼念他们，没人为他们感到抱歉，甚至没人知道他们曾经存在过。今时今日，我们又能为他们做些什么?”</p>
-<p>-EOF-</p>
-      <br>
-      <a class="btn" href="https://blog.chih.me/64.html#64">    Continue reading
 </a>
   </div>
 </article>

@@ -712,7 +712,300 @@ COMMIT
 &lt;li&gt;
 &lt;p&gt;Pcap_DNSProxy&lt;/p&gt;
 &lt;/li&gt;
-&lt;/ol&gt;</content><category term="Arch Linux"></category><category term="Linux"></category><category term="redsocks"></category><category term="iptables"></category><category term="shadowsocks"></category><category term="代理"></category></entry><entry><title>使用LuCI的RPC接口修改openwrt配置</title><link href="https://blog.chih.me/chang-openwtr-ppoe-password.html" rel="alternate"></link><published>2016-10-17T00:00:00+08:00</published><updated>2016-10-17T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2016-10-17:/chang-openwtr-ppoe-password.html</id><summary type="html">&lt;p&gt;简单来说，本文整理了一些&lt;code&gt;openwrt&lt;/code&gt;的RPC接口，用来自动修改pppoe的密码，并重启网络。为什么要弄这些玩意呢，因为浙江高校中普遍使用的蛋疼的闪讯——两三天换个动态密码，时不时给你断个网！使用这些API的是一个Android应用，它在用户按下一个按键后自动向电信发送一条获取密码的短信，然后获取返回的短信，解析其中的闪讯动态密码，通过&lt;code&gt;openwrt&lt;/code&gt;的RPC接口修改密码并重启网络，这样，只需要一次按按钮的操作，就能恢复网络，又可以愉快的玩耍啦。&lt;/p&gt;
+&lt;/ol&gt;</content><category term="Arch Linux"></category><category term="Linux"></category><category term="redsocks"></category><category term="iptables"></category><category term="shadowsocks"></category><category term="代理"></category></entry><entry><title>Hadoop 安装笔记</title><link href="https://blog.chih.me/hadoop-install.html" rel="alternate"></link><published>2016-11-17T00:00:00+08:00</published><updated>2016-11-17T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2016-11-17:/hadoop-install.html</id><summary type="html">&lt;h2&gt;The building blocks of Hadoop&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;NameNode&lt;/li&gt;
+&lt;li&gt;DataNode&lt;/li&gt;
+&lt;li&gt;Secondary NameNode&lt;/li&gt;
+&lt;li&gt;~~JobTracker~~&lt;/li&gt;
+&lt;li&gt;~~TaskTracker~~&lt;/li&gt;
+&lt;li&gt;ResourceManager&lt;/li&gt;
+&lt;li&gt;NodeManager&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="Screenshot_20161117_185744" src="images/Screenshot_20161117_185744.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot_20161117_190357" src="images/Screenshot_20161117_190357.png"&gt;&lt;/p&gt;
+&lt;h3&gt;NameNode&lt;/h3&gt;
+&lt;p&gt;NameNode主要是用来保存HDFS的&lt;strong&gt;元数据&lt;/strong&gt;信息，比如命名空间信息，块信息等。当它运行的时候，这些信息是存在内存中的。但是这些信息也可以持久化到磁盘上。没有Namenode，HDFS就不能工作。事实上，如果运行namenode的机器坏掉的话，系统中的文件将会完全丢失，因为没有其他方法能够将位于不同datanode上的文件块(blocks)重建文件。因此，Hadoop存在单点故障。为了解决单点故障，Hadoop提供了两套机制：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;第一种方式是将持久化存 储在本地硬盘的文件系统元数据备份。Hadoop可以通过配置来让Namenode将他的持久化状态文件写到不同的文件系统中。一般是镜像到网络文件系统或单独的磁盘中。&lt;/li&gt;
+&lt;li&gt;第二种方式是运行一个辅助的Namenode(Secondary Namenode)。下面会具体说明。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;DataNode&lt;/h3&gt;
+&lt;p&gt;Datanode是文件系统的工作节点，他们根据客户端或者是namenode的调度存储和检索数据，并且定期向namenode发送他们所存储的块(block)的&lt;strong&gt;列表&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;集群中的每个服务器都运 …&lt;/p&gt;</summary><content type="html">&lt;h2&gt;The building blocks of Hadoop&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;NameNode&lt;/li&gt;
+&lt;li&gt;DataNode&lt;/li&gt;
+&lt;li&gt;Secondary NameNode&lt;/li&gt;
+&lt;li&gt;~~JobTracker~~&lt;/li&gt;
+&lt;li&gt;~~TaskTracker~~&lt;/li&gt;
+&lt;li&gt;ResourceManager&lt;/li&gt;
+&lt;li&gt;NodeManager&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="Screenshot_20161117_185744" src="images/Screenshot_20161117_185744.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot_20161117_190357" src="images/Screenshot_20161117_190357.png"&gt;&lt;/p&gt;
+&lt;h3&gt;NameNode&lt;/h3&gt;
+&lt;p&gt;NameNode主要是用来保存HDFS的&lt;strong&gt;元数据&lt;/strong&gt;信息，比如命名空间信息，块信息等。当它运行的时候，这些信息是存在内存中的。但是这些信息也可以持久化到磁盘上。没有Namenode，HDFS就不能工作。事实上，如果运行namenode的机器坏掉的话，系统中的文件将会完全丢失，因为没有其他方法能够将位于不同datanode上的文件块(blocks)重建文件。因此，Hadoop存在单点故障。为了解决单点故障，Hadoop提供了两套机制：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;第一种方式是将持久化存 储在本地硬盘的文件系统元数据备份。Hadoop可以通过配置来让Namenode将他的持久化状态文件写到不同的文件系统中。一般是镜像到网络文件系统或单独的磁盘中。&lt;/li&gt;
+&lt;li&gt;第二种方式是运行一个辅助的Namenode(Secondary Namenode)。下面会具体说明。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;DataNode&lt;/h3&gt;
+&lt;p&gt;Datanode是文件系统的工作节点，他们根据客户端或者是namenode的调度存储和检索数据，并且定期向namenode发送他们所存储的块(block)的&lt;strong&gt;列表&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;集群中的每个服务器都运 行一个DataNode后台程序，这个后台程序负责把HDFS数据块读写到本地的文件系统。当需要通过客户端读/写某个 数据时，先由NameNode告诉客户端去哪个DataNode进行具体的读/写操作，然后，&lt;strong&gt;客户端直接&lt;/strong&gt;与这个DataNode服务器上的后台程序进行通信，并且对相关的数据块进行读/写操作。&lt;/p&gt;
+&lt;p&gt;数据会以多个副本的形式存在于多个DataNode中。因此，DataNode不存在单点故障。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot_20161117_181939" src="images/Screenshot_20161117_181939.png"&gt;&lt;/p&gt;
+&lt;h3&gt;Secondary NameNode&lt;/h3&gt;
+&lt;p&gt;~~Secondary NameNode不是NameNode的备份。它是一个用来监控HDFS状态的&lt;strong&gt;辅助后台程序&lt;/strong&gt;。Secondary  NameNode不同于NameNode，它不接受或者记录任何实时的数据变化，但是，它会与NameNode进行通信，周期性的合并fsimage和edits日志，保持edits文件大小在一个限定的范围内，并定期地保存HDFS元数据的快照。~~&lt;/p&gt;
+&lt;p&gt;SNN的作用 现在 （Hadoop2.x）可以被两个节点替换CheckpointNode和BackupNode。
+CheckpointNode可以理解为与Secondary NameNode的作用一致。
+BackupNode：NameNode的完全备份。&lt;/p&gt;
+&lt;h3&gt;JobTracker &amp;amp; TaskTracker&lt;/h3&gt;
+&lt;p&gt;JobTracker后台程序用来连接应用程序与Hadoop。用户代码提交到集群以后，由JobTracker决定哪个文件将被处理，并且为不同的&lt;strong&gt;task&lt;/strong&gt;分配节点。同时，它还监控所有的task，一旦某个task失败了，JobTracker就会自动重新开启这个task。&lt;/p&gt;
+&lt;p&gt;TaskTracker与负责存储数据的DataNode相结合，其处理结构上也遵循主/从架构。JobTracker位于主节点，统领 MapReduce工作；而TaskTrackers位于从节点，独立管理各自的task。每个TaskTracker负责独立执行具体的task，而 JobTracker负责分配task。虽然每个从节点仅有一个唯一的一个TaskTracker，但是每个TaskTracker可以产生多个java 虚拟机（JVM），用于&lt;strong&gt;并行&lt;/strong&gt;处理多个map以及reduce任务。TaskTracker的一个重要职责就是与JobTracker交互。如果 JobTracker无法准时地获取TaskTracker提交的信息，JobTracker就判定TaskTracker已经崩溃，并将任务分配给其他 节点处理。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot_20161117_182155" src="images/Screenshot_20161117_182155.png"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot_20161117_182220" src="images/Screenshot_20161117_182220.png"&gt;&lt;/p&gt;
+&lt;h3&gt;ResourceManager &amp;amp; NodeManager&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;ResourceManager：负责整个集群的资源管理和调度，将各个资源部分（计算、内存、带宽等）精心安排给基础 NodeManager（YARN 的每节点代理）&lt;/li&gt;
+&lt;li&gt;处理客户端请求&lt;/li&gt;
+&lt;li&gt;启动或监控ApplicationMaster&lt;/li&gt;
+&lt;li&gt;监控NodeManager&lt;/li&gt;
+&lt;li&gt;资源的分配与调度&lt;/li&gt;
+&lt;li&gt;ApplicationMaster：负责应用程序相关事务，比如任务调度、任务监控和容错等，负责协调来自 ResourceManager 的资源，并通过 NodeManager 监视容器的执行和资源使用（CPU、内存等的资源分配）&lt;/li&gt;
+&lt;li&gt;负责数据的切分&lt;/li&gt;
+&lt;li&gt;为应用程序申请资源并分配给内部的任务&lt;/li&gt;
+&lt;li&gt;任务的监控与容错&lt;/li&gt;
+&lt;li&gt;NodeManager： NodeManager管理YARN集群中的每个节点。NodeManager 提供针对集群中每个节点的服务，从监督对一个容器的终生管理到监视资源和跟踪节点健康。&lt;/li&gt;
+&lt;li&gt;管理单个节点上的资源&lt;/li&gt;
+&lt;li&gt;处理来自ResourceManager的命令&lt;/li&gt;
+&lt;li&gt;处理来自ApplicationMaster的命令&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Hadoop的master和slave分别运行在不同的服务器中，其中hadoop-master中运行NameNode和ResourceManager，hadoop-slave中运行DataNode和NodeManager。NameNode和DataNode是Hadoop分布式文件系统HDFS的组件，负责储存输入以及输出数据，而ResourceManager和NodeManager是Hadoop集群资源管理系统YARN的组件，负责CPU和内存资源的调度。 &lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot_20161106_200858" src="images/Screenshot_20161106_200858.png"&gt;&lt;/p&gt;
+&lt;h2&gt;Running Hadoop&lt;/h2&gt;
+&lt;h3&gt;Local (standalone) mode&lt;/h3&gt;
+&lt;p&gt;With empty configuration files, Hadoop will run completely on the local machine.Because there’s no need to communicate with other nodes, the standalone mode doesn't use HDFS, nor will it launch any of the Hadoop daemons.&lt;/p&gt;
+&lt;h3&gt;Pseudo-distributed mode&lt;/h3&gt;
+&lt;p&gt;running Hadoop in a “cluster of one”  with all daemons running on a single machine.&lt;/p&gt;
+&lt;h3&gt;Fully distributed mode&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;master—The master node of the cluster and host of the NameNode and Job-Tracker daemons&lt;/li&gt;
+&lt;li&gt;backup—The server that hosts the Secondary NameNode daemon&lt;/li&gt;
+&lt;li&gt;hadoop1, hadoop2, hadoop3, ...—The slave boxes of the cluster running both DataNode and TaskTracker daemons&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;About Java&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Version 2.7 and later of Apache Hadoop requires Java 7. It is built and tested on both OpenJDK and Oracle (&lt;a href="https://wiki.apache.org/hadoop/HotSpot"&gt;HotSpot&lt;/a&gt;)'s JDK/JRE. Earlier versions (2.6 and earlier) support Java 6. &lt;/p&gt;
+&lt;p&gt;OpenJDK has been used to qualify Hadoop 2.2 -and the rest of the Hortonworks bundle- on RHEL6. No problems were noted. &lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;基于虚拟机搭建Hadoop集群&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;基于平台：Ubuntu server 16.04&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3&gt;准备虚拟机&lt;/h3&gt;
+&lt;p&gt;使用Virtualbox安装ubuntu，为了便于多虚拟机之间、宿主机与虚拟机之间连接，增加一张使用&lt;code&gt;Host-only&lt;/code&gt;的虚拟网卡。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot_20161116_144933" src="images/Screenshot_20161116_144933.png"&gt;&lt;/p&gt;
+&lt;h3&gt;手动安装教程&lt;/h3&gt;
+&lt;p&gt;参见 https://www.digitalocean.com/community/tutorials/how-to-install-hadoop-in-stand-alone-mode-on-ubuntu-16-04&lt;/p&gt;
+&lt;h3&gt;单节点脚本安装&lt;/h3&gt;
+&lt;p&gt;使用以下脚本安装，脚本测试过的环境为ubuntu server 16.04。&lt;/p&gt;
+&lt;p&gt;https://github.com/chih7/hadoop_install&lt;/p&gt;
+&lt;h3&gt;分布式运行&lt;/h3&gt;
+&lt;p&gt;直接从单机安装的virtualbox虚拟机clone了两台一样的机器，确保ip如脚本配置：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;MASTER_IP="192.168.56.101"
+SLAVE_IP1="192.168.56.102"
+SLAVE_IP2="192.168.56.103"&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;进入了hadoop-master的/root目录，直接运行&lt;code&gt;start-hadoop.sh&lt;/code&gt;脚本即可。&lt;/p&gt;
+&lt;h2&gt;基于Docker搭建Hadoop集群&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;标准的交付件&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="01-docker-container" src="images/01-docker-container.jpg"&gt;&lt;/p&gt;
+&lt;h3&gt;优势&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;存储驱动-层叠镜像模型&lt;/li&gt;
+&lt;li&gt;以应用为中心的云计算新模式-以容器为标准交付件&lt;/li&gt;
+&lt;li&gt;版本控制-对接代码仓库，自动化测试和构建&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img alt="uScreenshot_20161110_120920" src="images/Screenshot_20161110_120920.png"&gt;&lt;/p&gt;
+&lt;h3&gt;安装过程&lt;/h3&gt;
+&lt;h4&gt;3节点Hadoop集群搭建步骤&lt;/h4&gt;
+&lt;h5&gt;pull docker image&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo docker pull kiwenlau/hadoop:1.0
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h5&gt;clone github repository&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/kiwenlau/hadoop-cluster-docker
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h5&gt;create hadoop network&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo docker network create --driver=bridge hadoop
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h5&gt;start container&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cd hadoop-cluster-docker
+sudo ./start-container.sh
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;output:&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;start hadoop-master container...
+start hadoop-slave1 container...
+start hadoop-slave2 container...
+root@hadoop-master:~# 
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;start 3 containers with 1 master and 2 slaves&lt;/li&gt;
+&lt;li&gt;you will get into the /root directory of hadoop-master container&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ docker info  
+Containers: &lt;span class="m"&gt;3&lt;/span&gt;
+ Running: &lt;span class="m"&gt;3&lt;/span&gt;
+ Paused: &lt;span class="m"&gt;0&lt;/span&gt;
+ Stopped: &lt;span class="m"&gt;0&lt;/span&gt;
+Images: &lt;span class="m"&gt;1&lt;/span&gt;
+...
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;查看docker的运行信息，可以看到基于一个镜像，运行了三个容器实例。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo du -chs ./docker/ 
+&lt;span class="m"&gt;1&lt;/span&gt;.7G    ./docker/
+&lt;span class="m"&gt;1&lt;/span&gt;.7G    total
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;查看整个docker集群的磁盘占用，全部只有3.3GB，可见基于层叠镜像模型，docker大大减少了磁盘占用。&lt;/p&gt;
+&lt;h5&gt;start hadoop&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./start-hadoop.sh
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h5&gt;run wordcount&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./run-wordcount.sh
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;output&lt;/strong&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;input file1.txt:
+Hello Hadoop
+
+input file2.txt:
+Hello Docker
+
+wordcount output:
+Docker    1
+Hadoop    1
+Hello    2
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Hadoop网页管理地址:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;NameNode: &lt;a href="http://127.0.0.1:50070/"&gt;http://127.0.0.1:50070/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;ResourceManager: &lt;a href="http://127.0.0.1:8088/"&gt;http://127.0.0.1:8088/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;code&gt;127.0.0.1&lt;/code&gt;为运行容器的主机的IP。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot_20161107_133024" src="images/Screenshot_20161107_133024.png"&gt;&lt;/p&gt;
+&lt;h4&gt;N节点Hadoop集群搭建步骤&lt;/h4&gt;
+&lt;h5&gt;先准备3节点Hadoop集群&lt;/h5&gt;
+&lt;h5&gt;重新构建Docker镜像&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo ./resize-cluster.sh 5
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;指定任意N，增加slaves节点的数量&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5&gt;启动Docker容器&lt;/h5&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo ./start-container.sh 5
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;ul&gt;
+&lt;li&gt;与第2步中的N保持一致。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;参考： https://github.com/kiwenlau/hadoop-cluster-docker&lt;/p&gt;
+&lt;h3&gt;Docker集群&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Kubernetes  &lt;/li&gt;
+&lt;li&gt;Docker Swarm &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;基于云的hadoop集群&lt;/h2&gt;
+&lt;h3&gt;青云&lt;/h3&gt;
+&lt;p&gt;https://www.qingcloud.com/hadoop&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://www.qingcloud.com/hadoop#hdfs"&gt;集成 Yarn&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.qingcloud.com/hadoop#scaling"&gt;在线伸缩&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.qingcloud.com/hadoop#monitor"&gt;实时监控&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://www.qingcloud.com/hadoop#alarm"&gt;监控告警&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;价格&lt;/h4&gt;
+&lt;p&gt;&lt;img alt="Screenshot_20161107_210119" src="images/Screenshot_20161107_210119.png"&gt;&lt;/p&gt;
+&lt;h3&gt;Azure中国&lt;/h3&gt;
+&lt;p&gt;https://www.azure.cn/home/features/hdinsight/&lt;/p&gt;
+&lt;p&gt;国内首家100%基于 Apache Hadoop 的云服务&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;按需扩展至 PB 级别&lt;/li&gt;
+&lt;li&gt;处理非结构化和半结构化数据&lt;/li&gt;
+&lt;li&gt;在 Java、.NET 等环境中开发&lt;/li&gt;
+&lt;li&gt;无需购买和维护硬件&lt;/li&gt;
+&lt;li&gt;仅为您使用的服务付费&lt;/li&gt;
+&lt;li&gt;在几分钟内创建 Hadoop 群集&lt;/li&gt;
+&lt;li&gt;在 Excel 中直观呈现您的 Hadoop 数据&lt;/li&gt;
+&lt;li&gt;轻松集成本地 Hadoop 群集&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;价格&lt;/h4&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;strong&gt;实例&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;内核数&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;内存数&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;磁盘大小&lt;/strong&gt;&lt;/th&gt;
+&lt;th&gt;&lt;strong&gt;每节点价格&lt;/strong&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;A1&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;1.75GB&lt;/td&gt;
+&lt;td&gt;70GB&lt;/td&gt;
+&lt;td&gt;￥0.51 /小时（约合￥379.44 /月）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;A2&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;3.5GB&lt;/td&gt;
+&lt;td&gt;135GB&lt;/td&gt;
+&lt;td&gt;￥1.01 /小时（约合￥751.44 /月）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;A3&lt;/td&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;7GB&lt;/td&gt;
+&lt;td&gt;285GB&lt;/td&gt;
+&lt;td&gt;￥2.03 /小时（约合￥1,510.32 /月）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;A4&lt;/td&gt;
+&lt;td&gt;8&lt;/td&gt;
+&lt;td&gt;14GB&lt;/td&gt;
+&lt;td&gt;605GB&lt;/td&gt;
+&lt;td&gt;￥4.05 /小时（约合￥3,013.20 /月）&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;AWS中国&lt;/h3&gt;
+&lt;p&gt;https://aws.amazon.com/cn/elasticmapreduce/&lt;/p&gt;
+&lt;p&gt;Amazon EMR 简化了大数据的处理，提供的托管 &lt;a href="https://aws.amazon.com/cn/elasticmapreduce/details/hadoop/"&gt;Hadoop&lt;/a&gt; 框架可以让您轻松、快速、经济高效地在多个动态可扩展的 Amazon EC2 实例之间分发和处理大量数据。您还可以运行其他常用的分发框架（例如 Amazon EMR 中的 Spark 和 Presto）与其他 AWS 数据存储服务（例如 Amazon S3 和 Amazon DynamoDB）中的数据进行互动。&lt;/p&gt;</content><category term="linux"></category><category term="Hadoop"></category><category term="Java， Big Data"></category></entry><entry><title>使用LuCI的RPC接口修改openwrt配置</title><link href="https://blog.chih.me/chang-openwtr-ppoe-password.html" rel="alternate"></link><published>2016-10-17T00:00:00+08:00</published><updated>2016-10-17T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2016-10-17:/chang-openwtr-ppoe-password.html</id><summary type="html">&lt;p&gt;简单来说，本文整理了一些&lt;code&gt;openwrt&lt;/code&gt;的RPC接口，用来自动修改pppoe的密码，并重启网络。为什么要弄这些玩意呢，因为浙江高校中普遍使用的蛋疼的闪讯——两三天换个动态密码，时不时给你断个网！使用这些API的是一个Android应用，它在用户按下一个按键后自动向电信发送一条获取密码的短信，然后获取返回的短信，解析其中的闪讯动态密码，通过&lt;code&gt;openwrt&lt;/code&gt;的RPC接口修改密码并重启网络，这样，只需要一次按按钮的操作，就能恢复网络，又可以愉快的玩耍啦。&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://github.com/openwrt/openwrt"&gt;openwrt&lt;/a&gt; 我就不多介绍了，玩路由器的都知道；&lt;a href="https://wiki.openwrt.org/doc/techref/uci"&gt;UCI&lt;/a&gt;是&lt;code&gt;openwrt&lt;/code&gt;提供的一套统一的配置接口，可以用以配置整台&lt;code&gt;openwrt&lt;/code&gt;设备；而&lt;a href="https://wiki.openwrt.org/doc/techref/luci"&gt;LuCI&lt;/a&gt;是一个基于Lua语言开发的、包装了底层UCI接口的易于使用的Web用户接口。LuCI也提供了一种基于JSON格式的RPC机制来访问其内部的库。&lt;/p&gt;
 &lt;p&gt;LuCI的RPC接口的地址为 &lt;strong&gt;/cgi-bin/luci/rpc/LIBRARY&lt;/strong&gt;，其中LIBRARY代表按功能区分的几个库，分别为：&lt;/p&gt;
 &lt;ul&gt;

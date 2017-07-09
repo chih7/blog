@@ -68,6 +68,47 @@
 
 <article>
   <header>
+    <h2><a href="https://blog.chih.me/Setting-up-a-Storm-Cluster-in-3-machines.html#Setting-up-a-Storm-Cluster-in-3-machines">实时计算框架Storm集群搭建</a></h2>
+    <p>
+          Posted on Fri 20 February 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/storm.html">Storm</a>,              <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>,              <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
+    </p>
+  </header>
+  <div>
+      <h3>首先对三台ubuntu14.04进行任务分配:</h3>
+<p><img alt="4-1" src="https://blog.chih.me/images/4-1.jpg"></p>
+<ul>
+<li>
+<p>nimbus：
+ip：192.168.56.102</p>
+</li>
+<li>
+<p>zookeeper：
+ip：192.168.56.102；192.168.56.103；192.168.56.104</p>
+</li>
+<li>
+<p>supervisor：
+ip：192.168.56.103 192.168.56.104</p>
+</li>
+</ul>
+<p>此三台虚拟机分别用作Storm集群中的<code>nimbus</code>节点、<code>Zookeeper</code>集群（一台机器开多个zookeeper进程，当然也可以多台机器）、<code>supervisor</code>节点。</p>
+<p>在这里我为方便起见 直接从单机安装的virtualbox虚拟机clone了三台一样的机器进行配置，每台上的配置过程见<a href="https://blog.chih.me/Setting-up-a-Storm-Cluster.html">实时计算框架Storm本地模式搭建</a></p>
+<h3>下面针对每一个节点进行具体的配置</h3>
+<p><img alt="4-2" src="https://blog.chih.me/images/4-2.png"></p>
+<h4>搭建一个Zookeeper集群</h4>
+<p>三台机器同时作为<code>zookeeper</code>集群 …</p>
+      <br>
+      <a class="btn" href="https://blog.chih.me/Setting-up-a-Storm-Cluster-in-3-machines.html#Setting-up-a-Storm-Cluster-in-3-machines">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://blog.chih.me/Setting-up-a-Storm-Cluster.html#Setting-up-a-Storm-Cluster">实时计算框架Storm本地模式搭建</a></h2>
     <p>
           Posted on Mon 02 February 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
