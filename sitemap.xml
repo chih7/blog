@@ -5,28 +5,28 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://blog.chih.me/</loc>
-<lastmod>2017-07-09T13:08:27-00:00</lastmod>
+<lastmod>2017-07-09T13:14:48-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.chih.me/archives.html</loc>
-<lastmod>2017-07-09T13:08:27-00:00</lastmod>
+<lastmod>2017-07-09T13:14:48-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.chih.me/tags.html</loc>
-<lastmod>2017-07-09T13:08:27-00:00</lastmod>
+<lastmod>2017-07-09T13:14:48-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.chih.me/categories.html</loc>
-<lastmod>2017-07-09T13:08:27-00:00</lastmod>
+<lastmod>2017-07-09T13:14:48-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -167,6 +167,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>https://blog.chih.me/virtualboxzhu-ji-fang-wen-xu-ni-ji.html</loc>
 <lastmod>2014-03-02T00:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
+<loc>https://blog.chih.me/disable-easy-install-in-vmware.html</loc>
+<lastmod>2012-09-05T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
@@ -503,6 +510,20 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>https://blog.chih.me/tag/wang-luo.html</loc>
 <lastmod>2014-03-02T00:00:00+08:06</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://blog.chih.me/tag/vmware.html</loc>
+<lastmod>2012-09-05T00:00:00+08:06</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://blog.chih.me/tag/xu-ni-ji.html</loc>
+<lastmod>2012-09-05T00:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>

@@ -2417,4 +2417,24 @@ storm.messaging.netty.min_wait_ms: 100   #--指定最小等待时间（毫秒）
 &lt;p&gt;&lt;img alt="NAT" src="https://blog.chih.me/images/58081e7f-677a-47f9-8fc5-a7ec0435e7b1.png"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Host-Only" src="https://blog.chih.me/images/7695d614d15ad02edfd564e4b32810fc.png"&gt;&lt;/p&gt;
 &lt;p&gt;需要注意的是，如果你的宿主机是Linux的话，安装virtualbox后是没有一张Host-Only的网卡的，你需要在virtualbox的设置里添加这张网卡。&lt;/p&gt;
-&lt;p&gt;&lt;img alt="add-Host-Only" src="https://blog.chih.me/images/snapshot2.png"&gt;&lt;/p&gt;</content><category term="Hosts"></category><category term="virtualbox"></category><category term="linux"></category><category term="网络"></category></entry></feed>
+&lt;p&gt;&lt;img alt="add-Host-Only" src="https://blog.chih.me/images/snapshot2.png"&gt;&lt;/p&gt;</content><category term="Hosts"></category><category term="virtualbox"></category><category term="linux"></category><category term="网络"></category></entry><entry><title>VMware中使easy install失效</title><link href="https://blog.chih.me/disable-easy-install-in-vmware.html" rel="alternate"></link><published>2012-09-05T00:00:00+08:00</published><updated>2012-09-05T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2012-09-05:/disable-easy-install-in-vmware.html</id><summary type="html">&lt;p&gt;用Typcial或custom方式安装虚拟机时，会出现Easy Install，使得安装过程自动进行，但这种自动的安装会有一些问题，比如装Linux时的分区，ubuntu的中文支持也会有问题。
+更多的，对于像我这种学生来说，虚拟机有很大的作用是用来学习系统的安装的，这时Easy Install就显得多余了，那我们要怎么取消Easy Install呢？下面是一种不错的方法。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;用Typcial或custom方式进入虚拟机的安装。&lt;/li&gt;
+&lt;li&gt;出现Easy Install Information时，可以随便填写，这个在后来的实际安装过程中是用不着的。&lt;/li&gt;
+&lt;li&gt;按你的需要配置虚拟机&lt;/li&gt;
+&lt;li&gt;在Ready to Create Virtual Machine页中，需要把Power on this virtual machine after creation前的勾去掉，Finish&lt;/li&gt;
+&lt;li&gt;接下来配置你刚刚创建的虚拟机。&lt;/li&gt;
+&lt;li&gt;把使用autoinst.iso的CD/DVD这个硬件直接remove或选为Auto detect，同样更改Floppy这个硬件，OK&lt;/li&gt;
+&lt;li&gt;现在启动虚拟机安装系统时就不会进入Easy Install了。&lt;/li&gt;
+&lt;/ol&gt;</summary><content type="html">&lt;p&gt;用Typcial或custom方式安装虚拟机时，会出现Easy Install，使得安装过程自动进行，但这种自动的安装会有一些问题，比如装Linux时的分区，ubuntu的中文支持也会有问题。
+更多的，对于像我这种学生来说，虚拟机有很大的作用是用来学习系统的安装的，这时Easy Install就显得多余了，那我们要怎么取消Easy Install呢？下面是一种不错的方法。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;用Typcial或custom方式进入虚拟机的安装。&lt;/li&gt;
+&lt;li&gt;出现Easy Install Information时，可以随便填写，这个在后来的实际安装过程中是用不着的。&lt;/li&gt;
+&lt;li&gt;按你的需要配置虚拟机&lt;/li&gt;
+&lt;li&gt;在Ready to Create Virtual Machine页中，需要把Power on this virtual machine after creation前的勾去掉，Finish&lt;/li&gt;
+&lt;li&gt;接下来配置你刚刚创建的虚拟机。&lt;/li&gt;
+&lt;li&gt;把使用autoinst.iso的CD/DVD这个硬件直接remove或选为Auto detect，同样更改Floppy这个硬件，OK&lt;/li&gt;
+&lt;li&gt;现在启动虚拟机安装系统时就不会进入Easy Install了。&lt;/li&gt;
+&lt;/ol&gt;</content><category term="VMware"></category><category term="linux"></category><category term="虚拟机"></category></entry></feed>

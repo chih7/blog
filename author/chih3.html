@@ -261,6 +261,36 @@ ip：192.168.56.103 192.168.56.104</p>
       <a class="btn" href="https://blog.chih.me/virtualboxzhu-ji-fang-wen-xu-ni-ji.html#virtualboxzhu-ji-fang-wen-xu-ni-ji">    Continue reading
 </a>
   </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://blog.chih.me/disable-easy-install-in-vmware.html#disable-easy-install-in-vmware">VMware中使easy install失效</a></h2>
+    <p>
+          Posted on Wed 05 September 2012 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/vmware.html">VMware</a>,              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/xu-ni-ji.html">虚拟机</a>
+    </p>
+  </header>
+  <div>
+      <p>用Typcial或custom方式安装虚拟机时，会出现Easy Install，使得安装过程自动进行，但这种自动的安装会有一些问题，比如装Linux时的分区，ubuntu的中文支持也会有问题。
+更多的，对于像我这种学生来说，虚拟机有很大的作用是用来学习系统的安装的，这时Easy Install就显得多余了，那我们要怎么取消Easy Install呢？下面是一种不错的方法。</p>
+<ol>
+<li>用Typcial或custom方式进入虚拟机的安装。</li>
+<li>出现Easy Install Information时，可以随便填写，这个在后来的实际安装过程中是用不着的。</li>
+<li>按你的需要配置虚拟机</li>
+<li>在Ready to Create Virtual Machine页中，需要把Power on this virtual machine after creation前的勾去掉，Finish</li>
+<li>接下来配置你刚刚创建的虚拟机。</li>
+<li>把使用autoinst.iso的CD/DVD这个硬件直接remove或选为Auto detect，同样更改Floppy这个硬件，OK</li>
+<li>现在启动虚拟机安装系统时就不会进入Easy Install了。</li>
+</ol>
+      <br>
+      <a class="btn" href="https://blog.chih.me/disable-easy-install-in-vmware.html#disable-easy-install-in-vmware">    Continue reading
+</a>
+  </div>
 </article>
 
   <div class="pagination">
