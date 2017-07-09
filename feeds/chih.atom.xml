@@ -1,5 +1,259 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>chih's blog - chih</title><link href="https://blog.chih.me/" rel="alternate"></link><link href="https://blog.chih.me/feeds/chih.atom.xml" rel="self"></link><id>https://blog.chih.me/</id><updated>2017-07-05T00:00:00+08:00</updated><entry><title>抓取网页中所有PDF链接并下载的Python脚本</title><link href="https://blog.chih.me/vldb-downloader.html" rel="alternate"></link><published>2017-07-05T00:00:00+08:00</published><updated>2017-07-05T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2017-07-05:/vldb-downloader.html</id><summary type="html">&lt;h3&gt;说点什么&lt;/h3&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>chih's blog - chih</title><link href="https://blog.chih.me/" rel="alternate"></link><link href="https://blog.chih.me/feeds/chih.atom.xml" rel="self"></link><id>https://blog.chih.me/</id><updated>2017-07-09T00:00:00+08:00</updated><entry><title>基于SPARK的分布式网页近似度检测</title><link href="https://blog.chih.me/simjoin-on-spark.html" rel="alternate"></link><published>2017-07-09T00:00:00+08:00</published><updated>2017-07-09T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2017-07-09:/simjoin-on-spark.html</id><summary type="html">&lt;h1&gt;前言&lt;/h1&gt;
+&lt;p&gt;随着Web上数量的急剧增长，近似镜像网页的数量也在不断增加。近似镜像网页的存在，严重影响了搜索引擎的检索结果。如果我们能将搜集到的网页中的近似镜像网页去掉，可以提高搜集系统和索引系统效率，用户查询时也不会出现大量内容重复的网页。去除镜像网页即需要网页近似度检测算法。实验基于相似性连接实现了基于SPARK的分布式网页近似度检测，对5000个网页进行了相似度检测，试图找出所有相似的网页。实验使用的网页来源与人才招聘网站的电子简历，共有5000份，由于我们只关心其中的简历内容，因此需要去除简历内容外的HTML标签，网页样式、代码。在去除了无关内容后，即可进行近似检测，大数据环境下，数据量巨大，运用传统的方式进行相似性连接效率极低，实验选择了相似性连接查询作为底层的算法实现，作为一种分布式算法，实验选择了Spark作为分布式计算框架。&lt;/p&gt;
+&lt;p&gt;相似性连接查询，即查找相似的数据对象对，具有广泛的应用领域，例如相似网页检、实体解析、数据清洗和相似图像检索等。 在相似网页检测中，使用相似性连接等技术识别相似的网页，不但可以帮助网页搜索引擎执行聚焦爬行，提高搜索结果的质量和多样性，还可以识别垃圾邮件。在实体解析中，使用相似性连接技术，可以找到企业数据库里相似的顾客，匹配产品报价等。在数据清洗中，使用相似性连接技术，可以为不同数 据源集成提供一致、准确的数据。在相似图像检索 中，使用相似性连接技术检索出相似的图像，可以分析图像的来源 …&lt;/p&gt;</summary><content type="html">&lt;h1&gt;前言&lt;/h1&gt;
+&lt;p&gt;随着Web上数量的急剧增长，近似镜像网页的数量也在不断增加。近似镜像网页的存在，严重影响了搜索引擎的检索结果。如果我们能将搜集到的网页中的近似镜像网页去掉，可以提高搜集系统和索引系统效率，用户查询时也不会出现大量内容重复的网页。去除镜像网页即需要网页近似度检测算法。实验基于相似性连接实现了基于SPARK的分布式网页近似度检测，对5000个网页进行了相似度检测，试图找出所有相似的网页。实验使用的网页来源与人才招聘网站的电子简历，共有5000份，由于我们只关心其中的简历内容，因此需要去除简历内容外的HTML标签，网页样式、代码。在去除了无关内容后，即可进行近似检测，大数据环境下，数据量巨大，运用传统的方式进行相似性连接效率极低，实验选择了相似性连接查询作为底层的算法实现，作为一种分布式算法，实验选择了Spark作为分布式计算框架。&lt;/p&gt;
+&lt;p&gt;相似性连接查询，即查找相似的数据对象对，具有广泛的应用领域，例如相似网页检、实体解析、数据清洗和相似图像检索等。 在相似网页检测中，使用相似性连接等技术识别相似的网页，不但可以帮助网页搜索引擎执行聚焦爬行，提高搜索结果的质量和多样性，还可以识别垃圾邮件。在实体解析中，使用相似性连接技术，可以找到企业数据库里相似的顾客，匹配产品报价等。在数据清洗中，使用相似性连接技术，可以为不同数 据源集成提供一致、准确的数据。在相似图像检索 中，使用相似性连接技术检索出相似的图像，可以分析图像的来源，查找高清图像等，当前比较常用的有字符串、集合和向量的相似性连接算法。&lt;/p&gt;
+&lt;h1&gt;选用平台描述&lt;/h1&gt;
+&lt;p&gt;实验运用的是spark平台，选择的编程语言是scala中，操作系统是ubuntu。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;spark：2.1.0&lt;/li&gt;
+&lt;li&gt;Scala：2.10.6&lt;/li&gt;
+&lt;li&gt;Ubuntu 16.04.2 LTS&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;数据集描述&lt;/h1&gt;
+&lt;p&gt;原始数据集为5000个左右的简历网页， 大致格式如下：&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot_20170611_195353" src="images/Screenshot_20170611_195353.png" width="70%"&gt;&lt;/p&gt;
+&lt;p&gt;经过分词，去除重复词，HTML标签，停用词后，输出如下，作为Spark文档近似度检测的输入源。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot_20170611_195748" src="images/Screenshot_20170611_195748.png" width="80%"&gt;&lt;/p&gt;
+&lt;h1&gt;设计逻辑&lt;/h1&gt;
+&lt;h2&gt;数据清洗与中文分词&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#! /bin/python&lt;/span&gt;
+
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pyquery&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;PyQuery&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;jieba&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+
+&lt;span class="n"&gt;STOP_WORDS&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;frozenset&lt;/span&gt;&lt;span class="p"&gt;((&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;a&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;an&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;and&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;are&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;as&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;at&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;be&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;by&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                    &lt;span class="s1"&gt;&amp;#39;for&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;from&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;have&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;if&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;in&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;is&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;it&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;may&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                    &lt;span class="s1"&gt;&amp;#39;not&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;of&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;on&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;or&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;tbd&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;that&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;the&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;this&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                    &lt;span class="s1"&gt;&amp;#39;to&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;us&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;we&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;when&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;will&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;with&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;yet&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                    &lt;span class="s1"&gt;&amp;#39;you&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;your&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;的&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;了&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;和&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\n&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39; &amp;#39;&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;dirs&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;files&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;walk&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;webResume&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;files&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;web_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;os&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;path&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;root&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="n"&gt;doc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;PyQuery&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;web_file&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+        &lt;span class="n"&gt;doc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;style&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;remove&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;doc&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;script&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;remove&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;doc&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+        &lt;span class="n"&gt;seg_list&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;jieba&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;cut&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;seg_list&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;STOP_WORDS&lt;/span&gt;
+        &lt;span class="n"&gt;write_file&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;./jiebafiles/&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;.txt&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;w&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;write_file&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;write&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="se"&gt;\t&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;join&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;results&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;遍历目录下的所有html文件，去除html文件中的所有标签、样式、代码。使用中文分词对过滤后的HTML文件进行分词，同时过滤掉重复的词、停用词，留下这份简历网页的关键词，写入另一份文件，作为近似度检测的输入。&lt;/p&gt;
+&lt;h2&gt;近似度检测&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.apache.spark.SparkContext&lt;/span&gt;
+&lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.apache.spark.SparkConf&lt;/span&gt;
+
+
+&lt;span class="k"&gt;object&lt;/span&gt; &lt;span class="nc"&gt;SimJoin&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="n"&gt;main&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;args&lt;/span&gt;&lt;span class="k"&gt;:&lt;/span&gt; &lt;span class="kt"&gt;Array&lt;/span&gt;&lt;span class="o"&gt;[&lt;/span&gt;&lt;span class="kt"&gt;String&lt;/span&gt;&lt;span class="o"&gt;])&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+
+    &lt;span class="k"&gt;val&lt;/span&gt; &lt;span class="n"&gt;conf&lt;/span&gt; &lt;span class="k"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nc"&gt;SparkConf&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="n"&gt;setAppName&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;SimJion&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="n"&gt;setMaster&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;master&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;var&lt;/span&gt; &lt;span class="n"&gt;sc&lt;/span&gt; &lt;span class="k"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nc"&gt;SparkContext&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;conf&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;var&lt;/span&gt; &lt;span class="n"&gt;files&lt;/span&gt; &lt;span class="k"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sc&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;wholeTextFiles&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;
+      &lt;span class="s"&gt;&amp;quot;/home/chih/BD/spark-2.1.1-bin-hadoop2.7/jiebafiles/*.txt&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;8&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;var&lt;/span&gt; &lt;span class="n"&gt;pairs&lt;/span&gt; &lt;span class="k"&gt;=&lt;/span&gt; &lt;span class="n"&gt;files&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;flatMap&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="k"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;{&lt;/span&gt;
+      &lt;span class="k"&gt;val&lt;/span&gt; &lt;span class="n"&gt;rid&lt;/span&gt; &lt;span class="k"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_1&lt;/span&gt; &lt;span class="c1"&gt;// 文件名&lt;/span&gt;
+      &lt;span class="k"&gt;val&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="k"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_2&lt;/span&gt; &lt;span class="c1"&gt;// 文件内容&lt;/span&gt;
+      &lt;span class="k"&gt;val&lt;/span&gt; &lt;span class="n"&gt;tokens&lt;/span&gt; &lt;span class="k"&gt;=&lt;/span&gt; &lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;\t&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;// 分割&lt;/span&gt;
+        &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="k"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;!&lt;/span&gt;&lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isEmpty&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;// 移除空token&lt;/span&gt;
+      &lt;span class="k"&gt;var&lt;/span&gt; &lt;span class="n"&gt;map&lt;/span&gt; &lt;span class="k"&gt;=&lt;/span&gt; &lt;span class="n"&gt;tokens&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;groupBy&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;identity&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="n"&gt;mapValues&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="k"&gt;_&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+      &lt;span class="n"&gt;map&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;map&lt;/span&gt;&lt;span class="o"&gt;({&lt;/span&gt; &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="k"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rid&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;tokens&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;length&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;c&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt; &lt;span class="o"&gt;})&lt;/span&gt;
+    &lt;span class="o"&gt;})&lt;/span&gt;
+    &lt;span class="k"&gt;var&lt;/span&gt; &lt;span class="n"&gt;groups&lt;/span&gt; &lt;span class="k"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pairs&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;groupByKey&lt;/span&gt;&lt;span class="o"&gt;().&lt;/span&gt;&lt;span class="n"&gt;flatMap&lt;/span&gt;&lt;span class="o"&gt;({&lt;/span&gt; &lt;span class="k"&gt;case&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="k"&gt;=&amp;gt;&lt;/span&gt;
+      &lt;span class="n"&gt;u&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;toList&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;combinations&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+        &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;map&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt; &lt;span class="k"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(((&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;head&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;head&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_2&lt;/span&gt;&lt;span class="o"&gt;),&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="n"&gt;_1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="n"&gt;_2&lt;/span&gt;&lt;span class="o"&gt;)),&lt;/span&gt; 
+                   &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="nc"&gt;Math&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;min&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;head&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_3&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;k&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="n"&gt;_3&lt;/span&gt;&lt;span class="o"&gt;))))&lt;/span&gt;
+    &lt;span class="o"&gt;})&lt;/span&gt;
+    &lt;span class="k"&gt;var&lt;/span&gt; &lt;span class="n"&gt;grouped&lt;/span&gt; &lt;span class="k"&gt;=&lt;/span&gt; &lt;span class="n"&gt;groups&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;reduceByKey&lt;/span&gt;&lt;span class="o"&gt;((&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt; &lt;span class="k"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_2&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_2&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+    &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;map&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="k"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_2&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt;
+    &lt;span class="k"&gt;val&lt;/span&gt; &lt;span class="n"&gt;min_t&lt;/span&gt; &lt;span class="k"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;0.4&lt;/span&gt;
+    &lt;span class="k"&gt;val&lt;/span&gt; &lt;span class="n"&gt;max_t&lt;/span&gt; &lt;span class="k"&gt;=&lt;/span&gt; &lt;span class="mf"&gt;0.99&lt;/span&gt;
+    &lt;span class="k"&gt;var&lt;/span&gt; &lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="k"&gt;=&lt;/span&gt; &lt;span class="n"&gt;grouped&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;map&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="k"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_1&lt;/span&gt;&lt;span class="o"&gt;,&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;toDouble&lt;/span&gt; 
+                                    &lt;span class="o"&gt;/&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_2&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_2&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_2&lt;/span&gt;&lt;span class="o"&gt;)))&lt;/span&gt;
+      &lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;filter&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="k"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_3&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;=&lt;/span&gt; &lt;span class="n"&gt;min_t&lt;/span&gt; &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;_3&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="n"&gt;max_t&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;results&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;take&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="o"&gt;).&lt;/span&gt;&lt;span class="n"&gt;foreach&lt;/span&gt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="n"&gt;println&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+
+    &lt;span class="n"&gt;sc&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;stop&lt;/span&gt;&lt;span class="o"&gt;()&lt;/span&gt;
+  &lt;span class="o"&gt;}&lt;/span&gt;
+&lt;span class="o"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;从目录中读取所有已经经过分词的简介文档，生成文件名、文件内容的对，供后续处理。建立倒排索引，将记录的RID插入到其项目的倒排索引中的对应Item中。生成候选集，通过倒排索引的item两两配对生成候选对，并记录相同候选对的数量，从而最终生成最终的候选集。
+从候选集中找出符合要求的结果，通过Jaccard 系数阈值计算出对应的相似度阈值，从而在候选集中找出相应的结果。&lt;/p&gt;
+&lt;h1&gt;运行部署描述&lt;/h1&gt;
+&lt;p&gt;Spark 官方提供了三种集群部署方案： Standalone, Mesos, YARN。在试验环境下，Standalone 模式就足够了，因此本实验选用Standalone 模式。如果如果已经有 Yarn 或者 Mesos 环境，也是很方便地迁移到新的资源调度框架上的。&lt;/p&gt;
+&lt;h2&gt;注意&lt;/h2&gt;
+&lt;p&gt;为了避免权限问题影响实验，本例中的演示均为 root 权限，当然在生产环境中，为了安全起见，需要使用单独的用户启动运行Spark。注意，除非特别说明，所有的操作需要在每台机器上都操作一遍，你可以使用Xshell，ansible简化操作。&lt;/p&gt;
+&lt;h2&gt;环境准备&lt;/h2&gt;
+&lt;h3&gt;安装系统&lt;/h3&gt;
+&lt;p&gt;我使用VirtualBox虚拟机软件创建三台Ubuntu服务器，均使用纯净安装，集群准备为1个master，2个slave。每台的均配置两张网卡，其中一张nat网络，用于连接外网，更新安装软件包用，另一张使用host-only模式，用于宿主机和虚拟机、 虚拟机直接通讯使用。如下图所示。&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot_20170611_190618" src="images/Screenshot_20170611_190618.png" width="80%"&gt;&lt;/p&gt;
+&lt;h3&gt;配置hosts&lt;/h3&gt;
+&lt;p&gt;Host-Only网卡的IP地址是顺序分配的，在这里，三台虚拟机Host-Only网卡的IP地址分别为 192.168.56.101、 192.168.56.102、 192.168.56.103 。&lt;/p&gt;
+&lt;p&gt;在每台主机上修改host文件，在文件末尾添加以下三行。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;vim /etc/hosts
+
+&lt;span class="m"&gt;192&lt;/span&gt;.168.56.101    master
+&lt;span class="m"&gt;192&lt;/span&gt;.168.56.102    slave1
+&lt;span class="m"&gt;192&lt;/span&gt;.168.56.103    slave2
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;配置之后相互ping一下看是否生效。&lt;/p&gt;
+&lt;h3&gt;配置SSH 免密码登录&lt;/h3&gt;
+&lt;p&gt;安装Openssh server&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt install openssh-server
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;在所有机器上都生成私钥和公钥&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh-keygen -t rsa   &lt;span class="c1"&gt;#一路回车&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;需要让机器间都能相互访问，就把每个机子上的id_rsa.pub发给master节点，传输公钥可以用scp来传输。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;scp ~/.ssh/id_rsa.pub spark@master:~/.ssh/id_rsa.pub.slave1
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;在master上，将所有公钥加到用于认证的公钥文件authorized_keys中&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cat ~/.ssh/id_rsa.pub* &amp;gt;&amp;gt; ~/.ssh/authorized_keys
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;将公钥文件authorized_keys分发给每台slave&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;scp ~/.ssh/authorized_keys spark@slave1:~/.ssh/
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;在每台机子上验证SSH无密码通信&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ssh master
+ssh slave1
+ssh slave2
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;安装JDK&lt;/h3&gt;
+&lt;p&gt;直接通过包管理安装openJDK 8.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt install openjdk-8-jdk
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;使用以下命令配置环境变量并使之生效：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+&lt;span class="s2"&gt;# set environment variable&lt;/span&gt;
+&lt;span class="s2"&gt;export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64&lt;/span&gt;
+&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;   &amp;gt;&amp;gt; /etc/profile.d/spark.sh
+
+    &lt;span class="nb"&gt;source&lt;/span&gt; /etc/profile.d/spark.sh &lt;span class="c1"&gt;#使之生效&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;验证 Java 是否安装成功&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;java -version         &lt;span class="c1"&gt;#如果打印出版本信息，则说明安装成功&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;安装Spark&lt;/h2&gt;
+&lt;p&gt;使用以下命令下载并安装Spark：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;wget &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;mirror&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/apache/spark/spark-2.1.0/ &lt;span class="se"&gt;\&lt;/span&gt;
+    spark-&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;spark_pkgver&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;-bin-hadoop&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;hadoop_pkgver&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.tgz
+
+tar -xzvf spark-&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;spark_pkgver&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;-bin-hadoop&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;hadoop_pkgver&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.tgz
+mv spark-&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;spark_pkgver&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;-bin-hadoop&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;hadoop_pkgver&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt; /usr/local/spark
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;配置 Hadoop&lt;/h2&gt;
+&lt;p&gt;进入配置目录 &lt;code&gt;/usr/local/spark/conf&lt;/code&gt; 准备修改配置文件。&lt;/p&gt;
+&lt;p&gt;在&lt;code&gt;slaves&lt;/code&gt;中配置slave节点的ip或者host，&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;vim ./slaves
+
+spark-slave1
+spark-slave2
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;配置&lt;code&gt;spark-env.sh&lt;/code&gt; &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;cp /usr/local/spark/conf/spark-env.sh.template /usr/local/spark/conf/spark-env.sh
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;SPARK_MASTER_HOST=master&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /usr/local/spark/conf/spark-env.sh
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;SPARK_LOCAL_IP={修改为每台机器对应的名称}&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /usr/local/spark/conf/spark-env.sh
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;启动Spark&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo -s
+su -
+sbin/start-all.sh
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;如果没有问题，进入Spark的Web管理页面： &lt;a href="http://master:8080/"&gt;http://master:8080&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot_20170611_193731" src="images/Screenshot_20170611_193731.png" width="80%"&gt;&lt;/p&gt;
+&lt;h2&gt;脚本安装Spark&lt;/h2&gt;
+&lt;p&gt;为了方便部署Spark，我简单写了一个Shell脚本，可以方便地几步搭建一个3节点的Spark集群。脚本地址为：&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/chih7/spark-install/"&gt;https://github.com/chih7/spark-install/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;脚本只在Ubuntu 16.04下进行了测试，但其他版本的Ubuntu和debian应该也是可以使用。&lt;/p&gt;
+&lt;p&gt;首先使用VirtualBox安装一台Ubuntu服务器，在里面执行以下命令：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo -s
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;su -
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/chih7/spark-install.git
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; ./spark_install
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;./install-spark.sh
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;reboot
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;重启完成后，&lt;/p&gt;
+&lt;p&gt;克隆这个虚拟机到两台虚拟机，记得修改克隆机的配置文件&lt;code&gt;/usr/local/spark/conf/spark-env.sh&lt;/code&gt;中的&lt;code&gt;SPARK_LOCAL_IP&lt;/code&gt;，之后就可以启动Spark集群了。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo -s
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;su -
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;vim  /usr/local/spark/conf/spark-env.sh &lt;span class="c1"&gt;# change  SPARK_LOCAL_IP=spark-xxxx&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;/usr/local/spark/sbin/start-all.sh
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;实验结果描述&lt;/h1&gt;
+&lt;p&gt;&lt;img alt="Screenshot_20170611_122340" src="images/Screenshot_20170611_122340.png" width="80%"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot_20170611_182331" src="images/Screenshot_20170611_182331.png" width="80%"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot_20170611_182331" src="images/Screenshot_20170611_195236.png" width="80%"&gt;&lt;/p&gt;
+&lt;p&gt;运行代码后，可以看到生成了一个DAG图，即为Spark的计算路径，其中有三个stage。最后输出了超出一定阈值的所有相似的文档对，同时给出了相似度系数。&lt;/p&gt;
+&lt;h1&gt;出现的问题&lt;/h1&gt;
+&lt;p&gt;在运行中出现&lt;code&gt;java.io.IOException: No space left on device&lt;/code&gt;错误，经过Google搜索，发现Spark默认使用 &lt;code&gt;/tmp&lt;/code&gt;目录存储中间结果，而&lt;code&gt;/tmp&lt;/code&gt;目录为tmpfs目录，出于内存文件系统，默认大小仅为内存大小的一半。&lt;/p&gt;
+&lt;p&gt;为了解决这个问题，需要自定义&lt;code&gt;SPARK_LOCAL_DIRS&lt;/code&gt;环境变量到一个足够大的目录下，我这里把它改到了Spark的安装目录。&lt;/p&gt;</content><category term="linux"></category><category term="Spark"></category><category term="scala"></category><category term="SimJion"></category><category term="相似度检测"></category></entry><entry><title>抓取网页中所有PDF链接并下载的Python脚本</title><link href="https://blog.chih.me/vldb-downloader.html" rel="alternate"></link><published>2017-07-05T00:00:00+08:00</published><updated>2017-07-05T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2017-07-05:/vldb-downloader.html</id><summary type="html">&lt;h3&gt;说点什么&lt;/h3&gt;
 &lt;p&gt;没什么好说的，工具脚本，代码都在下面，可能改一下后可以适用于其他地方。&lt;/p&gt;
 &lt;h3&gt;代码&lt;/h3&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python3&lt;/span&gt;

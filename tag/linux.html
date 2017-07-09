@@ -69,6 +69,28 @@
 
 <article>
   <header>
+    <h2><a href="https://blog.chih.me/simjoin-on-spark.html#simjoin-on-spark">基于SPARK的分布式网页近似度检测</a></h2>
+    <p>
+          Posted on Sun 09 July 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/spark.html">Spark</a>,              <a href="https://blog.chih.me/tag/scala.html">scala</a>,              <a href="https://blog.chih.me/tag/simjion.html">SimJion</a>,              <a href="https://blog.chih.me/tag/xiang-si-du-jian-ce.html">相似度检测</a>
+    </p>
+  </header>
+  <div>
+      <h1>前言</h1>
+<p>随着Web上数量的急剧增长，近似镜像网页的数量也在不断增加。近似镜像网页的存在，严重影响了搜索引擎的检索结果。如果我们能将搜集到的网页中的近似镜像网页去掉，可以提高搜集系统和索引系统效率，用户查询时也不会出现大量内容重复的网页。去除镜像网页即需要网页近似度检测算法。实验基于相似性连接实现了基于SPARK的分布式网页近似度检测，对5000个网页进行了相似度检测，试图找出所有相似的网页。实验使用的网页来源与人才招聘网站的电子简历，共有5000份，由于我们只关心其中的简历内容，因此需要去除简历内容外的HTML标签，网页样式、代码。在去除了无关内容后，即可进行近似检测，大数据环境下，数据量巨大，运用传统的方式进行相似性连接效率极低，实验选择了相似性连接查询作为底层的算法实现，作为一种分布式算法，实验选择了Spark作为分布式计算框架。</p>
+<p>相似性连接查询，即查找相似的数据对象对，具有广泛的应用领域，例如相似网页检、实体解析、数据清洗和相似图像检索等。 在相似网页检测中，使用相似性连接等技术识别相似的网页，不但可以帮助网页搜索引擎执行聚焦爬行，提高搜索结果的质量和多样性，还可以识别垃圾邮件。在实体解析中，使用相似性连接技术，可以找到企业数据库里相似的顾客，匹配产品报价等。在数据清洗中，使用相似性连接技术，可以为不同数 据源集成提供一致、准确的数据。在相似图像检索 中，使用相似性连接技术检索出相似的图像，可以分析图像的来源 …</p>
+      <br>
+      <a class="btn" href="https://blog.chih.me/simjoin-on-spark.html#simjoin-on-spark">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://blog.chih.me/vldb-downloader.html#vldb-downloader">抓取网页中所有PDF链接并下载的Python脚本</a></h2>
     <p>
           Posted on Wed 05 July 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
@@ -259,48 +281,6 @@
 <li><strong>sys …</strong></li></ul>
       <br>
       <a class="btn" href="https://blog.chih.me/chang-openwtr-ppoe-password.html#chang-openwtr-ppoe-password">    Continue reading
-</a>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://blog.chih.me/download-use-aria2.html#download-use-aria2">我的硬盘不可能这么空~aria2篇</a></h2>
-    <p>
-          Posted on Tue 31 March 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
-
-
-          &#8226;     Tagged with
-
-              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/xia-zai.html">下载</a>,              <a href="https://blog.chih.me/tag/aria2.html">aria2</a>,              <a href="https://blog.chih.me/tag/systemd.html">systemd</a>
-    </p>
-  </header>
-  <div>
-      <p>对于单纯的Aria2程序来说，它是一个轻量级、支持多种协议的命令行下载工具。</p>
-<ul>
-<li>支持的协议包括HTTP(S), FTP, BitTorrent, Metalink</li>
-<li>aria2可以并发的进行下载，并尝试将下载带宽利用率最大化</li>
-<li>分片与续传，自动中止并替换慢的线程</li>
-</ul>
-<p>看到命令行可能有人会想:“恩，又是那种强大到用起来要查手册写命令的玩意”。其实不然，由于aria2 支持 JSON-RPC和XML-RPC远程调用，可以通过web前端或客户端方便地进行管理。</p>
-<h3>安装</h3>
-<p>在Linux下，可以很方便地通过包管理进行安装，比如Arch Linux</p>
-<div class="highlight"><pre><span></span>$ sudo pacman -S aria2
-</pre></div>
-
-
-<p>如果是Windows，可以下载编译好的二进制文件，放在<code>C:\WINDOWS\system32</code>目录下，就可以通过<code>aria2c</code>命令执行程序了</p>
-<p>可以直接运行命令进行下载:</p>
-<ul>
-<li>
-<p>HTTP下载</p>
-<p>$ aria2c http://example.org/test.bin</p>
-</li>
-<li>
-<p>从两个源同时下载</p>
-<p>$ aria2c http …</p></li></ul>
-      <br>
-      <a class="btn" href="https://blog.chih.me/download-use-aria2.html#download-use-aria2">    Continue reading
 </a>
   </div>
 </article>

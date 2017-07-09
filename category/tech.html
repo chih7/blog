@@ -69,6 +69,28 @@
 
 <article>
   <header>
+    <h2><a href="https://blog.chih.me/simjoin-on-spark.html#simjoin-on-spark">基于SPARK的分布式网页近似度检测</a></h2>
+    <p>
+          Posted on Sun 09 July 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/spark.html">Spark</a>,              <a href="https://blog.chih.me/tag/scala.html">scala</a>,              <a href="https://blog.chih.me/tag/simjion.html">SimJion</a>,              <a href="https://blog.chih.me/tag/xiang-si-du-jian-ce.html">相似度检测</a>
+    </p>
+  </header>
+  <div>
+      <h1>前言</h1>
+<p>随着Web上数量的急剧增长，近似镜像网页的数量也在不断增加。近似镜像网页的存在，严重影响了搜索引擎的检索结果。如果我们能将搜集到的网页中的近似镜像网页去掉，可以提高搜集系统和索引系统效率，用户查询时也不会出现大量内容重复的网页。去除镜像网页即需要网页近似度检测算法。实验基于相似性连接实现了基于SPARK的分布式网页近似度检测，对5000个网页进行了相似度检测，试图找出所有相似的网页。实验使用的网页来源与人才招聘网站的电子简历，共有5000份，由于我们只关心其中的简历内容，因此需要去除简历内容外的HTML标签，网页样式、代码。在去除了无关内容后，即可进行近似检测，大数据环境下，数据量巨大，运用传统的方式进行相似性连接效率极低，实验选择了相似性连接查询作为底层的算法实现，作为一种分布式算法，实验选择了Spark作为分布式计算框架。</p>
+<p>相似性连接查询，即查找相似的数据对象对，具有广泛的应用领域，例如相似网页检、实体解析、数据清洗和相似图像检索等。 在相似网页检测中，使用相似性连接等技术识别相似的网页，不但可以帮助网页搜索引擎执行聚焦爬行，提高搜索结果的质量和多样性，还可以识别垃圾邮件。在实体解析中，使用相似性连接技术，可以找到企业数据库里相似的顾客，匹配产品报价等。在数据清洗中，使用相似性连接技术，可以为不同数 据源集成提供一致、准确的数据。在相似图像检索 中，使用相似性连接技术检索出相似的图像，可以分析图像的来源 …</p>
+      <br>
+      <a class="btn" href="https://blog.chih.me/simjoin-on-spark.html#simjoin-on-spark">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://blog.chih.me/vldb-downloader.html#vldb-downloader">抓取网页中所有PDF链接并下载的Python脚本</a></h2>
     <p>
           Posted on Wed 05 July 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
@@ -259,48 +281,6 @@
 <li><strong>sys …</strong></li></ul>
       <br>
       <a class="btn" href="https://blog.chih.me/chang-openwtr-ppoe-password.html#chang-openwtr-ppoe-password">    Continue reading
-</a>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://blog.chih.me/use-SymPy-get-max-effectiveness-of-ALOHA.html#use-SymPy-get-max-effectiveness-of-ALOHA">使用Python求解分隙ALOHA最大效率</a></h2>
-    <p>
-          Posted on Sat 08 October 2016 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
-
-
-          &#8226;     Tagged with
-
-              <a href="https://blog.chih.me/tag/python.html">Python</a>,              <a href="https://blog.chih.me/tag/sympy.html">SymPy</a>,              <a href="https://blog.chih.me/tag/aloha.html">ALOHA</a>,              <a href="https://blog.chih.me/tag/math.html">math</a>
-    </p>
-  </header>
-  <div>
-      <p>SymPy是一个符号计算的Python库，SymPy支持符号计算、高精度计算、模式匹配、绘图、解方程、微积分、组合数学、离散数学、几何学、概率与统计、物理学等方面的功能。下面我将基于它求解以下两个问题。</p>
-<ol>
-<li>
-<p>当有N个活跃节点的时候，分隙ALOHA的效率为 <span class="math">\(N p (1 - p)^{N - 1}\)</span> ，找出使这个表达式最大化的<code>p</code>值。</p>
-</li>
-<li>
-<p>采用 <code>1</code> 中的p值，计算当 <code>N</code> 趋近于无穷时分隙ALOHA的效率。</p>
-</li>
-</ol>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="o">*</span>
-</pre></div>
-
-
-<p>首先导入sympy库，方便起见，导入了所有内容。</p>
-<div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">)</span>
-</pre></div>
-
-
-<div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
-</pre></div>
-
-
-<p>在SymPy中，数学符号是Symbol类的对象，要明确声明符号变量，我们新建了<code>N</code>与<code>p</code>符号 …</p>
-      <br>
-      <a class="btn" href="https://blog.chih.me/use-SymPy-get-max-effectiveness-of-ALOHA.html#use-SymPy-get-max-effectiveness-of-ALOHA">    Continue reading
 </a>
   </div>
 </article>

@@ -32,7 +32,7 @@
 <meta property="og:locale" content="en_US"/>
 <meta property="og:url" content="https://blog.chih.me"/>
 
-  <title>chih's blog &ndash;     Authors
+  <title>chih's blog &ndash;     Tag SimJion
 </title>
 
 </head>
@@ -65,17 +65,35 @@
   <main>
 
 
-<article class="single">
+
+
+<article>
   <header>
-    <h1>    Authors
-</h1>
+    <h2><a href="https://blog.chih.me/simjoin-on-spark.html#simjoin-on-spark">基于SPARK的分布式网页近似度检测</a></h2>
+    <p>
+          Posted on Sun 09 July 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/spark.html">Spark</a>,              <a href="https://blog.chih.me/tag/scala.html">scala</a>,              <a href="https://blog.chih.me/tag/simjion.html">SimJion</a>,              <a href="https://blog.chih.me/tag/xiang-si-du-jian-ce.html">相似度检测</a>
+    </p>
   </header>
   <div>
-    <ul class="list">
-      <li><a href="https://blog.chih.me/author/chih.html">chih</a> (19)</li>
-    </ul>
+      <h1>前言</h1>
+<p>随着Web上数量的急剧增长，近似镜像网页的数量也在不断增加。近似镜像网页的存在，严重影响了搜索引擎的检索结果。如果我们能将搜集到的网页中的近似镜像网页去掉，可以提高搜集系统和索引系统效率，用户查询时也不会出现大量内容重复的网页。去除镜像网页即需要网页近似度检测算法。实验基于相似性连接实现了基于SPARK的分布式网页近似度检测，对5000个网页进行了相似度检测，试图找出所有相似的网页。实验使用的网页来源与人才招聘网站的电子简历，共有5000份，由于我们只关心其中的简历内容，因此需要去除简历内容外的HTML标签，网页样式、代码。在去除了无关内容后，即可进行近似检测，大数据环境下，数据量巨大，运用传统的方式进行相似性连接效率极低，实验选择了相似性连接查询作为底层的算法实现，作为一种分布式算法，实验选择了Spark作为分布式计算框架。</p>
+<p>相似性连接查询，即查找相似的数据对象对，具有广泛的应用领域，例如相似网页检、实体解析、数据清洗和相似图像检索等。 在相似网页检测中，使用相似性连接等技术识别相似的网页，不但可以帮助网页搜索引擎执行聚焦爬行，提高搜索结果的质量和多样性，还可以识别垃圾邮件。在实体解析中，使用相似性连接技术，可以找到企业数据库里相似的顾客，匹配产品报价等。在数据清洗中，使用相似性连接技术，可以为不同数 据源集成提供一致、准确的数据。在相似图像检索 中，使用相似性连接技术检索出相似的图像，可以分析图像的来源 …</p>
+      <br>
+      <a class="btn" href="https://blog.chih.me/simjoin-on-spark.html#simjoin-on-spark">    Continue reading
+</a>
   </div>
 </article>
+
+  <div class="pagination">
+  </div>
+
+
+
 
     <footer>
 <p>&copy; chih </p>

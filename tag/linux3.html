@@ -69,6 +69,68 @@
 
 <article>
   <header>
+    <h2><a href="https://blog.chih.me/Setting-up-a-Storm-Cluster.html#Setting-up-a-Storm-Cluster">实时计算框架Storm本地模式搭建</a></h2>
+    <p>
+          Posted on Mon 02 February 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/storm.html">Storm</a>,              <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>,              <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
+    </p>
+  </header>
+  <div>
+      <blockquote>
+<p>平台：Ubuntu14.04</p>
+</blockquote>
+<h2>安装依赖</h2>
+<p>通过ubuntu自带的软件包管理器安装java环境。
+安装Java：</p>
+<div class="highlight"><pre><span></span>$ sudo apt-get install openjdk-7-jdk
+</pre></div>
+
+
+<p>检查是否安装完成:</p>
+<div class="highlight"><pre><span></span>$ java -version
+</pre></div>
+
+
+<p><img alt="1-1" src="https://blog.chih.me/images/1-1.png"></p>
+<p>检查python版本:</p>
+<div class="highlight"><pre><span></span>$ python -V
+</pre></div>
+
+
+<p><img alt="1-2" src="https://blog.chih.me/images/1-2.png"></p>
+<h2>安装ZooKeeper</h2>
+<p>为了避免每次获取超级权限重复输入sudo
+临时进入超级用户:</p>
+<div class="highlight"><pre><span></span>$ sudo -s
+</pre></div>
+
+
+<p>使用<code>ctrl+d</code>退出</p>
+<p>定位目录:</p>
+<div class="highlight"><pre><span></span># cd /usr/local/src
+</pre></div>
+
+
+<p>从阿里的源下载:</p>
+<div class="highlight"><pre><span></span># wget http://mirrors.aliyun.com/apache/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz
+</pre></div>
+
+
+<p><img alt="1-3" src="https://blog.chih.me/images/1-3.png"></p>
+<p>使用命令解压:</p>
+<div class="highlight"><pre><span></span># tar -xzvf zookeeper-3 …</pre></div>
+      <br>
+      <a class="btn" href="https://blog.chih.me/Setting-up-a-Storm-Cluster.html#Setting-up-a-Storm-Cluster">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://blog.chih.me/ubuntutu-ran-chu-xian-da-kai-xi-tong-she-zhi-man-sudoshi-chu-xian-wu-fa-jie-xi-zhu-ji-de-jie-jue-ban-fa.html#ubuntutu-ran-chu-xian-da-kai-xi-tong-she-zhi-man-sudoshi-chu-xian-wu-fa-jie-xi-zhu-ji-de-jie-jue-ban-fa">ubuntu突然出现打开系统设置慢 sudo时出现无法解析主机的解决办法</a></h2>
     <p>
           Posted on Sun 06 April 2014 in <a href="https://blog.chih.me/category/tech.html">Tech</a>

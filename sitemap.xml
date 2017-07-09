@@ -5,28 +5,28 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://blog.chih.me/</loc>
-<lastmod>2017-07-09T12:54:58-00:00</lastmod>
+<lastmod>2017-07-09T13:08:27-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.chih.me/archives.html</loc>
-<lastmod>2017-07-09T12:54:58-00:00</lastmod>
+<lastmod>2017-07-09T13:08:27-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.chih.me/tags.html</loc>
-<lastmod>2017-07-09T12:54:58-00:00</lastmod>
+<lastmod>2017-07-09T13:08:27-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.chih.me/categories.html</loc>
-<lastmod>2017-07-09T12:54:58-00:00</lastmod>
+<lastmod>2017-07-09T13:08:27-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -36,6 +36,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <lastmod>2015-03-21T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.3</priority>
+</url>
+
+<url>
+<loc>https://blog.chih.me/simjoin-on-spark.html</loc>
+<lastmod>2017-07-09T00:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
 </url>
 
 <url>
@@ -173,14 +180,42 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://blog.chih.me/category/tech.html</loc>
-<lastmod>2017-07-05T00:00:00+08:06</lastmod>
+<lastmod>2017-07-09T00:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.chih.me/tag/linux.html</loc>
-<lastmod>2017-07-05T00:00:00+08:06</lastmod>
+<lastmod>2017-07-09T00:00:00+08:06</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://blog.chih.me/tag/spark.html</loc>
+<lastmod>2017-07-09T00:00:00+08:06</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://blog.chih.me/tag/scala.html</loc>
+<lastmod>2017-07-09T00:00:00+08:06</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://blog.chih.me/tag/simjion.html</loc>
+<lastmod>2017-07-09T00:00:00+08:06</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://blog.chih.me/tag/xiang-si-du-jian-ce.html</loc>
+<lastmod>2017-07-09T00:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -474,7 +509,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://blog.chih.me/author/chih.html</loc>
-<lastmod>2017-07-05T00:00:00+08:06</lastmod>
+<lastmod>2017-07-09T00:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>

@@ -1,0 +1,404 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/pygments/github.min.css">
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/font-awesome/css/font-awesome.min.css">
+
+
+    <link href="https://blog.chih.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="chih's blog Atom">
+
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+<meta name="author" content="chih" />
+<meta name="description" content="前言 随着Web上数量的急剧增长，近似镜像网页的数量也在不断增加。近似镜像网页的存在，严重影响了搜索引擎的检索结果。如果我们能将搜集到的网页中的近似镜像网页去掉，可以提高搜集系统和索引系统效率，用户查询时也不会出现大量内容重复的网页。去除镜像网页即需要网页近似度检测算法。实验基于相似性连接实现了基于SPARK的分布式网页近似度检测，对5000个网页进行了相似度检测，试图找出所有相似的网页。实验使用的网页来源与人才招聘网站的电子简历，共有5000份，由于我们只关心其中的简历内容，因此需要去除简历内容外的HTML标签，网页样式、代码。在去除了无关内容后，即可进行近似检测，大数据环境下，数据量巨大，运用传统的方式进行相似性连接效率极低，实验选择了相似性连接查询作为底层的算法实现，作为一种分布式算法，实验选择了Spark作为分布式计算框架。 相似性连接查询，即查找相似的数据对象对，具有广泛的应用领域，例如相似网页检、实体解析、数据清洗和相似图像检索等。 在相似网页检测中，使用相似性连接等技术识别相似的网页，不但可以帮助网页搜索引擎执行聚焦爬行，提高搜索结果的质量和多样性，还可以识别垃圾邮件。在实体解析中，使用相似性连接技术，可以找到企业数据库里相似的顾客，匹配产品报价等。在数据清洗中，使用相似性连接技术，可以为不同数 据源集成提供一致、准确的数据。在相似图像检索 中，使用相似性连接技术检索出相似的图像，可以分析图像的来源 …" />
+<meta name="keywords" content="linux, Spark, scala, SimJion, 相似度检测">
+<meta property="og:site_name" content="chih's blog"/>
+<meta property="og:title" content="基于SPARK的分布式网页近似度检测"/>
+<meta property="og:description" content="前言 随着Web上数量的急剧增长，近似镜像网页的数量也在不断增加。近似镜像网页的存在，严重影响了搜索引擎的检索结果。如果我们能将搜集到的网页中的近似镜像网页去掉，可以提高搜集系统和索引系统效率，用户查询时也不会出现大量内容重复的网页。去除镜像网页即需要网页近似度检测算法。实验基于相似性连接实现了基于SPARK的分布式网页近似度检测，对5000个网页进行了相似度检测，试图找出所有相似的网页。实验使用的网页来源与人才招聘网站的电子简历，共有5000份，由于我们只关心其中的简历内容，因此需要去除简历内容外的HTML标签，网页样式、代码。在去除了无关内容后，即可进行近似检测，大数据环境下，数据量巨大，运用传统的方式进行相似性连接效率极低，实验选择了相似性连接查询作为底层的算法实现，作为一种分布式算法，实验选择了Spark作为分布式计算框架。 相似性连接查询，即查找相似的数据对象对，具有广泛的应用领域，例如相似网页检、实体解析、数据清洗和相似图像检索等。 在相似网页检测中，使用相似性连接等技术识别相似的网页，不但可以帮助网页搜索引擎执行聚焦爬行，提高搜索结果的质量和多样性，还可以识别垃圾邮件。在实体解析中，使用相似性连接技术，可以找到企业数据库里相似的顾客，匹配产品报价等。在数据清洗中，使用相似性连接技术，可以为不同数 据源集成提供一致、准确的数据。在相似图像检索 中，使用相似性连接技术检索出相似的图像，可以分析图像的来源 …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://blog.chih.me/simjoin-on-spark.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2017-07-09 00:00:00+08:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://blog.chih.me/author/chih.html">
+<meta property="article:section" content="Tech"/>
+<meta property="article:tag" content="linux"/>
+<meta property="article:tag" content="Spark"/>
+<meta property="article:tag" content="scala"/>
+<meta property="article:tag" content="SimJion"/>
+<meta property="article:tag" content="相似度检测"/>
+<meta property="og:image" content="">
+
+  <title>chih's blog &ndash; 基于SPARK的分布式网页近似度检测</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://blog.chih.me">
+        <img src="https://blog.chih.me/theme/img/profile.png" alt="" title="">
+      </a>
+      <h1><a href="https://blog.chih.me"></a></h1>
+
+
+      <nav>
+        <ul class="list">
+          <li><a href="https://blog.chih.me/pages/about-me.html#about-me">About Me</a></li>
+
+          <li><a href="http://www.hjk.im/" target="_blank">HJK</a></li>
+          <li><a href="http://imis.me/" target="_blank">记忆反射弧</a></li>
+          <li><a href="http://mijack.github.io/" target="_blank">mijack</a></li>
+          <li><a href="http://datahcong.cn/" target="_blank">whl的博客园</a></li>
+        </ul>
+      </nav>
+
+      <ul class="social">
+      </ul>
+    </div>
+
+
+  </aside>
+  <main>
+
+
+<article class="single">
+  <header>
+    <h1 id="simjoin-on-spark">基于SPARK的分布式网页近似度检测</h1>
+    <p>
+          Posted on Sun 09 July 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+    </p>
+  </header>
+
+
+  <div>
+    <h1>前言</h1>
+<p>随着Web上数量的急剧增长，近似镜像网页的数量也在不断增加。近似镜像网页的存在，严重影响了搜索引擎的检索结果。如果我们能将搜集到的网页中的近似镜像网页去掉，可以提高搜集系统和索引系统效率，用户查询时也不会出现大量内容重复的网页。去除镜像网页即需要网页近似度检测算法。实验基于相似性连接实现了基于SPARK的分布式网页近似度检测，对5000个网页进行了相似度检测，试图找出所有相似的网页。实验使用的网页来源与人才招聘网站的电子简历，共有5000份，由于我们只关心其中的简历内容，因此需要去除简历内容外的HTML标签，网页样式、代码。在去除了无关内容后，即可进行近似检测，大数据环境下，数据量巨大，运用传统的方式进行相似性连接效率极低，实验选择了相似性连接查询作为底层的算法实现，作为一种分布式算法，实验选择了Spark作为分布式计算框架。</p>
+<p>相似性连接查询，即查找相似的数据对象对，具有广泛的应用领域，例如相似网页检、实体解析、数据清洗和相似图像检索等。 在相似网页检测中，使用相似性连接等技术识别相似的网页，不但可以帮助网页搜索引擎执行聚焦爬行，提高搜索结果的质量和多样性，还可以识别垃圾邮件。在实体解析中，使用相似性连接技术，可以找到企业数据库里相似的顾客，匹配产品报价等。在数据清洗中，使用相似性连接技术，可以为不同数 据源集成提供一致、准确的数据。在相似图像检索 中，使用相似性连接技术检索出相似的图像，可以分析图像的来源，查找高清图像等，当前比较常用的有字符串、集合和向量的相似性连接算法。</p>
+<h1>选用平台描述</h1>
+<p>实验运用的是spark平台，选择的编程语言是scala中，操作系统是ubuntu。</p>
+<ul>
+<li>spark：2.1.0</li>
+<li>Scala：2.10.6</li>
+<li>Ubuntu 16.04.2 LTS</li>
+</ul>
+<h1>数据集描述</h1>
+<p>原始数据集为5000个左右的简历网页， 大致格式如下：</p>
+<p><img alt="Screenshot_20170611_195353" src="images/Screenshot_20170611_195353.png" width="70%"></p>
+<p>经过分词，去除重复词，HTML标签，停用词后，输出如下，作为Spark文档近似度检测的输入源。</p>
+<p><img alt="Screenshot_20170611_195748" src="images/Screenshot_20170611_195748.png" width="80%"></p>
+<h1>设计逻辑</h1>
+<h2>数据清洗与中文分词</h2>
+<div class="highlight"><pre><span></span><span class="ch">#! /bin/python</span>
+
+<span class="kn">from</span> <span class="nn">pyquery</span> <span class="kn">import</span> <span class="n">PyQuery</span>
+<span class="kn">import</span> <span class="nn">jieba</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">STOP_WORDS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;an&#39;</span><span class="p">,</span> <span class="s1">&#39;and&#39;</span><span class="p">,</span> <span class="s1">&#39;are&#39;</span><span class="p">,</span> <span class="s1">&#39;as&#39;</span><span class="p">,</span> <span class="s1">&#39;at&#39;</span><span class="p">,</span> <span class="s1">&#39;be&#39;</span><span class="p">,</span> <span class="s1">&#39;by&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;for&#39;</span><span class="p">,</span> <span class="s1">&#39;from&#39;</span><span class="p">,</span> <span class="s1">&#39;have&#39;</span><span class="p">,</span> <span class="s1">&#39;if&#39;</span><span class="p">,</span> <span class="s1">&#39;in&#39;</span><span class="p">,</span> <span class="s1">&#39;is&#39;</span><span class="p">,</span> <span class="s1">&#39;it&#39;</span><span class="p">,</span> <span class="s1">&#39;may&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;not&#39;</span><span class="p">,</span> <span class="s1">&#39;of&#39;</span><span class="p">,</span> <span class="s1">&#39;on&#39;</span><span class="p">,</span> <span class="s1">&#39;or&#39;</span><span class="p">,</span> <span class="s1">&#39;tbd&#39;</span><span class="p">,</span> <span class="s1">&#39;that&#39;</span><span class="p">,</span> <span class="s1">&#39;the&#39;</span><span class="p">,</span> <span class="s1">&#39;this&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;to&#39;</span><span class="p">,</span> <span class="s1">&#39;us&#39;</span><span class="p">,</span> <span class="s1">&#39;we&#39;</span><span class="p">,</span> <span class="s1">&#39;when&#39;</span><span class="p">,</span> <span class="s1">&#39;will&#39;</span><span class="p">,</span> <span class="s1">&#39;with&#39;</span><span class="p">,</span> <span class="s1">&#39;yet&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;you&#39;</span><span class="p">,</span> <span class="s1">&#39;your&#39;</span><span class="p">,</span><span class="s1">&#39;的&#39;</span><span class="p">,</span><span class="s1">&#39;了&#39;</span><span class="p">,</span><span class="s1">&#39;和&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">))</span>
+
+
+<span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="s2">&quot;webResume&quot;</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+        <span class="n">web_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">PyQuery</span><span class="p">(</span><span class="n">web_file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="n">doc</span><span class="p">(</span><span class="s2">&quot;style&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+        <span class="n">doc</span><span class="p">(</span><span class="s2">&quot;script&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">doc</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        <span class="n">seg_list</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">seg_list</span><span class="p">)</span> <span class="o">-</span> <span class="n">STOP_WORDS</span>
+        <span class="n">write_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;./jiebafiles/&quot;</span> <span class="o">+</span> <span class="n">f</span> <span class="o">+</span> <span class="s2">&quot;.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+        <span class="n">write_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">results</span><span class="p">))</span>
+</pre></div>
+
+
+<p>遍历目录下的所有html文件，去除html文件中的所有标签、样式、代码。使用中文分词对过滤后的HTML文件进行分词，同时过滤掉重复的词、停用词，留下这份简历网页的关键词，写入另一份文件，作为近似度检测的输入。</p>
+<h2>近似度检测</h2>
+<div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.SparkContext</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.SparkConf</span>
+
+
+<span class="k">object</span> <span class="nc">SimJoin</span> <span class="o">{</span>
+
+  <span class="k">def</span> <span class="n">main</span><span class="o">(</span><span class="n">args</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="o">{</span>
+
+    <span class="k">val</span> <span class="n">conf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkConf</span><span class="o">().</span><span class="n">setAppName</span><span class="o">(</span><span class="s">&quot;SimJion&quot;</span><span class="o">).</span><span class="n">setMaster</span><span class="o">(</span><span class="s">&quot;master&quot;</span><span class="o">)</span>
+    <span class="k">var</span> <span class="n">sc</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkContext</span><span class="o">(</span><span class="n">conf</span><span class="o">)</span>
+    <span class="k">var</span> <span class="n">files</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">wholeTextFiles</span><span class="o">(</span>
+      <span class="s">&quot;/home/chih/BD/spark-2.1.1-bin-hadoop2.7/jiebafiles/*.txt&quot;</span><span class="o">,</span> <span class="mi">8</span><span class="o">)</span>
+    <span class="k">var</span> <span class="n">pairs</span> <span class="k">=</span> <span class="n">files</span><span class="o">.</span><span class="n">flatMap</span><span class="o">(</span><span class="n">f</span> <span class="k">=&gt;</span> <span class="o">{</span>
+      <span class="k">val</span> <span class="n">rid</span> <span class="k">=</span> <span class="n">f</span><span class="o">.</span><span class="n">_1</span> <span class="c1">// 文件名</span>
+      <span class="k">val</span> <span class="n">text</span> <span class="k">=</span> <span class="n">f</span><span class="o">.</span><span class="n">_2</span> <span class="c1">// 文件内容</span>
+      <span class="k">val</span> <span class="n">tokens</span> <span class="k">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">&quot;\t&quot;</span><span class="o">)</span> <span class="c1">// 分割</span>
+        <span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">w</span> <span class="k">=&gt;</span> <span class="o">!</span><span class="n">w</span><span class="o">.</span><span class="n">isEmpty</span><span class="o">)</span> <span class="c1">// 移除空token</span>
+      <span class="k">var</span> <span class="n">map</span> <span class="k">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="n">identity</span><span class="o">).</span><span class="n">mapValues</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">length</span><span class="o">)</span>
+      <span class="n">map</span><span class="o">.</span><span class="n">map</span><span class="o">({</span> <span class="k">case</span> <span class="o">(</span><span class="n">t</span><span class="o">,</span> <span class="n">c</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">t</span><span class="o">,</span> <span class="o">(</span><span class="n">rid</span><span class="o">,</span> <span class="n">tokens</span><span class="o">.</span><span class="n">length</span><span class="o">,</span> <span class="n">c</span><span class="o">))</span> <span class="o">})</span>
+    <span class="o">})</span>
+    <span class="k">var</span> <span class="n">groups</span> <span class="k">=</span> <span class="n">pairs</span><span class="o">.</span><span class="n">groupByKey</span><span class="o">().</span><span class="n">flatMap</span><span class="o">({</span> <span class="k">case</span> <span class="o">(</span><span class="n">t</span><span class="o">,</span> <span class="n">u</span><span class="o">)</span> <span class="k">=&gt;</span>
+      <span class="n">u</span><span class="o">.</span><span class="n">toList</span><span class="o">.</span><span class="n">combinations</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+        <span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">k</span> <span class="k">=&gt;</span> <span class="o">(((</span><span class="n">k</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">_1</span><span class="o">,</span> <span class="n">k</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">_2</span><span class="o">),</span> <span class="o">(</span><span class="n">k</span><span class="o">(</span><span class="mi">1</span><span class="o">).</span><span class="n">_1</span><span class="o">,</span> <span class="n">k</span><span class="o">(</span><span class="mi">1</span><span class="o">).</span><span class="n">_2</span><span class="o">)),</span> 
+                   <span class="o">(</span><span class="n">t</span><span class="o">,</span> <span class="nc">Math</span><span class="o">.</span><span class="n">min</span><span class="o">(</span><span class="n">k</span><span class="o">.</span><span class="n">head</span><span class="o">.</span><span class="n">_3</span><span class="o">,</span> <span class="n">k</span><span class="o">(</span><span class="mi">1</span><span class="o">).</span><span class="n">_3</span><span class="o">))))</span>
+    <span class="o">})</span>
+    <span class="k">var</span> <span class="n">grouped</span> <span class="k">=</span> <span class="n">groups</span><span class="o">.</span><span class="n">reduceByKey</span><span class="o">((</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="n">_1</span><span class="o">,</span> <span class="n">a</span><span class="o">.</span><span class="n">_2</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="n">_2</span><span class="o">))</span>
+    <span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">t</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">t</span><span class="o">.</span><span class="n">_1</span><span class="o">,</span> <span class="n">t</span><span class="o">.</span><span class="n">_2</span><span class="o">.</span><span class="n">_2</span><span class="o">))</span>
+    <span class="k">val</span> <span class="n">min_t</span> <span class="k">=</span> <span class="mf">0.4</span>
+    <span class="k">val</span> <span class="n">max_t</span> <span class="k">=</span> <span class="mf">0.99</span>
+    <span class="k">var</span> <span class="n">results</span> <span class="k">=</span> <span class="n">grouped</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">t</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">t</span><span class="o">.</span><span class="n">_1</span><span class="o">.</span><span class="n">_1</span><span class="o">.</span><span class="n">_1</span><span class="o">,</span> <span class="n">t</span><span class="o">.</span><span class="n">_1</span><span class="o">.</span><span class="n">_2</span><span class="o">.</span><span class="n">_1</span><span class="o">,</span> <span class="n">t</span><span class="o">.</span><span class="n">_2</span><span class="o">.</span><span class="n">toDouble</span> 
+                                    <span class="o">/</span> <span class="o">(</span><span class="n">t</span><span class="o">.</span><span class="n">_1</span><span class="o">.</span><span class="n">_1</span><span class="o">.</span><span class="n">_2</span> <span class="o">+</span> <span class="n">t</span><span class="o">.</span><span class="n">_1</span><span class="o">.</span><span class="n">_2</span><span class="o">.</span><span class="n">_2</span> <span class="o">-</span> <span class="n">t</span><span class="o">.</span><span class="n">_2</span><span class="o">)))</span>
+      <span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">t</span> <span class="k">=&gt;</span> <span class="n">t</span><span class="o">.</span><span class="n">_3</span> <span class="o">&gt;=</span> <span class="n">min_t</span> <span class="o">&amp;&amp;</span> <span class="n">t</span><span class="o">.</span><span class="n">_3</span> <span class="o">&lt;</span> <span class="n">max_t</span><span class="o">)</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">take</span><span class="o">(</span><span class="mi">20</span><span class="o">).</span><span class="n">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">)</span>
+
+    <span class="n">sc</span><span class="o">.</span><span class="n">stop</span><span class="o">()</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>从目录中读取所有已经经过分词的简介文档，生成文件名、文件内容的对，供后续处理。建立倒排索引，将记录的RID插入到其项目的倒排索引中的对应Item中。生成候选集，通过倒排索引的item两两配对生成候选对，并记录相同候选对的数量，从而最终生成最终的候选集。
+从候选集中找出符合要求的结果，通过Jaccard 系数阈值计算出对应的相似度阈值，从而在候选集中找出相应的结果。</p>
+<h1>运行部署描述</h1>
+<p>Spark 官方提供了三种集群部署方案： Standalone, Mesos, YARN。在试验环境下，Standalone 模式就足够了，因此本实验选用Standalone 模式。如果如果已经有 Yarn 或者 Mesos 环境，也是很方便地迁移到新的资源调度框架上的。</p>
+<h2>注意</h2>
+<p>为了避免权限问题影响实验，本例中的演示均为 root 权限，当然在生产环境中，为了安全起见，需要使用单独的用户启动运行Spark。注意，除非特别说明，所有的操作需要在每台机器上都操作一遍，你可以使用Xshell，ansible简化操作。</p>
+<h2>环境准备</h2>
+<h3>安装系统</h3>
+<p>我使用VirtualBox虚拟机软件创建三台Ubuntu服务器，均使用纯净安装，集群准备为1个master，2个slave。每台的均配置两张网卡，其中一张nat网络，用于连接外网，更新安装软件包用，另一张使用host-only模式，用于宿主机和虚拟机、 虚拟机直接通讯使用。如下图所示。</p>
+<p><img alt="Screenshot_20170611_190618" src="images/Screenshot_20170611_190618.png" width="80%"></p>
+<h3>配置hosts</h3>
+<p>Host-Only网卡的IP地址是顺序分配的，在这里，三台虚拟机Host-Only网卡的IP地址分别为 192.168.56.101、 192.168.56.102、 192.168.56.103 。</p>
+<p>在每台主机上修改host文件，在文件末尾添加以下三行。</p>
+<div class="highlight"><pre><span></span>vim /etc/hosts
+
+<span class="m">192</span>.168.56.101    master
+<span class="m">192</span>.168.56.102    slave1
+<span class="m">192</span>.168.56.103    slave2
+</pre></div>
+
+
+<p>配置之后相互ping一下看是否生效。</p>
+<h3>配置SSH 免密码登录</h3>
+<p>安装Openssh server</p>
+<div class="highlight"><pre><span></span>sudo apt install openssh-server
+</pre></div>
+
+
+<p>在所有机器上都生成私钥和公钥</p>
+<div class="highlight"><pre><span></span>ssh-keygen -t rsa   <span class="c1">#一路回车</span>
+</pre></div>
+
+
+<p>需要让机器间都能相互访问，就把每个机子上的id_rsa.pub发给master节点，传输公钥可以用scp来传输。</p>
+<div class="highlight"><pre><span></span>scp ~/.ssh/id_rsa.pub spark@master:~/.ssh/id_rsa.pub.slave1
+</pre></div>
+
+
+<p>在master上，将所有公钥加到用于认证的公钥文件authorized_keys中</p>
+<div class="highlight"><pre><span></span>cat ~/.ssh/id_rsa.pub* &gt;&gt; ~/.ssh/authorized_keys
+</pre></div>
+
+
+<p>将公钥文件authorized_keys分发给每台slave</p>
+<div class="highlight"><pre><span></span>scp ~/.ssh/authorized_keys spark@slave1:~/.ssh/
+</pre></div>
+
+
+<p>在每台机子上验证SSH无密码通信</p>
+<div class="highlight"><pre><span></span>ssh master
+ssh slave1
+ssh slave2
+</pre></div>
+
+
+<h3>安装JDK</h3>
+<p>直接通过包管理安装openJDK 8.</p>
+<div class="highlight"><pre><span></span>sudo apt install openjdk-8-jdk
+</pre></div>
+
+
+<p>使用以下命令配置环境变量并使之生效：</p>
+<div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="s2">&quot;</span>
+<span class="s2"># set environment variable</span>
+<span class="s2">export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64</span>
+<span class="s2">&quot;</span>   &gt;&gt; /etc/profile.d/spark.sh
+
+    <span class="nb">source</span> /etc/profile.d/spark.sh <span class="c1">#使之生效</span>
+</pre></div>
+
+
+<p>验证 Java 是否安装成功</p>
+<div class="highlight"><pre><span></span>java -version         <span class="c1">#如果打印出版本信息，则说明安装成功</span>
+</pre></div>
+
+
+<h2>安装Spark</h2>
+<p>使用以下命令下载并安装Spark：</p>
+<div class="highlight"><pre><span></span>wget <span class="si">${</span><span class="nv">mirror</span><span class="si">}</span>/apache/spark/spark-2.1.0/ <span class="se">\</span>
+    spark-<span class="si">${</span><span class="nv">spark_pkgver</span><span class="si">}</span>-bin-hadoop<span class="si">${</span><span class="nv">hadoop_pkgver</span><span class="si">}</span>.tgz
+
+tar -xzvf spark-<span class="si">${</span><span class="nv">spark_pkgver</span><span class="si">}</span>-bin-hadoop<span class="si">${</span><span class="nv">hadoop_pkgver</span><span class="si">}</span>.tgz
+mv spark-<span class="si">${</span><span class="nv">spark_pkgver</span><span class="si">}</span>-bin-hadoop<span class="si">${</span><span class="nv">hadoop_pkgver</span><span class="si">}</span> /usr/local/spark
+</pre></div>
+
+
+<h2>配置 Hadoop</h2>
+<p>进入配置目录 <code>/usr/local/spark/conf</code> 准备修改配置文件。</p>
+<p>在<code>slaves</code>中配置slave节点的ip或者host，</p>
+<div class="highlight"><pre><span></span>vim ./slaves
+
+spark-slave1
+spark-slave2
+</pre></div>
+
+
+<p>配置<code>spark-env.sh</code> </p>
+<div class="highlight"><pre><span></span>cp /usr/local/spark/conf/spark-env.sh.template /usr/local/spark/conf/spark-env.sh
+<span class="nb">echo</span> <span class="s2">&quot;SPARK_MASTER_HOST=master&quot;</span> &gt;&gt; /usr/local/spark/conf/spark-env.sh
+<span class="nb">echo</span> <span class="s2">&quot;SPARK_LOCAL_IP={修改为每台机器对应的名称}&quot;</span> &gt;&gt; /usr/local/spark/conf/spark-env.sh
+</pre></div>
+
+
+<h2>启动Spark</h2>
+<div class="highlight"><pre><span></span>sudo -s
+su -
+sbin/start-all.sh
+</pre></div>
+
+
+<p>如果没有问题，进入Spark的Web管理页面： <a href="http://master:8080/">http://master:8080</a></p>
+<p><img alt="Screenshot_20170611_193731" src="images/Screenshot_20170611_193731.png" width="80%"></p>
+<h2>脚本安装Spark</h2>
+<p>为了方便部署Spark，我简单写了一个Shell脚本，可以方便地几步搭建一个3节点的Spark集群。脚本地址为：</p>
+<p><a href="https://github.com/chih7/spark-install/">https://github.com/chih7/spark-install/</a></p>
+<p>脚本只在Ubuntu 16.04下进行了测试，但其他版本的Ubuntu和debian应该也是可以使用。</p>
+<p>首先使用VirtualBox安装一台Ubuntu服务器，在里面执行以下命令：</p>
+<div class="highlight"><pre><span></span>sudo -s
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>su -
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>git clone https://github.com/chih7/spark-install.git
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="nb">cd</span> ./spark_install
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>./install-spark.sh
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>reboot
+</pre></div>
+
+
+<p>重启完成后，</p>
+<p>克隆这个虚拟机到两台虚拟机，记得修改克隆机的配置文件<code>/usr/local/spark/conf/spark-env.sh</code>中的<code>SPARK_LOCAL_IP</code>，之后就可以启动Spark集群了。</p>
+<div class="highlight"><pre><span></span>sudo -s
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>su -
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>vim  /usr/local/spark/conf/spark-env.sh <span class="c1"># change  SPARK_LOCAL_IP=spark-xxxx</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span>/usr/local/spark/sbin/start-all.sh
+</pre></div>
+
+
+<h1>实验结果描述</h1>
+<p><img alt="Screenshot_20170611_122340" src="images/Screenshot_20170611_122340.png" width="80%"></p>
+<p><img alt="Screenshot_20170611_182331" src="images/Screenshot_20170611_182331.png" width="80%"></p>
+<p><img alt="Screenshot_20170611_182331" src="images/Screenshot_20170611_195236.png" width="80%"></p>
+<p>运行代码后，可以看到生成了一个DAG图，即为Spark的计算路径，其中有三个stage。最后输出了超出一定阈值的所有相似的文档对，同时给出了相似度系数。</p>
+<h1>出现的问题</h1>
+<p>在运行中出现<code>java.io.IOException: No space left on device</code>错误，经过Google搜索，发现Spark默认使用 <code>/tmp</code>目录存储中间结果，而<code>/tmp</code>目录为tmpfs目录，出于内存文件系统，默认大小仅为内存大小的一半。</p>
+<p>为了解决这个问题，需要自定义<code>SPARK_LOCAL_DIRS</code>环境变量到一个足够大的目录下，我这里把它改到了Spark的安装目录。</p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://blog.chih.me/tag/linux.html">linux</a>
+      <a href="https://blog.chih.me/tag/spark.html">Spark</a>
+      <a href="https://blog.chih.me/tag/scala.html">scala</a>
+      <a href="https://blog.chih.me/tag/simjion.html">SimJion</a>
+      <a href="https://blog.chih.me/tag/xiang-si-du-jian-ce.html">相似度检测</a>
+    </p>
+  </div>
+
+
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'chihsblog';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+</article>
+
+    <footer>
+<p>&copy; chih </p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-61054351-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " chih's blog ",
+  "url" : "https://blog.chih.me",
+  "image": "",
+  "description": ""
+}
+</script>
+  
+</body>
+</html>
