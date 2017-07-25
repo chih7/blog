@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/pygments/github.min.css">
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/font-awesome/css/font-awesome.min.css">
+
+
+    <link href="https://blog.chih.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="chih's blog Atom">
+
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+    <meta name="author" content="chih" />
+    <meta name="description" content="" />
+<meta property="og:site_name" content="chih's blog"/>
+<meta property="og:type" content="blog"/>
+<meta property="og:title" content="chih's blog"/>
+<meta property="og:description" content=""/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://blog.chih.me"/>
+
+  <title>chih's blog &ndash;     Tag SQL
+</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://blog.chih.me">
+        <img src="https://blog.chih.me/theme/img/profile.png" alt="" title="">
+      </a>
+      <h1><a href="https://blog.chih.me"></a></h1>
+
+
+      <nav>
+        <ul class="list">
+          <li><a href="https://blog.chih.me/pages/about-me.html#about-me">About Me</a></li>
+
+          <li><a href="http://www.hjk.im/" target="_blank">HJK</a></li>
+          <li><a href="http://imis.me/" target="_blank">记忆反射弧</a></li>
+          <li><a href="http://mijack.github.io/" target="_blank">mijack</a></li>
+          <li><a href="http://datahcong.cn/" target="_blank">whl的博客园</a></li>
+        </ul>
+      </nav>
+
+      <ul class="social">
+      </ul>
+    </div>
+
+
+  </aside>
+  <main>
+
+
+
+
+<article>
+  <header>
+    <h2><a href="https://blog.chih.me/spark-sql-ppt.html#spark-sql-ppt">Spark SQL 笔记</a></h2>
+    <p>
+          Posted on Sun 25 June 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/spark.html">spark</a>,              <a href="https://blog.chih.me/tag/big-data.html">big data</a>,              <a href="https://blog.chih.me/tag/sql.html">SQL</a>,              <a href="https://blog.chih.me/tag/sql-on-hadoophadoop.html">SQL on Hadoop，hadoop</a>
+    </p>
+  </header>
+  <div>
+      <h1>Spark SQL Overview</h1>
+<p>特性：</p>
+<ul>
+<li>Spark SQL是Apache Spark中的一个新模块</li>
+<li>将关系处理（tables with rows/columns）与Spark的功能编程API相集成</li>
+<li>通过 SQL 操作 RDDs， 同时提供多种语言绑定</li>
+<li>数据源集成：Hive, Parquet, JSON,and more</li>
+<li>提供 JDBC/ODBC 接口供外部程序调用（商业智能、olap分析）</li>
+</ul>
+<p>目标：</p>
+<ul>
+<li>写更少的代码</li>
+<li>读更少的数据</li>
+<li>获得更高的性能</li>
+</ul>
+<hr>
+<h1>Spark SQL in Spark</h1>
+<p><img alt="Screenshot_20170522_193655" src="images/Screenshot_20170522_193655.png" width="80%"></p>
+<ul>
+<li>Spark SQL was first released in Spark 1.0 (May, 2014)</li>
+</ul>
+<hr>
+<h1>Relationship …</h1>
+      <br>
+      <a class="btn" href="https://blog.chih.me/spark-sql-ppt.html#spark-sql-ppt">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://blog.chih.me/spark-sql.html#spark-sql">Spark SQL</a></h2>
+    <p>
+          Posted on Sat 24 June 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/spark.html">spark</a>,              <a href="https://blog.chih.me/tag/big-data.html">big data</a>,              <a href="https://blog.chih.me/tag/sql.html">SQL</a>,              <a href="https://blog.chih.me/tag/sql-on-hadoop.html">SQL on Hadoop</a>,              <a href="https://blog.chih.me/tag/spark-sql.html">Spark SQL</a>,              <a href="https://blog.chih.me/tag/hadoop.html">hadoop</a>
+    </p>
+  </header>
+  <div>
+      <h1>Spark 简介</h1>
+<p>Hadoop 伴随着大数据的兴起已有十年时间，被认为是大数据处理的首选解决方案， 它分别提供HDFS和MapReduce解决了大数据（无法在单台机器上存储与处理的数据）的可靠存储和处理，但对于一些场景， MapReduce并不是十分高效，其一，MapReduce的抽象层次低，仅提供了map和reduce两个操作，对于应用需要编写大量代码；其二，一个job只包括了map和reduce两个阶段，想要完成复杂的工作，就必须串联一系列MapReduce作业，但每一步的输出数据必须存储到HDFS，导致io操作繁重，时延较高，只适合批处理，不适合实时处理和迭代计算。</p>
+<p>Apache Spark是一个新兴的大数据处理引擎，它允许开发者使用有向无环图 (DAG) 开发复杂的数据操作，内部使用一个集群上的分布式内存抽象 (RDD) ，简化了对分布式数据的编程复杂性。RDD 提供了两类操作，转换和动作，转换在原有 RDD 上通过一些操作定义了一个新的 RDD ，包括map, flatMap, filter, union, sample, join, groupByKey, cogroup, ReduceByKey, cros, sortByKey, mapValues等 …</p>
+      <br>
+      <a class="btn" href="https://blog.chih.me/spark-sql.html#spark-sql">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://blog.chih.me/shark-ppt.html#shark-ppt">Shark</a></h2>
+    <p>
+          Posted on Fri 23 June 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/spark.html">spark</a>,              <a href="https://blog.chih.me/tag/big-data.html">big data</a>,              <a href="https://blog.chih.me/tag/sql.html">SQL</a>,              <a href="https://blog.chih.me/tag/sql-on-hadoop.html">SQL on Hadoop</a>,              <a href="https://blog.chih.me/tag/shark.html">shark</a>,              <a href="https://blog.chih.me/tag/hadoop.html">hadoop</a>
+    </p>
+  </header>
+  <div>
+      <h1>Shark Overview</h1>
+<p>一个独立，快速，类MapReduce的SQL引擎</p>
+<ul>
+<li>基于内存存储数据，适合交互式查询</li>
+<li>优秀的查询优化</li>
+<li>比Hadoop快40倍以上</li>
+</ul>
+<p>完全兼容Hadoop存储接口</p>
+<ul>
+<li>可以读取或写入任何支持Hadoop的系统</li>
+<li>包括HDFS，Hbase，SequenceFiles</li>
+</ul>
+<hr>
+<h1>Shark Overview</h1>
+<ul>
+<li>
+<p>Shark即Hive on Spark，本质上是通过Hive的HQL解析，把HQL翻译成Spark上的RDD操作，然后通过Hive的metadata获取数据库里的表信息，实际HDFS上的数据和文件，会由Shark获取并放到Spark上运算。</p>
+</li>
+<li>
+<p>Shark建立在Hive的代码基础上，并通过将Hive的部分物理执行计划交换出来（by swapping out the physical execution engine part of Hive）。这个方法使得Shark的用户可以加速Hive的查询</p>
+</li>
+<li>
+<p>Shark在HQL方面重用了Hive中HQL的解析、逻辑执行计划翻译、执行计划优化等逻辑，完全兼容已有的Hive数据，metastores 和 查询( HiveQL，UDFs )</p>
+</li>
+</ul>
+<hr>
+<h1>Project History</h1>
+<ul>
+<li>
+<p>Spark project …</p></li></ul>
+      <br>
+      <a class="btn" href="https://blog.chih.me/shark-ppt.html#shark-ppt">    Continue reading
+</a>
+  </div>
+</article>
+
+  <div class="pagination">
+  </div>
+
+
+
+
+    <footer>
+<p>&copy; chih </p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-61054351-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " chih's blog ",
+  "url" : "https://blog.chih.me",
+  "image": "",
+  "description": ""
+}
+</script>
+  
+</body>
+</html>

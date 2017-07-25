@@ -69,6 +69,115 @@
 
 <article>
   <header>
+    <h2><a href="https://blog.chih.me/global-proxy-within-redsocks-and-shadowsocks.html#global-proxy-within-redsocks-and-shadowsocks">使用redsocks把shadowsocks转为全局代理</a></h2>
+    <p>
+          Posted on Mon 21 November 2016 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/arch-linux.html">Arch Linux</a>,              <a href="https://blog.chih.me/tag/linux.html">Linux</a>,              <a href="https://blog.chih.me/tag/redsocks.html">redsocks</a>,              <a href="https://blog.chih.me/tag/iptables.html">iptables</a>,              <a href="https://blog.chih.me/tag/shadowsocks.html">shadowsocks</a>,              <a href="https://blog.chih.me/tag/dai-li.html">代理</a>
+    </p>
+  </header>
+  <div>
+      <h2>前言</h2>
+<p>shadowsocks是个非常棒的翻墙代理，它可以在本地提供一个socks5端口供软件使用代理。比如启动chrome的时候加上<code>--proxy-server="socks5://myproxy:1080"</code>这条参数就可以让chrome走代理；然而，有些软件不支持设置代理的功能。所以有时候，我们需要一个全局代理的环境，使用VPN是一个通常的选择，不过一般购买的VPN的速度不如shadowsocks，同时，VPN更容易受到GFW的干扰。为什么不把正在使用的shadowsocks利用起来作为一个全局代理呢？</p>
+<p>本文介绍了一种利用<a href="https://github.com/darkk/redsocks">redsocks</a>与iptables实现全局代理的方法，其基本原理如下：</p>
+<ol>
+<li>iptables的规则将所有tcp包转发到redsocks打开的本地端口</li>
+<li>redsocks接收tcp包并转发给shadowsocks打开的本地socks端口</li>
+<li>shadowsocks将接收的包转发给远端的代理服务器</li>
+</ol>
+<p>由于使用了redsocks与iptables，因此本文的方法仅适用于Linux。</p>
+<h2>安装</h2>
+<p>由于使用的是Arch Linux，我直接通过AUR安装</p>
+<div class="highlight"><pre><span></span>$ yaourt redsocks
+</pre></div>
+
+
+<p>通过<code>yaourt</code>搜索redsocks包，然后选择你要安装的包的序号就可以进行安装了。</p>
+<blockquote>
+<p>注意：下文中的配置文件的路径全部基于Arch Linux，如果你用的不是Arch Linux，请根据自己的情况更改。</p>
+</blockquote>
+<p>其他发行版可以通过各自的包管理器或者下载源码<a href="https://github.com/darkk/redsocks/blob/master/README">安装</a>。</p>
+<h2>配置</h2>
+<h3>配置redsocks</h3>
+<p>我在包提供的原有配置的基础上进行了一些修改，主要是把 <code>redsocks …</code></p>
+      <br>
+      <a class="btn" href="https://blog.chih.me/global-proxy-within-redsocks-and-shadowsocks.html#global-proxy-within-redsocks-and-shadowsocks">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://blog.chih.me/hadoop-install.html#hadoop-install">Hadoop 安装笔记</a></h2>
+    <p>
+          Posted on Thu 17 November 2016 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/hadoop.html">Hadoop</a>,              <a href="https://blog.chih.me/tag/java-big-data.html">Java， Big Data</a>
+    </p>
+  </header>
+  <div>
+      <h2>The building blocks of Hadoop</h2>
+<ul>
+<li>NameNode</li>
+<li>DataNode</li>
+<li>Secondary NameNode</li>
+<li>~~JobTracker~~</li>
+<li>~~TaskTracker~~</li>
+<li>ResourceManager</li>
+<li>NodeManager</li>
+</ul>
+<p><img alt="Screenshot_20161117_185744" src="images/Screenshot_20161117_185744.png"></p>
+<p><img alt="Screenshot_20161117_190357" src="images/Screenshot_20161117_190357.png"></p>
+<h3>NameNode</h3>
+<p>NameNode主要是用来保存HDFS的<strong>元数据</strong>信息，比如命名空间信息，块信息等。当它运行的时候，这些信息是存在内存中的。但是这些信息也可以持久化到磁盘上。没有Namenode，HDFS就不能工作。事实上，如果运行namenode的机器坏掉的话，系统中的文件将会完全丢失，因为没有其他方法能够将位于不同datanode上的文件块(blocks)重建文件。因此，Hadoop存在单点故障。为了解决单点故障，Hadoop提供了两套机制：</p>
+<ol>
+<li>第一种方式是将持久化存 储在本地硬盘的文件系统元数据备份。Hadoop可以通过配置来让Namenode将他的持久化状态文件写到不同的文件系统中。一般是镜像到网络文件系统或单独的磁盘中。</li>
+<li>第二种方式是运行一个辅助的Namenode(Secondary Namenode)。下面会具体说明。</li>
+</ol>
+<h3>DataNode</h3>
+<p>Datanode是文件系统的工作节点，他们根据客户端或者是namenode的调度存储和检索数据，并且定期向namenode发送他们所存储的块(block)的<strong>列表</strong>。</p>
+<p>集群中的每个服务器都运 …</p>
+      <br>
+      <a class="btn" href="https://blog.chih.me/hadoop-install.html#hadoop-install">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://blog.chih.me/chang-openwtr-ppoe-password.html#chang-openwtr-ppoe-password">使用LuCI的RPC接口修改openwrt配置</a></h2>
+    <p>
+          Posted on Mon 17 October 2016 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/openwrt.html">openwrt</a>,              <a href="https://blog.chih.me/tag/android.html">android</a>,              <a href="https://blog.chih.me/tag/luci.html">luci</a>,              <a href="https://blog.chih.me/tag/rpc.html">rpc</a>
+    </p>
+  </header>
+  <div>
+      <p>简单来说，本文整理了一些<code>openwrt</code>的RPC接口，用来自动修改pppoe的密码，并重启网络。为什么要弄这些玩意呢，因为浙江高校中普遍使用的蛋疼的闪讯——两三天换个动态密码，时不时给你断个网！使用这些API的是一个Android应用，它在用户按下一个按键后自动向电信发送一条获取密码的短信，然后获取返回的短信，解析其中的闪讯动态密码，通过<code>openwrt</code>的RPC接口修改密码并重启网络，这样，只需要一次按按钮的操作，就能恢复网络，又可以愉快的玩耍啦。</p>
+<p><a href="https://github.com/openwrt/openwrt">openwrt</a> 我就不多介绍了，玩路由器的都知道；<a href="https://wiki.openwrt.org/doc/techref/uci">UCI</a>是<code>openwrt</code>提供的一套统一的配置接口，可以用以配置整台<code>openwrt</code>设备；而<a href="https://wiki.openwrt.org/doc/techref/luci">LuCI</a>是一个基于Lua语言开发的、包装了底层UCI接口的易于使用的Web用户接口。LuCI也提供了一种基于JSON格式的RPC机制来访问其内部的库。</p>
+<p>LuCI的RPC接口的地址为 <strong>/cgi-bin/luci/rpc/LIBRARY</strong>，其中LIBRARY代表按功能区分的几个库，分别为：</p>
+<ul>
+<li><strong>auth</strong> - 基于token的认证库</li>
+<li><strong>uci</strong> - UCI统一配置接口的映射</li>
+<li><strong>fs</strong> -  文件操作</li>
+<li><strong>sys …</strong></li></ul>
+      <br>
+      <a class="btn" href="https://blog.chih.me/chang-openwtr-ppoe-password.html#chang-openwtr-ppoe-password">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://blog.chih.me/use-SymPy-get-max-effectiveness-of-ALOHA.html#use-SymPy-get-max-effectiveness-of-ALOHA">使用Python求解分隙ALOHA最大效率</a></h2>
     <p>
           Posted on Sat 08 October 2016 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
@@ -206,100 +315,6 @@
 <p>-EOF-</p>
       <br>
       <a class="btn" href="https://blog.chih.me/socks-for-minecraft.html#socks-for-minecraft">    Continue reading
-</a>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://blog.chih.me/Compiler-WizNote-in-openSUSE.html#Compiler-WizNote-in-openSUSE">在openSUSE上编译WizNote(为知笔记)</a></h2>
-    <p>
-          Posted on Wed 11 March 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
-
-
-          &#8226;     Tagged with
-
-              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/qt5.html">Qt5</a>,              <a href="https://blog.chih.me/tag/opensuse.html">openSUSE</a>,              <a href="https://blog.chih.me/tag/bian-yi.html">编译</a>,              <a href="https://blog.chih.me/tag/wiznote.html">WizNote</a>
-    </p>
-  </header>
-  <div>
-      <p><code>Wiznote</code>--为知笔记是一款优秀的全平台云笔记客户端，当初我从Windows切换到纯Linux平台的时候，就同时把我的在线笔记从<code>Evernote</code>切换到了<code>WizNote</code>。</p>
-<p><code>openSUSE</code>的个人仓库里其实是有<code>WizNote</code>的
-<a href="https://build.opensuse.org/package/show?project=home%3Agmg137&amp;package=WizNote">https://build.opensuse.org/package/show?project=home%3Agmg137&amp;package=WizNote</a>， 但它并不是最新版本。所以我打算自己编译一个最新版自用，同时因为是自用，直接源码编译安装了，并没有打包。如果需要在<code>openSUSE</code>下打包，可以参照苏姐的视频教学<a href="http://www.bilibili.com/video/av688454">http://www.bilibili.com/video/av688454</a>。</p>
-<h2>获取源码</h2>
-<ul>
-<li>
-<p>从github 上面 clone 为知笔记客户端源码到本地</p>
-<div class="highlight"><pre><span></span>$ git clone https://github.com/WizTeam/WizQTClient.git …</pre></div></li></ul>
-      <br>
-      <a class="btn" href="https://blog.chih.me/Compiler-WizNote-in-openSUSE.html#Compiler-WizNote-in-openSUSE">    Continue reading
-</a>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://blog.chih.me/use-USB-in-virtualbox-at-openSUSE.html#use-USB-in-virtualbox-at-openSUSE">解决在opensuse下virtualbox无法挂载主机USB设备的问题</a></h2>
-    <p>
-          Posted on Mon 02 March 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
-
-
-          &#8226;     Tagged with
-
-              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/virtualbox.html">virtualbox</a>,              <a href="https://blog.chih.me/tag/opensuse.html">openSUSE</a>,              <a href="https://blog.chih.me/tag/usb.html">USB</a>
-    </p>
-  </header>
-  <div>
-      <p>因为要用<code>virtualbox</code>中的<code>Windows</code>虚拟机设置G602的可编程键，所以需要把G602的USB无线接收器挂载到虚拟机上，结果发现<code>virtualbox</code>右下角USB设备那里尽管有<code>logitech USB Receiver</code>这个选项，但它是灰色的，无法选中。</p>
-<p>因为已经确认当前用户已经加入<code>vboxusers</code>组、并已经安装<code>Oracle Extensions</code>扩展包，那么问题应该从其他方向寻找。</p>
-<p>在Google了一段时间后，终于在openSUSE论坛找到了<a href="https://forum.suse.org.cn/viewtopic.php?f=13&amp;t=3130">解决方法</a></p>
-<blockquote>
-<p>源中的包，/usr/lib/udev/rules.d/60-vboxdrv.rules 里面有 4 行规则被用 # 号注释掉了，有安全隐患。把那 4 行注释打开应该就可以了。</p>
-</blockquote>
-<p>找到那四行并取消注释就可以了:</p>
-<blockquote>
-<ul>
-<li>SUBSYSTEM=="usb_device", ACTION=="add", RUN+="/usr/share …</li></ul></blockquote>
-      <br>
-      <a class="btn" href="https://blog.chih.me/use-USB-in-virtualbox-at-openSUSE.html#use-USB-in-virtualbox-at-openSUSE">    Continue reading
-</a>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://blog.chih.me/storm-starter.html#storm-starter">在实时计算框架Storm集群上运行Storm-Starter例子</a></h2>
-    <p>
-          Posted on Sun 22 February 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
-
-
-          &#8226;     Tagged with
-
-              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/storm.html">Storm</a>,              <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>,              <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
-    </p>
-  </header>
-  <div>
-      <blockquote>
-<p>官方文档待翻译，个人实践在下面</p>
-</blockquote>
-<h1>Example Storm Topologies</h1>
-<p>Learn to use Storm!</p>
-<hr>
-<p>Table of Contents</p>
-<ul>
-<li><a href="#getting-started">Getting started</a></li>
-<li><a href="#maven">Using storm-starter with Maven</a></li>
-<li><a href="#intellij-idea">Using storm-starter with IntelliJ IDEA</a></li>
-</ul>
-<hr>
-<p><a name="getting-started"></a></p>
-<h1>Getting started</h1>
-<h2>Prerequisites</h2>
-<p>First, you need <code>java</code> and <code>git</code> installed and in your user's <code>PATH</code>.  Also, two of the examples in storm-starter
-require Python and Ruby.</p>
-<p>Next …</p>
-      <br>
-      <a class="btn" href="https://blog.chih.me/storm-starter.html#storm-starter">    Continue reading
 </a>
   </div>
 </article>

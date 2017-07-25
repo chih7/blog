@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/stylesheet/style.min.css">
+
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/pygments/github.min.css">
+  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/font-awesome/css/font-awesome.min.css">
+
+
+    <link href="https://blog.chih.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="chih's blog Atom">
+
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+
+<meta name="author" content="chih" />
+<meta name="description" content="Spark SQL Overview 特性： Spark SQL是Apache Spark中的一个新模块 将关系处理（tables with rows/columns）与Spark的功能编程API相集成 通过 SQL 操作 RDDs， 同时提供多种语言绑定 数据源集成：Hive, Parquet, JSON,and more 提供 JDBC/ODBC 接口供外部程序调用（商业智能、olap分析） 目标： 写更少的代码 读更少的数据 获得更高的性能 Spark SQL in Spark Spark SQL was first released in Spark 1.0 (May, 2014) Relationship …" />
+<meta name="keywords" content="spark, big data, SQL, SQL on Hadoop，hadoop">
+<meta property="og:site_name" content="chih's blog"/>
+<meta property="og:title" content="Spark SQL 笔记"/>
+<meta property="og:description" content="Spark SQL Overview 特性： Spark SQL是Apache Spark中的一个新模块 将关系处理（tables with rows/columns）与Spark的功能编程API相集成 通过 SQL 操作 RDDs， 同时提供多种语言绑定 数据源集成：Hive, Parquet, JSON,and more 提供 JDBC/ODBC 接口供外部程序调用（商业智能、olap分析） 目标： 写更少的代码 读更少的数据 获得更高的性能 Spark SQL in Spark Spark SQL was first released in Spark 1.0 (May, 2014) Relationship …"/>
+<meta property="og:locale" content="en_US"/>
+<meta property="og:url" content="https://blog.chih.me/spark-sql-ppt.html"/>
+<meta property="og:type" content="article"/>
+<meta property="article:published_time" content="2017-06-25 00:00:00+08:00"/>
+<meta property="article:modified_time" content=""/>
+<meta property="article:author" content="https://blog.chih.me/author/chih.html">
+<meta property="article:section" content="Tech"/>
+<meta property="article:tag" content="spark"/>
+<meta property="article:tag" content="big data"/>
+<meta property="article:tag" content="SQL"/>
+<meta property="article:tag" content="SQL on Hadoop，hadoop"/>
+<meta property="og:image" content="">
+
+  <title>chih's blog &ndash; Spark SQL 笔记</title>
+
+</head>
+<body>
+  <aside>
+    <div>
+      <a href="https://blog.chih.me">
+        <img src="https://blog.chih.me/theme/img/profile.png" alt="" title="">
+      </a>
+      <h1><a href="https://blog.chih.me"></a></h1>
+
+
+      <nav>
+        <ul class="list">
+          <li><a href="https://blog.chih.me/pages/about-me.html#about-me">About Me</a></li>
+
+          <li><a href="http://www.hjk.im/" target="_blank">HJK</a></li>
+          <li><a href="http://imis.me/" target="_blank">记忆反射弧</a></li>
+          <li><a href="http://mijack.github.io/" target="_blank">mijack</a></li>
+          <li><a href="http://datahcong.cn/" target="_blank">whl的博客园</a></li>
+        </ul>
+      </nav>
+
+      <ul class="social">
+      </ul>
+    </div>
+
+
+  </aside>
+  <main>
+
+
+<article class="single">
+  <header>
+    <h1 id="spark-sql-ppt">Spark SQL 笔记</h1>
+    <p>
+          Posted on Sun 25 June 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+    </p>
+  </header>
+
+
+  <div>
+    <h1>Spark SQL Overview</h1>
+<p>特性：</p>
+<ul>
+<li>Spark SQL是Apache Spark中的一个新模块</li>
+<li>将关系处理（tables with rows/columns）与Spark的功能编程API相集成</li>
+<li>通过 SQL 操作 RDDs， 同时提供多种语言绑定</li>
+<li>数据源集成：Hive, Parquet, JSON,and more</li>
+<li>提供 JDBC/ODBC 接口供外部程序调用（商业智能、olap分析）</li>
+</ul>
+<p>目标：</p>
+<ul>
+<li>写更少的代码</li>
+<li>读更少的数据</li>
+<li>获得更高的性能</li>
+</ul>
+<hr>
+<h1>Spark SQL in Spark</h1>
+<p><img alt="Screenshot_20170522_193655" src="images/Screenshot_20170522_193655.png" width="80%"></p>
+<ul>
+<li>Spark SQL was first released in Spark 1.0 (May, 2014)</li>
+</ul>
+<hr>
+<h1>Relationship to Shark</h1>
+<p>Spark上的第一个关系数据库是Shark，它修改了Apache Hive系统，使之能在Spark上运行，并通过Spark引擎实现了传统的RDBMS优化。</p>
+<p>虽然Shark表现出良好的表现和与Spark计划融合的良好机会，但它有三个重要挑战：</p>
+<ul>
+<li>Shark只能用于查询存储在Hive目录中的外部数据</li>
+<li>Spark程序调用Shark的唯一方法是组合一个SQL字符串</li>
+<li>Hive优化器是针对MapReduce量身定制的，难以扩展，难以构建新功能</li>
+</ul>
+<hr>
+<h1>Relationship to Shark</h1>
+<p>借鉴：</p>
+<ul>
+<li>hive 数据源的加载</li>
+<li>使用列存储实现内存中的“缓存”</li>
+<li>UDFs</li>
+</ul>
+<p>新增：</p>
+<ul>
+<li>支持Spark程序（本地RDD），新的外部数据源的关系处理。</li>
+<li>高级分析算法（如图形处理和机器学习）扩展。</li>
+</ul>
+<hr>
+<h1>Programming Interface</h1>
+<p><img alt="Screenshot_20170523_103741" src="images/Screenshot_20170523_103741.png" width="80%"></p>
+<hr>
+<h1>DataFrame</h1>
+<p>Spark SQL API中的主要抽象方法是DataFrame</p>
+<ul>
+<li>取代了以前的（Spark &lt; 1.3）SchemaRDD。</li>
+<li>类似与R和pandas中的DataFrame，DataFrame等价于关系数据库中的表，每一列都有命名。但Spark SQL中的DataFrame基于RDD，是分布式的。RDD可以转换为DataFrame。</li>
+<li>DataFrame 支持多种数据类型与所有常见的关系运算符。</li>
+<li>Spark DataFrames是懒惰的，每个DataFrame对象都代表一个用于计算数据集的逻辑计划，但是直到用户调用特定的“输出操作”（如保存）才会执行任何执行。</li>
+<li>DataFrames提供与关系查询语言（如SQL和Pig）相同的操作。</li>
+</ul>
+<hr>
+<h1>Getting Started: Spark SQL</h1>
+<div class="highlight"><pre><span></span><span class="c1"># Import Spark SQL</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">HiveContext</span><span class="p">,</span> <span class="n">Row</span>
+<span class="c1"># Or if you can&#39;t include the hive requirements</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SQLContext</span><span class="p">,</span> <span class="n">Row</span>
+
+<span class="n">hiveCtx</span> <span class="o">=</span> <span class="n">HiveContext</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+<span class="n">sqlCtx</span> <span class="o">=</span> <span class="n">SQLContext</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+</pre></div>
+
+
+<blockquote>
+<p>As of Spark 2.0, HiveContext and SQLContext are replaced by SparkSession. However, we are keeping the class here for backward compatibility.</p>
+</blockquote>
+<hr>
+<h1>Getting Started: Spark SQL</h1>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">HiveContext</span>
+<span class="n">hiveCtx</span> <span class="o">=</span> <span class="n">HiveContext</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="n">hiveCtx</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT key, value FROM mytable&quot;</span><span class="p">)</span>
+<span class="n">keys</span> <span class="o">=</span> <span class="n">rows</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="nb">input</span> <span class="o">=</span> <span class="n">hiveCtx</span><span class="o">.</span><span class="n">jsonFile</span><span class="p">(</span><span class="n">inputFile</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span></span><span class="n">happyPeopleRDD</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">([</span><span class="n">Row</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;holden&quot;</span><span class="p">,</span> <span class="n">favouriteBeverage</span><span class="o">=</span><span class="s2">&quot;coffee&quot;</span><span class="p">)])</span>
+<span class="n">happyPeopleSchemaRDD</span> <span class="o">=</span> <span class="n">hiveCtx</span><span class="o">.</span><span class="n">inferSchema</span><span class="p">(</span><span class="n">happyPeopleRDD</span><span class="p">)</span>
+<span class="n">happyPeopleSchemaRDD</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s2">&quot;happy_people&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<hr>
+<h1>Catalyst Optimizer</h1>
+<p><img alt="Screenshot_20170523_111752" src="images/Screenshot_20170523_111752.png" width="90%"></p>
+<hr>
+<h1>Performance</h1>
+<p><img alt="Screenshot_20170522_195943" src="images/Screenshot_20170522_195943.png" width="90%"></p>
+<hr>
+<h1>Performance</h1>
+<p><img alt="Screenshot_20170522_200157" src="images/Screenshot_20170522_200157.png" width="60%"></p>
+<hr>
+<h1>参考</h1>
+<ol>
+<li>ARMBRUST M, GHODSI A, ZAHARIA M. Spark SQL: Relational Data Processing in Spark[C]//ACM Press, 2015: 1383–1394.</li>
+<li>Spark快速大数据分析[M]. 人民邮电出版社, 2015.</li>
+<li>https://pandas.pydata.org/pandas-docs/stable/dsintro.html</li>
+</ol>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="https://blog.chih.me/tag/spark.html">spark</a>
+      <a href="https://blog.chih.me/tag/big-data.html">big data</a>
+      <a href="https://blog.chih.me/tag/sql.html">SQL</a>
+      <a href="https://blog.chih.me/tag/sql-on-hadoophadoop.html">SQL on Hadoop，hadoop</a>
+    </p>
+  </div>
+
+
+
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'chihsblog';
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>
+        Please enable JavaScript to view comments.
+
+</noscript>
+</article>
+
+    <footer>
+<p>&copy; chih </p>
+<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
+</p>    </footer>
+  </main>
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-61054351-1', 'auto');
+  ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " chih's blog ",
+  "url" : "https://blog.chih.me",
+  "image": "",
+  "description": ""
+}
+</script>
+  
+</body>
+</html>

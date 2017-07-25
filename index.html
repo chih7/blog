@@ -131,6 +131,119 @@
 </article>
 <article>
   <header>
+    <h2><a href="https://blog.chih.me/spark-sql-ppt.html#spark-sql-ppt">Spark SQL 笔记</a></h2>
+    <p>
+          Posted on Sun 25 June 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/spark.html">spark</a>,              <a href="https://blog.chih.me/tag/big-data.html">big data</a>,              <a href="https://blog.chih.me/tag/sql.html">SQL</a>,              <a href="https://blog.chih.me/tag/sql-on-hadoophadoop.html">SQL on Hadoop，hadoop</a>
+    </p>
+  </header>
+  <div>
+      <h1>Spark SQL Overview</h1>
+<p>特性：</p>
+<ul>
+<li>Spark SQL是Apache Spark中的一个新模块</li>
+<li>将关系处理（tables with rows/columns）与Spark的功能编程API相集成</li>
+<li>通过 SQL 操作 RDDs， 同时提供多种语言绑定</li>
+<li>数据源集成：Hive, Parquet, JSON,and more</li>
+<li>提供 JDBC/ODBC 接口供外部程序调用（商业智能、olap分析）</li>
+</ul>
+<p>目标：</p>
+<ul>
+<li>写更少的代码</li>
+<li>读更少的数据</li>
+<li>获得更高的性能</li>
+</ul>
+<hr>
+<h1>Spark SQL in Spark</h1>
+<p><img alt="Screenshot_20170522_193655" src="images/Screenshot_20170522_193655.png" width="80%"></p>
+<ul>
+<li>Spark SQL was first released in Spark 1.0 (May, 2014)</li>
+</ul>
+<hr>
+<h1>Relationship …</h1>
+      <br>
+      <a class="btn" href="https://blog.chih.me/spark-sql-ppt.html#spark-sql-ppt">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://blog.chih.me/spark-sql.html#spark-sql">Spark SQL</a></h2>
+    <p>
+          Posted on Sat 24 June 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/spark.html">spark</a>,              <a href="https://blog.chih.me/tag/big-data.html">big data</a>,              <a href="https://blog.chih.me/tag/sql.html">SQL</a>,              <a href="https://blog.chih.me/tag/sql-on-hadoop.html">SQL on Hadoop</a>,              <a href="https://blog.chih.me/tag/spark-sql.html">Spark SQL</a>,              <a href="https://blog.chih.me/tag/hadoop.html">hadoop</a>
+    </p>
+  </header>
+  <div>
+      <h1>Spark 简介</h1>
+<p>Hadoop 伴随着大数据的兴起已有十年时间，被认为是大数据处理的首选解决方案， 它分别提供HDFS和MapReduce解决了大数据（无法在单台机器上存储与处理的数据）的可靠存储和处理，但对于一些场景， MapReduce并不是十分高效，其一，MapReduce的抽象层次低，仅提供了map和reduce两个操作，对于应用需要编写大量代码；其二，一个job只包括了map和reduce两个阶段，想要完成复杂的工作，就必须串联一系列MapReduce作业，但每一步的输出数据必须存储到HDFS，导致io操作繁重，时延较高，只适合批处理，不适合实时处理和迭代计算。</p>
+<p>Apache Spark是一个新兴的大数据处理引擎，它允许开发者使用有向无环图 (DAG) 开发复杂的数据操作，内部使用一个集群上的分布式内存抽象 (RDD) ，简化了对分布式数据的编程复杂性。RDD 提供了两类操作，转换和动作，转换在原有 RDD 上通过一些操作定义了一个新的 RDD ，包括map, flatMap, filter, union, sample, join, groupByKey, cogroup, ReduceByKey, cros, sortByKey, mapValues等 …</p>
+      <br>
+      <a class="btn" href="https://blog.chih.me/spark-sql.html#spark-sql">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://blog.chih.me/shark-ppt.html#shark-ppt">Shark</a></h2>
+    <p>
+          Posted on Fri 23 June 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/spark.html">spark</a>,              <a href="https://blog.chih.me/tag/big-data.html">big data</a>,              <a href="https://blog.chih.me/tag/sql.html">SQL</a>,              <a href="https://blog.chih.me/tag/sql-on-hadoop.html">SQL on Hadoop</a>,              <a href="https://blog.chih.me/tag/shark.html">shark</a>,              <a href="https://blog.chih.me/tag/hadoop.html">hadoop</a>
+    </p>
+  </header>
+  <div>
+      <h1>Shark Overview</h1>
+<p>一个独立，快速，类MapReduce的SQL引擎</p>
+<ul>
+<li>基于内存存储数据，适合交互式查询</li>
+<li>优秀的查询优化</li>
+<li>比Hadoop快40倍以上</li>
+</ul>
+<p>完全兼容Hadoop存储接口</p>
+<ul>
+<li>可以读取或写入任何支持Hadoop的系统</li>
+<li>包括HDFS，Hbase，SequenceFiles</li>
+</ul>
+<hr>
+<h1>Shark Overview</h1>
+<ul>
+<li>
+<p>Shark即Hive on Spark，本质上是通过Hive的HQL解析，把HQL翻译成Spark上的RDD操作，然后通过Hive的metadata获取数据库里的表信息，实际HDFS上的数据和文件，会由Shark获取并放到Spark上运算。</p>
+</li>
+<li>
+<p>Shark建立在Hive的代码基础上，并通过将Hive的部分物理执行计划交换出来（by swapping out the physical execution engine part of Hive）。这个方法使得Shark的用户可以加速Hive的查询</p>
+</li>
+<li>
+<p>Shark在HQL方面重用了Hive中HQL的解析、逻辑执行计划翻译、执行计划优化等逻辑，完全兼容已有的Hive数据，metastores 和 查询( HiveQL，UDFs )</p>
+</li>
+</ul>
+<hr>
+<h1>Project History</h1>
+<ul>
+<li>
+<p>Spark project …</p></li></ul>
+      <br>
+      <a class="btn" href="https://blog.chih.me/shark-ppt.html#shark-ppt">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://blog.chih.me/read-cpu-power-with-RAPL.html#read-cpu-power-with-RAPL">Energy measurements in Linux</a></h2>
     <p>
           Posted on Tue 31 January 2017 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
@@ -171,115 +284,6 @@
 <p>操作系统通过CPU调频可以根据负载动态调节CPU工作频率，达到省电的目的。这个过程可以自动进行，也可以由用户空间(userspace)程序手动调节。Linux 内核实现了CPU 调频，该驱动被称为 CPUfreq， 从 3.4 内核开始，内核会自动载入相应的内核模块，默认的频率调频器 …</p>
       <br>
       <a class="btn" href="https://blog.chih.me/power-with-different-cpufreq.html#power-with-different-cpufreq">    Continue reading
-</a>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://blog.chih.me/global-proxy-within-redsocks-and-shadowsocks.html#global-proxy-within-redsocks-and-shadowsocks">使用redsocks把shadowsocks转为全局代理</a></h2>
-    <p>
-          Posted on Mon 21 November 2016 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
-
-
-          &#8226;     Tagged with
-
-              <a href="https://blog.chih.me/tag/arch-linux.html">Arch Linux</a>,              <a href="https://blog.chih.me/tag/linux.html">Linux</a>,              <a href="https://blog.chih.me/tag/redsocks.html">redsocks</a>,              <a href="https://blog.chih.me/tag/iptables.html">iptables</a>,              <a href="https://blog.chih.me/tag/shadowsocks.html">shadowsocks</a>,              <a href="https://blog.chih.me/tag/dai-li.html">代理</a>
-    </p>
-  </header>
-  <div>
-      <h2>前言</h2>
-<p>shadowsocks是个非常棒的翻墙代理，它可以在本地提供一个socks5端口供软件使用代理。比如启动chrome的时候加上<code>--proxy-server="socks5://myproxy:1080"</code>这条参数就可以让chrome走代理；然而，有些软件不支持设置代理的功能。所以有时候，我们需要一个全局代理的环境，使用VPN是一个通常的选择，不过一般购买的VPN的速度不如shadowsocks，同时，VPN更容易受到GFW的干扰。为什么不把正在使用的shadowsocks利用起来作为一个全局代理呢？</p>
-<p>本文介绍了一种利用<a href="https://github.com/darkk/redsocks">redsocks</a>与iptables实现全局代理的方法，其基本原理如下：</p>
-<ol>
-<li>iptables的规则将所有tcp包转发到redsocks打开的本地端口</li>
-<li>redsocks接收tcp包并转发给shadowsocks打开的本地socks端口</li>
-<li>shadowsocks将接收的包转发给远端的代理服务器</li>
-</ol>
-<p>由于使用了redsocks与iptables，因此本文的方法仅适用于Linux。</p>
-<h2>安装</h2>
-<p>由于使用的是Arch Linux，我直接通过AUR安装</p>
-<div class="highlight"><pre><span></span>$ yaourt redsocks
-</pre></div>
-
-
-<p>通过<code>yaourt</code>搜索redsocks包，然后选择你要安装的包的序号就可以进行安装了。</p>
-<blockquote>
-<p>注意：下文中的配置文件的路径全部基于Arch Linux，如果你用的不是Arch Linux，请根据自己的情况更改。</p>
-</blockquote>
-<p>其他发行版可以通过各自的包管理器或者下载源码<a href="https://github.com/darkk/redsocks/blob/master/README">安装</a>。</p>
-<h2>配置</h2>
-<h3>配置redsocks</h3>
-<p>我在包提供的原有配置的基础上进行了一些修改，主要是把 <code>redsocks …</code></p>
-      <br>
-      <a class="btn" href="https://blog.chih.me/global-proxy-within-redsocks-and-shadowsocks.html#global-proxy-within-redsocks-and-shadowsocks">    Continue reading
-</a>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://blog.chih.me/hadoop-install.html#hadoop-install">Hadoop 安装笔记</a></h2>
-    <p>
-          Posted on Thu 17 November 2016 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
-
-
-          &#8226;     Tagged with
-
-              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/hadoop.html">Hadoop</a>,              <a href="https://blog.chih.me/tag/java-big-data.html">Java， Big Data</a>
-    </p>
-  </header>
-  <div>
-      <h2>The building blocks of Hadoop</h2>
-<ul>
-<li>NameNode</li>
-<li>DataNode</li>
-<li>Secondary NameNode</li>
-<li>~~JobTracker~~</li>
-<li>~~TaskTracker~~</li>
-<li>ResourceManager</li>
-<li>NodeManager</li>
-</ul>
-<p><img alt="Screenshot_20161117_185744" src="images/Screenshot_20161117_185744.png"></p>
-<p><img alt="Screenshot_20161117_190357" src="images/Screenshot_20161117_190357.png"></p>
-<h3>NameNode</h3>
-<p>NameNode主要是用来保存HDFS的<strong>元数据</strong>信息，比如命名空间信息，块信息等。当它运行的时候，这些信息是存在内存中的。但是这些信息也可以持久化到磁盘上。没有Namenode，HDFS就不能工作。事实上，如果运行namenode的机器坏掉的话，系统中的文件将会完全丢失，因为没有其他方法能够将位于不同datanode上的文件块(blocks)重建文件。因此，Hadoop存在单点故障。为了解决单点故障，Hadoop提供了两套机制：</p>
-<ol>
-<li>第一种方式是将持久化存 储在本地硬盘的文件系统元数据备份。Hadoop可以通过配置来让Namenode将他的持久化状态文件写到不同的文件系统中。一般是镜像到网络文件系统或单独的磁盘中。</li>
-<li>第二种方式是运行一个辅助的Namenode(Secondary Namenode)。下面会具体说明。</li>
-</ol>
-<h3>DataNode</h3>
-<p>Datanode是文件系统的工作节点，他们根据客户端或者是namenode的调度存储和检索数据，并且定期向namenode发送他们所存储的块(block)的<strong>列表</strong>。</p>
-<p>集群中的每个服务器都运 …</p>
-      <br>
-      <a class="btn" href="https://blog.chih.me/hadoop-install.html#hadoop-install">    Continue reading
-</a>
-  </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://blog.chih.me/chang-openwtr-ppoe-password.html#chang-openwtr-ppoe-password">使用LuCI的RPC接口修改openwrt配置</a></h2>
-    <p>
-          Posted on Mon 17 October 2016 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
-
-
-          &#8226;     Tagged with
-
-              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/openwrt.html">openwrt</a>,              <a href="https://blog.chih.me/tag/android.html">android</a>,              <a href="https://blog.chih.me/tag/luci.html">luci</a>,              <a href="https://blog.chih.me/tag/rpc.html">rpc</a>
-    </p>
-  </header>
-  <div>
-      <p>简单来说，本文整理了一些<code>openwrt</code>的RPC接口，用来自动修改pppoe的密码，并重启网络。为什么要弄这些玩意呢，因为浙江高校中普遍使用的蛋疼的闪讯——两三天换个动态密码，时不时给你断个网！使用这些API的是一个Android应用，它在用户按下一个按键后自动向电信发送一条获取密码的短信，然后获取返回的短信，解析其中的闪讯动态密码，通过<code>openwrt</code>的RPC接口修改密码并重启网络，这样，只需要一次按按钮的操作，就能恢复网络，又可以愉快的玩耍啦。</p>
-<p><a href="https://github.com/openwrt/openwrt">openwrt</a> 我就不多介绍了，玩路由器的都知道；<a href="https://wiki.openwrt.org/doc/techref/uci">UCI</a>是<code>openwrt</code>提供的一套统一的配置接口，可以用以配置整台<code>openwrt</code>设备；而<a href="https://wiki.openwrt.org/doc/techref/luci">LuCI</a>是一个基于Lua语言开发的、包装了底层UCI接口的易于使用的Web用户接口。LuCI也提供了一种基于JSON格式的RPC机制来访问其内部的库。</p>
-<p>LuCI的RPC接口的地址为 <strong>/cgi-bin/luci/rpc/LIBRARY</strong>，其中LIBRARY代表按功能区分的几个库，分别为：</p>
-<ul>
-<li><strong>auth</strong> - 基于token的认证库</li>
-<li><strong>uci</strong> - UCI统一配置接口的映射</li>
-<li><strong>fs</strong> -  文件操作</li>
-<li><strong>sys …</strong></li></ul>
-      <br>
-      <a class="btn" href="https://blog.chih.me/chang-openwtr-ppoe-password.html#chang-openwtr-ppoe-password">    Continue reading
 </a>
   </div>
 </article>

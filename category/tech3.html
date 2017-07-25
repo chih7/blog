@@ -69,6 +69,100 @@
 
 <article>
   <header>
+    <h2><a href="https://blog.chih.me/Compiler-WizNote-in-openSUSE.html#Compiler-WizNote-in-openSUSE">在openSUSE上编译WizNote(为知笔记)</a></h2>
+    <p>
+          Posted on Wed 11 March 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/qt5.html">Qt5</a>,              <a href="https://blog.chih.me/tag/opensuse.html">openSUSE</a>,              <a href="https://blog.chih.me/tag/bian-yi.html">编译</a>,              <a href="https://blog.chih.me/tag/wiznote.html">WizNote</a>
+    </p>
+  </header>
+  <div>
+      <p><code>Wiznote</code>--为知笔记是一款优秀的全平台云笔记客户端，当初我从Windows切换到纯Linux平台的时候，就同时把我的在线笔记从<code>Evernote</code>切换到了<code>WizNote</code>。</p>
+<p><code>openSUSE</code>的个人仓库里其实是有<code>WizNote</code>的
+<a href="https://build.opensuse.org/package/show?project=home%3Agmg137&amp;package=WizNote">https://build.opensuse.org/package/show?project=home%3Agmg137&amp;package=WizNote</a>， 但它并不是最新版本。所以我打算自己编译一个最新版自用，同时因为是自用，直接源码编译安装了，并没有打包。如果需要在<code>openSUSE</code>下打包，可以参照苏姐的视频教学<a href="http://www.bilibili.com/video/av688454">http://www.bilibili.com/video/av688454</a>。</p>
+<h2>获取源码</h2>
+<ul>
+<li>
+<p>从github 上面 clone 为知笔记客户端源码到本地</p>
+<div class="highlight"><pre><span></span>$ git clone https://github.com/WizTeam/WizQTClient.git …</pre></div></li></ul>
+      <br>
+      <a class="btn" href="https://blog.chih.me/Compiler-WizNote-in-openSUSE.html#Compiler-WizNote-in-openSUSE">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://blog.chih.me/use-USB-in-virtualbox-at-openSUSE.html#use-USB-in-virtualbox-at-openSUSE">解决在opensuse下virtualbox无法挂载主机USB设备的问题</a></h2>
+    <p>
+          Posted on Mon 02 March 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/virtualbox.html">virtualbox</a>,              <a href="https://blog.chih.me/tag/opensuse.html">openSUSE</a>,              <a href="https://blog.chih.me/tag/usb.html">USB</a>
+    </p>
+  </header>
+  <div>
+      <p>因为要用<code>virtualbox</code>中的<code>Windows</code>虚拟机设置G602的可编程键，所以需要把G602的USB无线接收器挂载到虚拟机上，结果发现<code>virtualbox</code>右下角USB设备那里尽管有<code>logitech USB Receiver</code>这个选项，但它是灰色的，无法选中。</p>
+<p>因为已经确认当前用户已经加入<code>vboxusers</code>组、并已经安装<code>Oracle Extensions</code>扩展包，那么问题应该从其他方向寻找。</p>
+<p>在Google了一段时间后，终于在openSUSE论坛找到了<a href="https://forum.suse.org.cn/viewtopic.php?f=13&amp;t=3130">解决方法</a></p>
+<blockquote>
+<p>源中的包，/usr/lib/udev/rules.d/60-vboxdrv.rules 里面有 4 行规则被用 # 号注释掉了，有安全隐患。把那 4 行注释打开应该就可以了。</p>
+</blockquote>
+<p>找到那四行并取消注释就可以了:</p>
+<blockquote>
+<ul>
+<li>SUBSYSTEM=="usb_device", ACTION=="add", RUN+="/usr/share …</li></ul></blockquote>
+      <br>
+      <a class="btn" href="https://blog.chih.me/use-USB-in-virtualbox-at-openSUSE.html#use-USB-in-virtualbox-at-openSUSE">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
+    <h2><a href="https://blog.chih.me/storm-starter.html#storm-starter">在实时计算框架Storm集群上运行Storm-Starter例子</a></h2>
+    <p>
+          Posted on Sun 22 February 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
+
+
+          &#8226;     Tagged with
+
+              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/storm.html">Storm</a>,              <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>,              <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
+    </p>
+  </header>
+  <div>
+      <blockquote>
+<p>官方文档待翻译，个人实践在下面</p>
+</blockquote>
+<h1>Example Storm Topologies</h1>
+<p>Learn to use Storm!</p>
+<hr>
+<p>Table of Contents</p>
+<ul>
+<li><a href="#getting-started">Getting started</a></li>
+<li><a href="#maven">Using storm-starter with Maven</a></li>
+<li><a href="#intellij-idea">Using storm-starter with IntelliJ IDEA</a></li>
+</ul>
+<hr>
+<p><a name="getting-started"></a></p>
+<h1>Getting started</h1>
+<h2>Prerequisites</h2>
+<p>First, you need <code>java</code> and <code>git</code> installed and in your user's <code>PATH</code>.  Also, two of the examples in storm-starter
+require Python and Ruby.</p>
+<p>Next …</p>
+      <br>
+      <a class="btn" href="https://blog.chih.me/storm-starter.html#storm-starter">    Continue reading
+</a>
+  </div>
+  <hr />
+</article>
+<article>
+  <header>
     <h2><a href="https://blog.chih.me/Setting-up-a-Storm-Cluster-in-3-machines.html#Setting-up-a-Storm-Cluster-in-3-machines">实时计算框架Storm集群搭建</a></h2>
     <p>
           Posted on Fri 20 February 2015 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
@@ -223,39 +317,13 @@ ip：192.168.56.103 192.168.56.104</p>
       <a class="btn" href="https://blog.chih.me/virtualboxzhu-ji-fang-wen-xu-ni-ji.html#virtualboxzhu-ji-fang-wen-xu-ni-ji">    Continue reading
 </a>
   </div>
-  <hr />
-</article>
-<article>
-  <header>
-    <h2><a href="https://blog.chih.me/disable-easy-install-in-vmware.html#disable-easy-install-in-vmware">VMware中使easy install失效</a></h2>
-    <p>
-          Posted on Wed 05 September 2012 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
-
-
-          &#8226;     Tagged with
-
-              <a href="https://blog.chih.me/tag/vmware.html">VMware</a>,              <a href="https://blog.chih.me/tag/linux.html">linux</a>,              <a href="https://blog.chih.me/tag/xu-ni-ji.html">虚拟机</a>
-    </p>
-  </header>
-  <div>
-      <p>用Typcial或custom方式安装虚拟机时，会出现Easy Install，使得安装过程自动进行，但这种自动的安装会有一些问题，比如装Linux时的分区，ubuntu的中文支持也会有问题。
-更多的，对于像我这种学生来说，虚拟机有很大的作用是用来学习系统的安装的，这时Easy Install就显得多余了，那我们要怎么取消Easy Install呢？下面是一种不错的方法。</p>
-<ol>
-<li>用Typcial或custom方式进入虚拟机的安装。</li>
-<li>出现Easy Install Information时，可以随便填写，这个在后来的实际安装过程中是用不着的。</li>
-<li>按你的需要配置虚拟机</li>
-<li>在Ready to Create Virtual Machine页中，需要把Power on this virtual machine after creation前的勾去掉，Finish</li>
-<li>接下来配置你刚刚创建的虚拟机。</li>
-<li>把使用autoinst.iso的CD/DVD这个硬件直接remove或选为Auto detect，同样更改Floppy这个硬件，OK</li>
-<li>现在启动虚拟机安装系统时就不会进入Easy Install了。</li>
-</ol>
-      <br>
-      <a class="btn" href="https://blog.chih.me/disable-easy-install-in-vmware.html#disable-easy-install-in-vmware">    Continue reading
-</a>
-  </div>
 </article>
 
   <div class="pagination">
+    <a class="btn float-left" href="https://blog.chih.me/category/tech4.html">
+      <i class="fa fa-angle-left"></i>     Older Posts
+
+    </a>
     <a class="btn float-right" href="https://blog.chih.me/category/tech2.html">
           Newer Posts
  <i class="fa fa-angle-right"></i>
