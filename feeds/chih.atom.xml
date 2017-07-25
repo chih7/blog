@@ -173,7 +173,7 @@ mv spark-&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;spark_pkgv
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;配置 Hadoop&lt;/h2&gt;
+&lt;h2&gt;配置 Spark&lt;/h2&gt;
 &lt;p&gt;进入配置目录 &lt;code&gt;/usr/local/spark/conf&lt;/code&gt; 准备修改配置文件。&lt;/p&gt;
 &lt;p&gt;在&lt;code&gt;slaves&lt;/code&gt;中配置slave节点的ip或者host，&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;vim ./slaves
