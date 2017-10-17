@@ -1,91 +1,122 @@
-
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
 <head>
-  <link href='//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic' rel='stylesheet' type='text/css'>
-
-    <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/stylesheet/style.min.css">
-
-  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/pygments/github.min.css">
-  <link rel="stylesheet" type="text/css" href="https://blog.chih.me/theme/font-awesome/css/font-awesome.min.css">
-
-
-    <link href="https://blog.chih.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="chih's blog Atom">
+    <title>VMware中使easy install失效 - chih's blog</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link href="https://blog.chih.me/favicon.ico" rel="icon">
 
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="HandheldFriendly" content="True" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="" />
+<link rel="canonical" href="https://blog.chih.me/disable-easy-install-in-vmware.html">
+
+        <meta name="author" content="chih" />
+        <meta name="keywords" content="VMware,linux,虚拟机" />
+        <meta name="description" content="用Typcial或custom方式安装虚拟机时，会出现Easy Install，使得安装过程自动进行，但这种自动的安装会有一些问题，比如装Linux时的分区，ubuntu的中文支持也会有问题。 更多的，对于像我这种学生来说，虚拟机有很大的作用是用来学习系统的安装的，这时Easy Install就显得多余了，那我们要怎么取消Easy Install呢？下面是一种不错的方法。 用Typcial或custom方式进入虚拟机的安装。 出现Easy Install Information时，可以随便填写，这个在后来的实际安装过程中是用不着的。 按你的需要配置虚拟机 在Ready to Create Virtual Machine页中，需要把Power on this virtual machine after creation前的勾去掉，Finish 接下来配置你刚刚创建的虚拟机。 把使用autoinst.iso的CD/DVD这个硬件直接remove或选为Auto detect，同样更改Floppy这个硬件，OK 现在启动虚拟机安装系统时就不会进入Easy Install了。" />
+
+        <meta property="og:site_name" content="chih's blog" />
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="VMware中使easy install失效"/>
+        <meta property="og:url" content="https://blog.chih.me/disable-easy-install-in-vmware.html"/>
+        <meta property="og:description" content="用Typcial或custom方式安装虚拟机时，会出现Easy Install，使得安装过程自动进行，但这种自动的安装会有一些问题，比如装Linux时的分区，ubuntu的中文支持也会有问题。 更多的，对于像我这种学生来说，虚拟机有很大的作用是用来学习系统的安装的，这时Easy Install就显得多余了，那我们要怎么取消Easy Install呢？下面是一种不错的方法。 用Typcial或custom方式进入虚拟机的安装。 出现Easy Install Information时，可以随便填写，这个在后来的实际安装过程中是用不着的。 按你的需要配置虚拟机 在Ready to Create Virtual Machine页中，需要把Power on this virtual machine after creation前的勾去掉，Finish 接下来配置你刚刚创建的虚拟机。 把使用autoinst.iso的CD/DVD这个硬件直接remove或选为Auto detect，同样更改Floppy这个硬件，OK 现在启动虚拟机安装系统时就不会进入Easy Install了。"/>
+        <meta property="article:published_time" content="2012-09-05" />
+            <meta property="article:section" content="Tech" />
+            <meta property="article:tag" content="VMware" />
+            <meta property="article:tag" content="linux" />
+            <meta property="article:tag" content="虚拟机" />
+            <meta property="article:author" content="chih" />
 
 
-<meta name="author" content="chih" />
-<meta name="description" content="用Typcial或custom方式安装虚拟机时，会出现Easy Install，使得安装过程自动进行，但这种自动的安装会有一些问题，比如装Linux时的分区，ubuntu的中文支持也会有问题。 更多的，对于像我这种学生来说，虚拟机有很大的作用是用来学习系统的安装的，这时Easy Install就显得多余了，那我们要怎么取消Easy Install呢？下面是一种不错的方法。 用Typcial或custom方式进入虚拟机的安装。 出现Easy Install Information时，可以随便填写，这个在后来的实际安装过程中是用不着的。 按你的需要配置虚拟机 在Ready to Create Virtual Machine页中，需要把Power on this virtual machine after creation前的勾去掉，Finish 接下来配置你刚刚创建的虚拟机。 把使用autoinst.iso的CD/DVD这个硬件直接remove或选为Auto detect，同样更改Floppy这个硬件，OK 现在启动虚拟机安装系统时就不会进入Easy Install了。" />
-<meta name="keywords" content="VMware, linux, 虚拟机">
-<meta property="og:site_name" content="chih's blog"/>
-<meta property="og:title" content="VMware中使easy install失效"/>
-<meta property="og:description" content="用Typcial或custom方式安装虚拟机时，会出现Easy Install，使得安装过程自动进行，但这种自动的安装会有一些问题，比如装Linux时的分区，ubuntu的中文支持也会有问题。 更多的，对于像我这种学生来说，虚拟机有很大的作用是用来学习系统的安装的，这时Easy Install就显得多余了，那我们要怎么取消Easy Install呢？下面是一种不错的方法。 用Typcial或custom方式进入虚拟机的安装。 出现Easy Install Information时，可以随便填写，这个在后来的实际安装过程中是用不着的。 按你的需要配置虚拟机 在Ready to Create Virtual Machine页中，需要把Power on this virtual machine after creation前的勾去掉，Finish 接下来配置你刚刚创建的虚拟机。 把使用autoinst.iso的CD/DVD这个硬件直接remove或选为Auto detect，同样更改Floppy这个硬件，OK 现在启动虚拟机安装系统时就不会进入Easy Install了。"/>
-<meta property="og:locale" content="en_US"/>
-<meta property="og:url" content="https://blog.chih.me/disable-easy-install-in-vmware.html"/>
-<meta property="og:type" content="article"/>
-<meta property="article:published_time" content="2012-09-05 00:00:00+08:00"/>
-<meta property="article:modified_time" content=""/>
-<meta property="article:author" content="https://blog.chih.me/author/chih.html">
-<meta property="article:section" content="Tech"/>
-<meta property="article:tag" content="VMware"/>
-<meta property="article:tag" content="linux"/>
-<meta property="article:tag" content="虚拟机"/>
-<meta property="og:image" content="">
 
-  <title>chih's blog &ndash; VMware中使easy install失效</title>
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://blog.chih.me/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="https://blog.chih.me/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="https://blog.chih.me/theme/css/pygments/native.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://blog.chih.me/theme/css/style.css" type="text/css"/>
+
+        <link href="https://blog.chih.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="chih's blog ATOM Feed"/>
+
+
+
+        <link href="https://blog.chih.me/feeds/tech.atom.xml" type="application/atom+xml" rel="alternate"
+              title="chih's blog Tech ATOM Feed"/>
 
 </head>
 <body>
-  <aside>
-    <div>
-      <a href="https://blog.chih.me">
-        <img src="https://blog.chih.me/theme/img/profile.png" alt="" title="">
-      </a>
-      <h1><a href="https://blog.chih.me"></a></h1>
 
-
-      <nav>
-        <ul class="list">
-          <li><a href="https://blog.chih.me/pages/about-me.html#about-me">About Me</a></li>
-
-          <li><a href="http://www.hjk.im/" target="_blank">HJK</a></li>
-          <li><a href="http://imis.me/" target="_blank">记忆反射弧</a></li>
-          <li><a href="http://mijack.github.io/" target="_blank">mijack</a></li>
-          <li><a href="http://datahcong.cn/" target="_blank">whl的博客园</a></li>
-        </ul>
-      </nav>
-
-      <ul class="social">
-      </ul>
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="https://blog.chih.me/" class="navbar-brand">
+chih's blog            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                         <li><a href="https://blog.chih.me/pages/about-me.html">
+                             About Me
+                          </a></li>
+                        <li >
+                            <a href="https://blog.chih.me/category/self.html">Self</a>
+                        </li>
+                        <li class="active">
+                            <a href="https://blog.chih.me/category/tech.html">Tech</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
     </div>
+</div> <!-- /.navbar -->
+<!-- Banner -->
+<!-- End Banner -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="https://blog.chih.me/disable-easy-install-in-vmware.html"
+                       rel="bookmark"
+                       title="Permalink to VMware中使easy install失效">
+                        VMware中使easy install失效
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2012-09-05T00:00:00+08:00"> Wed 05 September 2012</time>
+    </span>
 
 
-  </aside>
-  <main>
 
 
-<article class="single">
-  <header>
-    <h1 id="disable-easy-install-in-vmware">VMware中使easy install失效</h1>
-    <p>
-          Posted on Wed 05 September 2012 in <a href="https://blog.chih.me/category/tech.html">Tech</a>
 
-
-    </p>
-  </header>
-
-
-  <div>
-    <p>用Typcial或custom方式安装虚拟机时，会出现Easy Install，使得安装过程自动进行，但这种自动的安装会有一些问题，比如装Linux时的分区，ubuntu的中文支持也会有问题。
+<span class="label label-default">Tags</span>
+	<a href="https://blog.chih.me/tag/vmware.html">VMware</a>
+        /
+	<a href="https://blog.chih.me/tag/linux.html">linux</a>
+        /
+	<a href="https://blog.chih.me/tag/xu-ni-ji.html">虚拟机</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>用Typcial或custom方式安装虚拟机时，会出现Easy Install，使得安装过程自动进行，但这种自动的安装会有一些问题，比如装Linux时的分区，ubuntu的中文支持也会有问题。
 更多的，对于像我这种学生来说，虚拟机有很大的作用是用来学习系统的安装的，这时Easy Install就显得多余了，那我们要怎么取消Easy Install呢？下面是一种不错的方法。</p>
 <ol>
 <li>用Typcial或custom方式进入虚拟机的安装。</li>
@@ -96,63 +127,165 @@
 <li>把使用autoinst.iso的CD/DVD这个硬件直接remove或选为Auto detect，同样更改Floppy这个硬件，OK</li>
 <li>现在启动虚拟机安装系统时就不会进入Easy Install了。</li>
 </ol>
-  </div>
-  <div class="tag-cloud">
-    <p>
-      <a href="https://blog.chih.me/tag/vmware.html">VMware</a>
+            </div>
+            <!-- /.entry-content -->
+    <hr/>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'chihsblog'; // required: replace example with your forum shortname
+
+                    var disqus_identifier = 'disable-easy-install-in-vmware';
+                var disqus_url = 'https://blog.chih.me/disable-easy-install-in-vmware.html';
+
+            var disqus_config = function () {
+                this.language = "zh";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+<!-- Sidebar -->
+<section class="well well-sm">
+  <ul class="list-group list-group-flush">
+
+<!-- Sidebar/Tag Cloud -->
+<li class="list-group-item">
+  <a href="https://blog.chih.me/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+  <ul class="list-group " id="tags">
+    <li class="list-group-item tag-1">
       <a href="https://blog.chih.me/tag/linux.html">linux</a>
-      <a href="https://blog.chih.me/tag/xu-ni-ji.html">虚拟机</a>
-    </p>
-  </div>
+    </li>
+    <li class="list-group-item tag-2">
+      <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>
+    </li>
+    <li class="list-group-item tag-2">
+      <a href="https://blog.chih.me/tag/hadoop.html">hadoop</a>
+    </li>
+    <li class="list-group-item tag-2">
+      <a href="https://blog.chih.me/tag/sql.html">SQL</a>
+    </li>
+    <li class="list-group-item tag-2">
+      <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
+    </li>
+    <li class="list-group-item tag-2">
+      <a href="https://blog.chih.me/tag/spark.html">Spark</a>
+    </li>
+    <li class="list-group-item tag-2">
+      <a href="https://blog.chih.me/tag/storm.html">Storm</a>
+    </li>
+    <li class="list-group-item tag-2">
+      <a href="https://blog.chih.me/tag/big-data.html">big data</a>
+    </li>
+    <li class="list-group-item tag-3">
+      <a href="https://blog.chih.me/tag/sql-on-hadoop.html">SQL on Hadoop</a>
+    </li>
+    <li class="list-group-item tag-3">
+      <a href="https://blog.chih.me/tag/python.html">python</a>
+    </li>
+  </ul>
+</li>
+<!-- End Sidebar/Tag Cloud -->
+
+<!-- Sidebar/Links -->
+<li class="list-group-item">
+  <h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
+  <ul class="list-group" id="links">
+    <li class="list-group-item">
+      <a href="http://www.hjk.im/" target="_blank">HJK</a>
+    </li>
+    <li class="list-group-item">
+      <a href="http://imis.me/" target="_blank">记忆反射弧</a>
+    </li>
+    <li class="list-group-item">
+      <a href="http://mijack.github.io/" target="_blank">mijack</a>
+    </li>
+    <li class="list-group-item">
+      <a href="http://datahcong.cn/" target="_blank">whl的博客园</a>
+    </li>
+  </ul>
+</li>
+<!-- End Sidebar/Links -->
+  </ul>
+</section>
+<!-- End Sidebar -->            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2017 chih
+            &middot; Powered by <a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="https://blog.chih.me/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://blog.chih.me/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="https://blog.chih.me/theme/js/respond.min.js"></script>
 
 
+    <!-- Disqus -->
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'chihsblog'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <!-- End Disqus Code -->
+    <!-- Google Analytics -->
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-61054351-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+    <!-- End Google Analytics Code -->
 
 
-<div id="disqus_thread"></div>
-<script type="text/javascript">
-    var disqus_shortname = 'chihsblog';
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<noscript>
-        Please enable JavaScript to view comments.
-
-</noscript>
-</article>
-
-    <footer>
-<p>&copy; chih </p>
-<p>    Powered by <a href="http://getpelican.com" target="_blank">Pelican</a> - <a href="https://github.com/alexandrevicenzi/flex" target="_blank">Flex</a> theme by <a href="http://alexandrevicenzi.com" target="_blank">Alexandre Vicenzi</a>
-</p>    </footer>
-  </main>
-
-<!-- Google Analytics -->
-<script type="text/javascript">
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-61054351-1', 'auto');
-  ga('send', 'pageview');
-</script>
-<!-- End Google Analytics -->
-
-
-
-<script type="application/ld+json">
-{
-  "@context" : "http://schema.org",
-  "@type" : "Blog",
-  "name": " chih's blog ",
-  "url" : "https://blog.chih.me",
-  "image": "",
-  "description": ""
-}
-</script>
-  
 </body>
 </html>
