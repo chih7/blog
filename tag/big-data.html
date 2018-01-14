@@ -75,6 +75,22 @@ chih's blog            </a>
     <div class="row">
         <div class="col-sm-9">
             <article>
+                <h2><a href="https://blog.chih.me/Outlier-mining-review.html">离群点挖掘简述</a></h2>
+                <div class="summary"><h2>引言</h2>
+<p>离群点是一个或一组明显不同于其他数据的数据点。Hawkins把离群点定义为“离群点是在数据集中偏离大部分数据的数据，使人怀疑这些数据的偏离并非由随机因素产生，而是产生于完全不同的机制。”</p>
+<p>在大多数应用中，数据由一到多个程序产生，这些数据可以反映出系统的运行状态和被监测客体的相关数值。当测量、输入错误或系统运行错误时，或者客体出现异常行为，离群点就会产生。因此，离群点经常包含关于系统与实体异常特征的有效信息。现有数据挖掘研究大多集中于发现适用于大部分数据的常规模式,在许多应用领域中，离群点通常作为噪音而忽略，许多数据挖掘算法试图降低或消除离群点的影响。而在有些应用领域识别离群点是许多工作的基础和前提，离群点会带给我们新的视角。如在欺诈检测中，离群点可能意味欺诈行为的发生，在入侵检测中离群点可能意味入侵行为的发生。其他的一些应用场景包括信用卡诈骗、医疗诊断、执法、地球科学……</p>
+<p>离群点的检测算法输出可以是两种类型之一：</p>
+<ol>
+<li>大多数离群点检测算法，输出一个关于数据点的“离群性”得分。这个得分可以用于分析数据点的离群趋势。</li>
+<li>第二种类型的输出是表示一个数据点是否离群的二进制标签。一些算法可能直接返回二进制标签，但离群得分也可转换成二进制标签。</li>
+</ol>
+<p>早期对离群点研究的主要目的是消除离群点，那时离群点一般被视为“噪音”，但随着离群点分析的流行，发现“噪声”中存在有趣的数据。在真实的应用中，数据可能嵌入了大量的噪音，但大部分噪音对于分析是无趣的。</p>
+<p>如下图所示，在(a …</p>
+                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/Outlier-mining-review.html">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
                 <h2><a href="https://blog.chih.me/spark-sql-ppt.html">Spark SQL 笔记</a></h2>
                 <div class="summary"><h1>Spark SQL Overview</h1>
 <p>特性：</p>
@@ -164,10 +180,16 @@ chih's blog            </a>
       <a href="https://blog.chih.me/tag/linux.html">linux</a>
     </li>
     <li class="list-group-item tag-2">
-      <a href="https://blog.chih.me/tag/storm.html">Storm</a>
+      <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
     </li>
     <li class="list-group-item tag-2">
       <a href="https://blog.chih.me/tag/spark.html">Spark</a>
+    </li>
+    <li class="list-group-item tag-2">
+      <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>
+    </li>
+    <li class="list-group-item tag-2">
+      <a href="https://blog.chih.me/tag/big-data.html">big data</a>
     </li>
     <li class="list-group-item tag-2">
       <a href="https://blog.chih.me/tag/sql.html">SQL</a>
@@ -176,19 +198,13 @@ chih's blog            </a>
       <a href="https://blog.chih.me/tag/hadoop.html">hadoop</a>
     </li>
     <li class="list-group-item tag-2">
-      <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
-    </li>
-    <li class="list-group-item tag-2">
-      <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>
-    </li>
-    <li class="list-group-item tag-2">
-      <a href="https://blog.chih.me/tag/big-data.html">big data</a>
-    </li>
-    <li class="list-group-item tag-3">
-      <a href="https://blog.chih.me/tag/python.html">python</a>
+      <a href="https://blog.chih.me/tag/storm.html">Storm</a>
     </li>
     <li class="list-group-item tag-3">
       <a href="https://blog.chih.me/tag/sql-on-hadoop.html">SQL on Hadoop</a>
+    </li>
+    <li class="list-group-item tag-3">
+      <a href="https://blog.chih.me/tag/python.html">python</a>
     </li>
   </ul>
 </li>
@@ -223,7 +239,7 @@ chih's blog            </a>
    <div class="container">
       <hr>
       <div class="row">
-         <div class="col-xs-10">&copy; 2017 chih
+         <div class="col-xs-10">&copy; 2018 chih
             &middot; Powered by <a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>

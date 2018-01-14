@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
 <head>
-    <title>aria2 - chih's blog</title>
+    <title>异常检测 - chih's blog</title>
     <!-- Using the latest rendering mode for IE -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
@@ -12,7 +12,7 @@
 
 
     <meta name="author" content="chih" />
-    <meta name="keywords" content="aria2" />
+    <meta name="keywords" content="异常检测" />
 
     <!-- Open Graph tags -->
         <meta property="og:site_name" content="chih's blog" />
@@ -75,31 +75,18 @@ chih's blog            </a>
     <div class="row">
         <div class="col-sm-9">
             <article>
-                <h2><a href="https://blog.chih.me/download-use-aria2.html">我的硬盘不可能这么空~aria2篇</a></h2>
-                <div class="summary"><p>对于单纯的Aria2程序来说，它是一个轻量级、支持多种协议的命令行下载工具。</p>
-<ul>
-<li>支持的协议包括HTTP(S), FTP, BitTorrent, Metalink</li>
-<li>aria2可以并发的进行下载，并尝试将下载带宽利用率最大化</li>
-<li>分片与续传，自动中止并替换慢的线程</li>
-</ul>
-<p>看到命令行可能有人会想:“恩，又是那种强大到用起来要查手册写命令的玩意”。其实不然，由于aria2 支持 JSON-RPC和XML-RPC远程调用，可以通过web前端或客户端方便地进行管理。</p>
-<h3>安装</h3>
-<p>在Linux下，可以很方便地通过包管理进行安装，比如Arch Linux</p>
-<div class="highlight"><pre><span></span>$ sudo pacman -S aria2
-</pre></div>
-
-
-<p>如果是Windows，可以下载编译好的二进制文件，放在<code>C:\WINDOWS\system32</code>目录下，就可以通过<code>aria2c</code>命令执行程序了</p>
-<p>可以直接运行命令进行下载:</p>
-<ul>
-<li>
-<p>HTTP下载</p>
-<p>$ aria2c http://example.org/test.bin</p>
-</li>
-<li>
-<p>从两个源同时下载</p>
-<p>$ aria2c http …</p></li></ul>
-                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/download-use-aria2.html">more ...</a>
+                <h2><a href="https://blog.chih.me/Outlier-mining-review.html">离群点挖掘简述</a></h2>
+                <div class="summary"><h2>引言</h2>
+<p>离群点是一个或一组明显不同于其他数据的数据点。Hawkins把离群点定义为“离群点是在数据集中偏离大部分数据的数据，使人怀疑这些数据的偏离并非由随机因素产生，而是产生于完全不同的机制。”</p>
+<p>在大多数应用中，数据由一到多个程序产生，这些数据可以反映出系统的运行状态和被监测客体的相关数值。当测量、输入错误或系统运行错误时，或者客体出现异常行为，离群点就会产生。因此，离群点经常包含关于系统与实体异常特征的有效信息。现有数据挖掘研究大多集中于发现适用于大部分数据的常规模式,在许多应用领域中，离群点通常作为噪音而忽略，许多数据挖掘算法试图降低或消除离群点的影响。而在有些应用领域识别离群点是许多工作的基础和前提，离群点会带给我们新的视角。如在欺诈检测中，离群点可能意味欺诈行为的发生，在入侵检测中离群点可能意味入侵行为的发生。其他的一些应用场景包括信用卡诈骗、医疗诊断、执法、地球科学……</p>
+<p>离群点的检测算法输出可以是两种类型之一：</p>
+<ol>
+<li>大多数离群点检测算法，输出一个关于数据点的“离群性”得分。这个得分可以用于分析数据点的离群趋势。</li>
+<li>第二种类型的输出是表示一个数据点是否离群的二进制标签。一些算法可能直接返回二进制标签，但离群得分也可转换成二进制标签。</li>
+</ol>
+<p>早期对离群点研究的主要目的是消除离群点，那时离群点一般被视为“噪音”，但随着离群点分析的流行，发现“噪声”中存在有趣的数据。在真实的应用中，数据可能嵌入了大量的噪音，但大部分噪音对于分析是无趣的。</p>
+<p>如下图所示，在(a …</p>
+                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/Outlier-mining-review.html">more ...</a>
                 </div>
             </article>
             <hr/>
@@ -178,7 +165,7 @@ chih's blog            </a>
    <div class="container">
       <hr>
       <div class="row">
-         <div class="col-xs-10">&copy; 2015 chih
+         <div class="col-xs-10">&copy; 2018 chih
             &middot; Powered by <a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>

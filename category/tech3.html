@@ -77,6 +77,26 @@ chih's blog            </a>
     <div class="row">
         <div class="col-sm-9">
             <article>
+                <h2><a href="https://blog.chih.me/socks-for-minecraft.html">为MineCraft启动器挂上代理</a></h2>
+                <div class="summary"><p><code>MineCraft</code>官方启动器在启动的时候会从以下地址获取更新:</p>
+<div class="highlight"><pre><span></span>https://s3.amazonaws.com/Minecraft.Download/launcher/launcher.pack.lzma
+</pre></div>
+
+
+<p>如你所见，用的是Amazon EC2，Amazon AWS云服务，这两个服务在国内都是部分被屏蔽的。</p>
+<p>但是如果你有shadowsocks等socks代理的话是可以给<code>MineCraft</code>挂上代理的，虽然官方启动器并未提供代理设置。</p>
+<p>我在这里用的是<code>java</code>提供的代理选项:</p>
+<div class="highlight"><pre><span></span>$ java -DsocksProxyHost<span class="o">=</span><span class="m">127</span>.0.0.1 -DsocksProxyPort<span class="o">=</span><span class="m">1080</span> -jar ~/.minecraft/Minecraft.jar
+</pre></div>
+
+
+<p>这样子打开<code>MineCraft</code>启动器就可以很快的登录、更新、下游戏了。但需要注意的是你通过启动器打开<code>Minecraft</code>游戏本体之后，游戏是不走代理的。</p>
+<p>-EOF-</p>
+                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/socks-for-minecraft.html">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
                 <h2><a href="https://blog.chih.me/Compiler-WizNote-in-openSUSE.html">在openSUSE上编译WizNote(为知笔记)</a></h2>
                 <div class="summary"><p><code>Wiznote</code>--为知笔记是一款优秀的全平台云笔记客户端，当初我从Windows切换到纯Linux平台的时候，就同时把我的在线笔记从<code>Evernote</code>切换到了<code>WizNote</code>。</p>
 <p><code>openSUSE</code>的个人仓库里其实是有<code>WizNote</code>的
@@ -226,17 +246,6 @@ ip：192.168.56.103 192.168.56.104</p>
                 </div>
             </article>
             <hr/>
-            <article>
-                <h2><a href="https://blog.chih.me/virtualboxzhu-ji-fang-wen-xu-ni-ji.html">virtualbox主机访问虚拟机</a></h2>
-                <div class="summary"><p>在<code>virtualbox</code>中，如果选择默认的网卡设置，也就是网络地址转换(NAT)，是不能让宿主机访问到虚拟机的，如果想让两者相互连通，可以在保留默认的<code>NAT</code>网卡的基础上增加一张<code>Host-Only</code>的网卡。</p>
-<p><img alt="NAT" src="https://blog.chih.me/images/58081e7f-677a-47f9-8fc5-a7ec0435e7b1.png"></p>
-<p><img alt="Host-Only" src="https://blog.chih.me/images/7695d614d15ad02edfd564e4b32810fc.png"></p>
-<p>需要注意的是，如果你的宿主机是Linux的话，安装virtualbox后是没有一张Host-Only的网卡的，你需要在virtualbox的设置里添加这张网卡。</p>
-<p><img alt="add-Host-Only" src="https://blog.chih.me/images/snapshot2.png"></p>
-                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/virtualboxzhu-ji-fang-wen-xu-ni-ji.html">more ...</a>
-                </div>
-            </article>
-            <hr/>
 
         <ul class="pagination">
                 <li class="prev"><a href="https://blog.chih.me/category/tech2.html">&laquo;</a>
@@ -267,10 +276,16 @@ ip：192.168.56.103 192.168.56.104</p>
       <a href="https://blog.chih.me/tag/linux.html">linux</a>
     </li>
     <li class="list-group-item tag-2">
-      <a href="https://blog.chih.me/tag/storm.html">Storm</a>
+      <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
     </li>
     <li class="list-group-item tag-2">
       <a href="https://blog.chih.me/tag/spark.html">Spark</a>
+    </li>
+    <li class="list-group-item tag-2">
+      <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>
+    </li>
+    <li class="list-group-item tag-2">
+      <a href="https://blog.chih.me/tag/big-data.html">big data</a>
     </li>
     <li class="list-group-item tag-2">
       <a href="https://blog.chih.me/tag/sql.html">SQL</a>
@@ -279,19 +294,13 @@ ip：192.168.56.103 192.168.56.104</p>
       <a href="https://blog.chih.me/tag/hadoop.html">hadoop</a>
     </li>
     <li class="list-group-item tag-2">
-      <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
-    </li>
-    <li class="list-group-item tag-2">
-      <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>
-    </li>
-    <li class="list-group-item tag-2">
-      <a href="https://blog.chih.me/tag/big-data.html">big data</a>
-    </li>
-    <li class="list-group-item tag-3">
-      <a href="https://blog.chih.me/tag/python.html">python</a>
+      <a href="https://blog.chih.me/tag/storm.html">Storm</a>
     </li>
     <li class="list-group-item tag-3">
       <a href="https://blog.chih.me/tag/sql-on-hadoop.html">SQL on Hadoop</a>
+    </li>
+    <li class="list-group-item tag-3">
+      <a href="https://blog.chih.me/tag/python.html">python</a>
     </li>
   </ul>
 </li>
@@ -326,7 +335,7 @@ ip：192.168.56.103 192.168.56.104</p>
    <div class="container">
       <hr>
       <div class="row">
-         <div class="col-xs-10">&copy; 2017 chih
+         <div class="col-xs-10">&copy; 2018 chih
             &middot; Powered by <a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>

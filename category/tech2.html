@@ -77,6 +77,18 @@ chih's blog            </a>
     <div class="row">
         <div class="col-sm-9">
             <article>
+                <h2><a href="https://blog.chih.me/power-with-different-cpufreq.html">Ubuntu 16.04 下 CPU 频率与功耗关系</a></h2>
+                <div class="summary"><h3>硬件环境</h3>
+<p>实验服务器搭载两颗 Intel E5645 处理器，24块 SAS+SATA 机械硬盘。E5645 为 6 核处理器，并支持超线程技术（Intel® Hyper-Threading Technology），服务器共 24 个逻辑核，基本时钟频率为 2.40 GHz 。</p>
+<h3>软件环境</h3>
+<p>Ubuntu Server 16.04.1 LTS</p>
+<h2>CPU 频率驱动程序与工具</h2>
+<p>操作系统通过CPU调频可以根据负载动态调节CPU工作频率，达到省电的目的。这个过程可以自动进行，也可以由用户空间(userspace)程序手动调节。Linux 内核实现了CPU 调频，该驱动被称为 CPUfreq， 从 3.4 内核开始，内核会自动载入相应的内核模块，默认的频率调频器 …</p>
+                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/power-with-different-cpufreq.html">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
                 <h2><a href="https://blog.chih.me/global-proxy-within-redsocks-and-shadowsocks.html">使用redsocks把shadowsocks转为全局代理</a></h2>
                 <div class="summary"><h2>前言</h2>
 <p>shadowsocks是个非常棒的翻墙代理，它可以在本地提供一个socks5端口供软件使用代理。比如启动chrome的时候加上<code>--proxy-server="socks5://myproxy:1080"</code>这条参数就可以让chrome走代理；然而，有些软件不支持设置代理的功能。所以有时候，我们需要一个全局代理的环境，使用VPN是一个通常的选择，不过一般购买的VPN的速度不如shadowsocks，同时，VPN更容易受到GFW的干扰。为什么不把正在使用的shadowsocks利用起来作为一个全局代理呢？</p>
@@ -217,26 +229,6 @@ chih's blog            </a>
                 </div>
             </article>
             <hr/>
-            <article>
-                <h2><a href="https://blog.chih.me/socks-for-minecraft.html">为MineCraft启动器挂上代理</a></h2>
-                <div class="summary"><p><code>MineCraft</code>官方启动器在启动的时候会从以下地址获取更新:</p>
-<div class="highlight"><pre><span></span>https://s3.amazonaws.com/Minecraft.Download/launcher/launcher.pack.lzma
-</pre></div>
-
-
-<p>如你所见，用的是Amazon EC2，Amazon AWS云服务，这两个服务在国内都是部分被屏蔽的。</p>
-<p>但是如果你有shadowsocks等socks代理的话是可以给<code>MineCraft</code>挂上代理的，虽然官方启动器并未提供代理设置。</p>
-<p>我在这里用的是<code>java</code>提供的代理选项:</p>
-<div class="highlight"><pre><span></span>$ java -DsocksProxyHost<span class="o">=</span><span class="m">127</span>.0.0.1 -DsocksProxyPort<span class="o">=</span><span class="m">1080</span> -jar ~/.minecraft/Minecraft.jar
-</pre></div>
-
-
-<p>这样子打开<code>MineCraft</code>启动器就可以很快的登录、更新、下游戏了。但需要注意的是你通过启动器打开<code>Minecraft</code>游戏本体之后，游戏是不走代理的。</p>
-<p>-EOF-</p>
-                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/socks-for-minecraft.html">more ...</a>
-                </div>
-            </article>
-            <hr/>
 
         <ul class="pagination">
                 <li class="prev"><a href="https://blog.chih.me/category/tech.html">&laquo;</a>
@@ -267,10 +259,16 @@ chih's blog            </a>
       <a href="https://blog.chih.me/tag/linux.html">linux</a>
     </li>
     <li class="list-group-item tag-2">
-      <a href="https://blog.chih.me/tag/storm.html">Storm</a>
+      <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
     </li>
     <li class="list-group-item tag-2">
       <a href="https://blog.chih.me/tag/spark.html">Spark</a>
+    </li>
+    <li class="list-group-item tag-2">
+      <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>
+    </li>
+    <li class="list-group-item tag-2">
+      <a href="https://blog.chih.me/tag/big-data.html">big data</a>
     </li>
     <li class="list-group-item tag-2">
       <a href="https://blog.chih.me/tag/sql.html">SQL</a>
@@ -279,19 +277,13 @@ chih's blog            </a>
       <a href="https://blog.chih.me/tag/hadoop.html">hadoop</a>
     </li>
     <li class="list-group-item tag-2">
-      <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
-    </li>
-    <li class="list-group-item tag-2">
-      <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>
-    </li>
-    <li class="list-group-item tag-2">
-      <a href="https://blog.chih.me/tag/big-data.html">big data</a>
-    </li>
-    <li class="list-group-item tag-3">
-      <a href="https://blog.chih.me/tag/python.html">python</a>
+      <a href="https://blog.chih.me/tag/storm.html">Storm</a>
     </li>
     <li class="list-group-item tag-3">
       <a href="https://blog.chih.me/tag/sql-on-hadoop.html">SQL on Hadoop</a>
+    </li>
+    <li class="list-group-item tag-3">
+      <a href="https://blog.chih.me/tag/python.html">python</a>
     </li>
   </ul>
 </li>
@@ -326,7 +318,7 @@ chih's blog            </a>
    <div class="container">
       <hr>
       <div class="row">
-         <div class="col-xs-10">&copy; 2017 chih
+         <div class="col-xs-10">&copy; 2018 chih
             &middot; Powered by <a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
             <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
             <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
