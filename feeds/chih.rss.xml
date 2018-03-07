@@ -5,7 +5,9 @@
 &lt;li&gt;基于ipset，加入所有的国内IP项，对所有tcp流量进行判断，避免对国内的服务进行代理，一方面可以节省服务器流量，另一方面可以享受国内ip的优势，比如国内的版权视频、音乐，最后，避免被国内一些和政府有合作的IT企业发现你使用了代理。&lt;/li&gt;
 &lt;li&gt;iptables把需要代理的tcp流量交给shadowsocks-libev中的ss-redir，让它与代理服务器通讯。&lt;/li&gt;
 &lt;/ol&gt;
+&lt;blockquote&gt;
 &lt;p&gt;让我们开始吧，在最开始，首先要说明的是：这份教程只适用于想要让你的Linux设备使用代理的用户，同时，下文的所有内容假设你运行的是Arch Linux。&lt;/p&gt;
+&lt;/blockquote&gt;
 &lt;h1&gt;设置 iptables&lt;/h1&gt;
 &lt;p&gt;首先，在&lt;code&gt;/etc/iptables&lt;/code&gt;目录下创建一份新的规则：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Transparent SOCKS proxy&lt;/span&gt;
