@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
 <head>
-    <title>iptables - chih's blog</title>
+    <title>ipset - chih's blog</title>
     <!-- Using the latest rendering mode for IE -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
@@ -12,7 +12,7 @@
 
 
     <meta name="author" content="chih" />
-    <meta name="keywords" content="iptables" />
+    <meta name="keywords" content="ipset" />
 
     <!-- Open Graph tags -->
         <meta property="og:site_name" content="chih's blog" />
@@ -93,35 +93,6 @@ chih's blog            </a>
 <span class="p">:</span><span class="n">OUTPUT</span> <span class="n">ACCEPT</span> <span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span>
 <span class="p">:</span><span class="n">POSTROUTING …</span></pre></div>
                     <a class="btn btn-default btn-xs" href="https://blog.chih.me/global-proxy-within-ipset-and-iptables.html">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.chih.me/global-proxy-within-redsocks-and-shadowsocks.html">使用redsocks把shadowsocks转为全局代理</a></h2>
-                <div class="summary"><h2>前言</h2>
-<p>shadowsocks是个非常棒的翻墙代理，它可以在本地提供一个socks5端口供软件使用代理。比如启动chrome的时候加上<code>--proxy-server="socks5://myproxy:1080"</code>这条参数就可以让chrome走代理；然而，有些软件不支持设置代理的功能。所以有时候，我们需要一个全局代理的环境，使用VPN是一个通常的选择，不过一般购买的VPN的速度不如shadowsocks，同时，VPN更容易受到GFW的干扰。为什么不把正在使用的shadowsocks利用起来作为一个全局代理呢？</p>
-<p>本文介绍了一种利用<a href="https://github.com/darkk/redsocks">redsocks</a>与iptables实现全局代理的方法，其基本原理如下：</p>
-<ol>
-<li>iptables的规则将所有tcp包转发到redsocks打开的本地端口</li>
-<li>redsocks接收tcp包并转发给shadowsocks打开的本地socks端口</li>
-<li>shadowsocks将接收的包转发给远端的代理服务器</li>
-</ol>
-<p>由于使用了redsocks与iptables，因此本文的方法仅适用于Linux。</p>
-<h2>安装</h2>
-<p>由于使用的是Arch Linux，我直接通过AUR安装</p>
-<div class="highlight"><pre><span></span>$ yaourt redsocks
-</pre></div>
-
-
-<p>通过<code>yaourt</code>搜索redsocks包，然后选择你要安装的包的序号就可以进行安装了。</p>
-<blockquote>
-<p>注意：下文中的配置文件的路径全部基于Arch Linux，如果你用的不是Arch Linux，请根据自己的情况更改。</p>
-</blockquote>
-<p>其他发行版可以通过各自的包管理器或者下载源码<a href="https://github.com/darkk/redsocks/blob/master/README">安装</a>。</p>
-<h2>配置</h2>
-<h3>配置redsocks</h3>
-<p>我在包提供的原有配置的基础上进行了一些修改，主要是把 <code>redsocks …</code></p>
-                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/global-proxy-within-redsocks-and-shadowsocks.html">more ...</a>
                 </div>
             </article>
             <hr/>

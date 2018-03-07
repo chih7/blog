@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>chih's blog - chih</title><link>https://blog.chih.me/</link><description></description><lastBuildDate>Sun, 14 Jan 2018 00:00:00 +0800</lastBuildDate><item><title>离群点挖掘简述</title><link>https://blog.chih.me/Outlier-mining-review.html</link><description>&lt;h2&gt;引言&lt;/h2&gt;
+<rss version="2.0"><channel><title>chih's blog - chih</title><link>https://blog.chih.me/</link><description></description><lastBuildDate>Wed, 07 Mar 2018 00:00:00 +0800</lastBuildDate><item><title>使用 iptables、ipset 的全局智能代理</title><link>https://blog.chih.me/global-proxy-within-ipset-and-iptables.html</link><description>&lt;p&gt;首先，我这里的全局智能代理实现的功能主要有以下几点：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;基于iptables的全局代理，在Linux下可以实现只需设置一次，所有的软件(无论是GUI还是CLI)都可以免设置自动使用这个代理。&lt;/li&gt;
+&lt;li&gt;基于ipset，加入所有的国内IP项，对所有tcp流量进行判断，避免对国内的服务进行代理，一方面可以节省服务器流量，另一方面可以享受国内ip的优势，比如国内的版权视频、音乐，最后，避免被国内一些和政府有合作的IT企业发现你使用了代理。&lt;/li&gt;
+&lt;li&gt;iptables把需要代理的tcp流量交给shadowsocks-libev中的ss-redir，让它与代理服务器通讯。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;让我们开始吧，在最开始，首先要说明的是：这份教程只适用于想要让你的Linux设备使用代理的用户，同时，下文的所有内容假设你运行的是Arch Linux。&lt;/p&gt;
+&lt;h1&gt;设置 iptables&lt;/h1&gt;
+&lt;p&gt;首先，在&lt;code&gt;/etc/iptables&lt;/code&gt;目录下创建一份新的规则：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Transparent SOCKS proxy&lt;/span&gt;
+
+&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;nat&lt;/span&gt;
+&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;PREROUTING&lt;/span&gt; &lt;span class="n"&gt;ACCEPT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;INPUT&lt;/span&gt; &lt;span class="n"&gt;ACCEPT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;OUTPUT&lt;/span&gt; &lt;span class="n"&gt;ACCEPT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;POSTROUTING …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">chih</dc:creator><pubDate>Wed, 07 Mar 2018 00:00:00 +0800</pubDate><guid isPermaLink="false">tag:blog.chih.me,2018-03-07:/global-proxy-within-ipset-and-iptables.html</guid><category>Arch Linux</category><category>Linux</category><category>ipset</category><category>iptables</category><category>shadowsocks</category><category>代理</category></item><item><title>离群点挖掘简述</title><link>https://blog.chih.me/Outlier-mining-review.html</link><description>&lt;h2&gt;引言&lt;/h2&gt;
 &lt;p&gt;离群点是一个或一组明显不同于其他数据的数据点。Hawkins把离群点定义为“离群点是在数据集中偏离大部分数据的数据，使人怀疑这些数据的偏离并非由随机因素产生，而是产生于完全不同的机制。”&lt;/p&gt;
 &lt;p&gt;在大多数应用中，数据由一到多个程序产生，这些数据可以反映出系统的运行状态和被监测客体的相关数值。当测量、输入错误或系统运行错误时，或者客体出现异常行为，离群点就会产生。因此，离群点经常包含关于系统与实体异常特征的有效信息。现有数据挖掘研究大多集中于发现适用于大部分数据的常规模式,在许多应用领域中，离群点通常作为噪音而忽略，许多数据挖掘算法试图降低或消除离群点的影响。而在有些应用领域识别离群点是许多工作的基础和前提，离群点会带给我们新的视角。如在欺诈检测中，离群点可能意味欺诈行为的发生，在入侵检测中离群点可能意味入侵行为的发生。其他的一些应用场景包括信用卡诈骗、医疗诊断、执法、地球科学……&lt;/p&gt;
 &lt;p&gt;离群点的检测算法输出可以是两种类型之一：&lt;/p&gt;
