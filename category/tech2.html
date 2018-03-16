@@ -77,6 +77,42 @@ chih's blog            </a>
     <div class="row">
         <div class="col-sm-9">
             <article>
+                <h2><a href="https://blog.chih.me/shark-ppt.html">Shark</a></h2>
+                <div class="summary"><h1>Shark Overview</h1>
+<p>一个独立，快速，类MapReduce的SQL引擎</p>
+<ul>
+<li>基于内存存储数据，适合交互式查询</li>
+<li>优秀的查询优化</li>
+<li>比Hadoop快40倍以上</li>
+</ul>
+<p>完全兼容Hadoop存储接口</p>
+<ul>
+<li>可以读取或写入任何支持Hadoop的系统</li>
+<li>包括HDFS，Hbase，SequenceFiles</li>
+</ul>
+<hr>
+<h1>Shark Overview</h1>
+<ul>
+<li>
+<p>Shark即Hive on Spark，本质上是通过Hive的HQL解析，把HQL翻译成Spark上的RDD操作，然后通过Hive的metadata获取数据库里的表信息，实际HDFS上的数据和文件，会由Shark获取并放到Spark上运算。</p>
+</li>
+<li>
+<p>Shark建立在Hive的代码基础上，并通过将Hive的部分物理执行计划交换出来（by swapping out the physical execution engine part of Hive）。这个方法使得Shark的用户可以加速Hive的查询</p>
+</li>
+<li>
+<p>Shark在HQL方面重用了Hive中HQL的解析、逻辑执行计划翻译、执行计划优化等逻辑，完全兼容已有的Hive数据，metastores 和 查询( HiveQL，UDFs )</p>
+</li>
+</ul>
+<hr>
+<h1>Project History</h1>
+<ul>
+<li>
+<p>Spark project …</p></li></ul>
+                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/shark-ppt.html">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
                 <h2><a href="https://blog.chih.me/read-cpu-power-with-RAPL.html">Energy measurements in Linux</a></h2>
                 <div class="summary"><h3>RAPL</h3>
 <p>RAPL provides a set of counters providing energy and power consumption information. RAPL is not an analog power meter, but rather uses a software power model. This software power model estimates energy usage by using hardware performance counters and I/O models. Based on our measurements, they match actual …</p>
@@ -195,35 +231,6 @@ chih's blog            </a>
                 </div>
             </article>
             <hr/>
-            <article>
-                <h2><a href="https://blog.chih.me/download-use-aria2.html">我的硬盘不可能这么空~aria2篇</a></h2>
-                <div class="summary"><p>对于单纯的Aria2程序来说，它是一个轻量级、支持多种协议的命令行下载工具。</p>
-<ul>
-<li>支持的协议包括HTTP(S), FTP, BitTorrent, Metalink</li>
-<li>aria2可以并发的进行下载，并尝试将下载带宽利用率最大化</li>
-<li>分片与续传，自动中止并替换慢的线程</li>
-</ul>
-<p>看到命令行可能有人会想:“恩，又是那种强大到用起来要查手册写命令的玩意”。其实不然，由于aria2 支持 JSON-RPC和XML-RPC远程调用，可以通过web前端或客户端方便地进行管理。</p>
-<h3>安装</h3>
-<p>在Linux下，可以很方便地通过包管理进行安装，比如Arch Linux</p>
-<div class="highlight"><pre><span></span>$ sudo pacman -S aria2
-</pre></div>
-
-
-<p>如果是Windows，可以下载编译好的二进制文件，放在<code>C:\WINDOWS\system32</code>目录下，就可以通过<code>aria2c</code>命令执行程序了</p>
-<p>可以直接运行命令进行下载:</p>
-<ul>
-<li>
-<p>HTTP下载</p>
-<p>$ aria2c http://example.org/test.bin</p>
-</li>
-<li>
-<p>从两个源同时下载</p>
-<p>$ aria2c http …</p></li></ul>
-                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/download-use-aria2.html">more ...</a>
-                </div>
-            </article>
-            <hr/>
 
         <ul class="pagination">
                 <li class="prev"><a href="https://blog.chih.me/category/tech.html">&laquo;</a>
@@ -250,35 +257,35 @@ chih's blog            </a>
 <li class="list-group-item">
   <a href="https://blog.chih.me/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
   <ul class="list-group " id="tags">
-    <li class="list-group-item tag-0">
+    <li class="list-group-item tag-1">
       <a href="https://blog.chih.me/tag/linux.html">Linux</a>
     </li>
     <li class="list-group-item tag-3">
-      <a href="https://blog.chih.me/tag/spark.html">Spark</a>
+      <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>
     </li>
     <li class="list-group-item tag-3">
       <a href="https://blog.chih.me/tag/big-data.html">big data</a>
     </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/shadowsocks.html">shadowsocks</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/hadoop.html">hadoop</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/storm.html">Storm</a>
+    <li class="list-group-item tag-3">
+      <a href="https://blog.chih.me/tag/spark.html">Spark</a>
     </li>
     <li class="list-group-item tag-4">
       <a href="https://blog.chih.me/tag/dai-li.html">代理</a>
     </li>
     <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
+      <a href="https://blog.chih.me/tag/shadowsocks.html">shadowsocks</a>
+    </li>
+    <li class="list-group-item tag-4">
+      <a href="https://blog.chih.me/tag/storm.html">Storm</a>
+    </li>
+    <li class="list-group-item tag-4">
+      <a href="https://blog.chih.me/tag/hadoop.html">hadoop</a>
     </li>
     <li class="list-group-item tag-4">
       <a href="https://blog.chih.me/tag/sql.html">SQL</a>
+    </li>
+    <li class="list-group-item tag-4">
+      <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
     </li>
   </ul>
 </li>

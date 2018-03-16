@@ -5,28 +5,28 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://blog.chih.me/</loc>
-<lastmod>2018-03-07T16:38:27-00:00</lastmod>
+<lastmod>2018-03-16T11:11:02-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.chih.me/archives.html</loc>
-<lastmod>2018-03-07T16:38:27-00:00</lastmod>
+<lastmod>2018-03-16T11:11:02-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.chih.me/tags.html</loc>
-<lastmod>2018-03-07T16:38:27-00:00</lastmod>
+<lastmod>2018-03-16T11:11:02-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>https://blog.chih.me/categories.html</loc>
-<lastmod>2018-03-07T16:38:27-00:00</lastmod>
+<lastmod>2018-03-16T11:11:02-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -41,6 +41,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>https://blog.chih.me/global-proxy-within-ipset-and-iptables.html</loc>
 <lastmod>2018-03-07T00:00:00+08:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+
+<url>
+<loc>https://blog.chih.me/aiops.html</loc>
+<lastmod>2018-03-01T00:00:00+08:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.7</priority>
 </url>
@@ -270,6 +277,41 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
+<loc>https://blog.chih.me/tag/yun-wei.html</loc>
+<lastmod>2018-03-01T00:00:00+08:06</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://blog.chih.me/tag/da-shu-ju.html</loc>
+<lastmod>2018-03-01T00:00:00+08:06</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://blog.chih.me/tag/shen-du-xue-xi.html</loc>
+<lastmod>2018-03-01T00:00:00+08:06</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://blog.chih.me/tag/ji-qi-xue-xi.html</loc>
+<lastmod>2018-03-01T00:00:00+08:06</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://blog.chih.me/tag/yi-chang-jian-ce.html</loc>
+<lastmod>2018-03-01T00:00:00+08:06</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
 <loc>https://blog.chih.me/tag/big-data.html</loc>
 <lastmod>2018-01-14T00:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
@@ -285,13 +327,6 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://blog.chih.me/tag/outlier.html</loc>
-<lastmod>2018-01-14T00:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>https://blog.chih.me/tag/yi-chang-jian-ce.html</loc>
 <lastmod>2018-01-14T00:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
@@ -586,13 +621,6 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>https://blog.chih.me/tag/storm.html</loc>
-<lastmod>2015-02-22T00:00:00+08:06</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>https://blog.chih.me/tag/da-shu-ju.html</loc>
 <lastmod>2015-02-22T00:00:00+08:06</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>

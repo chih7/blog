@@ -75,6 +75,33 @@ chih's blog            </a>
     <div class="row">
         <div class="col-sm-9">
             <article>
+                <h2><a href="https://blog.chih.me/hadoop-install.html">Hadoop 安装笔记</a></h2>
+                <div class="summary"><h2>The building blocks of Hadoop</h2>
+<ul>
+<li>NameNode</li>
+<li>DataNode</li>
+<li>Secondary NameNode</li>
+<li>~~JobTracker~~</li>
+<li>~~TaskTracker~~</li>
+<li>ResourceManager</li>
+<li>NodeManager</li>
+</ul>
+<p><img alt="Screenshot_20161117_185744" src="images/Screenshot_20161117_185744.png"></p>
+<p><img alt="Screenshot_20161117_190357" src="images/Screenshot_20161117_190357.png"></p>
+<h3>NameNode</h3>
+<p>NameNode主要是用来保存HDFS的<strong>元数据</strong>信息，比如命名空间信息，块信息等。当它运行的时候，这些信息是存在内存中的。但是这些信息也可以持久化到磁盘上。没有Namenode，HDFS就不能工作。事实上，如果运行namenode的机器坏掉的话，系统中的文件将会完全丢失，因为没有其他方法能够将位于不同datanode上的文件块(blocks)重建文件。因此，Hadoop存在单点故障。为了解决单点故障，Hadoop提供了两套机制：</p>
+<ol>
+<li>第一种方式是将持久化存 储在本地硬盘的文件系统元数据备份。Hadoop可以通过配置来让Namenode将他的持久化状态文件写到不同的文件系统中。一般是镜像到网络文件系统或单独的磁盘中。</li>
+<li>第二种方式是运行一个辅助的Namenode(Secondary Namenode)。下面会具体说明。</li>
+</ol>
+<h3>DataNode</h3>
+<p>Datanode是文件系统的工作节点，他们根据客户端或者是namenode的调度存储和检索数据，并且定期向namenode发送他们所存储的块(block)的<strong>列表</strong>。</p>
+<p>集群中的每个服务器都运 …</p>
+                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/hadoop-install.html">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
                 <h2><a href="https://blog.chih.me/chang-openwtr-ppoe-password.html">使用LuCI的RPC接口修改openwrt配置</a></h2>
                 <div class="summary"><p>简单来说，本文整理了一些<code>openwrt</code>的RPC接口，用来自动修改pppoe的密码，并重启网络。为什么要弄这些玩意呢，因为浙江高校中普遍使用的蛋疼的闪讯——两三天换个动态密码，时不时给你断个网！使用这些API的是一个Android应用，它在用户按下一个按键后自动向电信发送一条获取密码的短信，然后获取返回的短信，解析其中的闪讯动态密码，通过<code>openwrt</code>的RPC接口修改密码并重启网络，这样，只需要一次按按钮的操作，就能恢复网络，又可以愉快的玩耍啦。</p>
 <p><a href="https://github.com/openwrt/openwrt">openwrt</a> 我就不多介绍了，玩路由器的都知道；<a href="https://wiki.openwrt.org/doc/techref/uci">UCI</a>是<code>openwrt</code>提供的一套统一的配置接口，可以用以配置整台<code>openwrt</code>设备；而<a href="https://wiki.openwrt.org/doc/techref/luci">LuCI</a>是一个基于Lua语言开发的、包装了底层UCI接口的易于使用的Web用户接口。LuCI也提供了一种基于JSON格式的RPC机制来访问其内部的库。</p>
@@ -180,31 +207,6 @@ chih's blog            </a>
                 </div>
             </article>
             <hr/>
-            <article>
-                <h2><a href="https://blog.chih.me/storm-starter.html">在实时计算框架Storm集群上运行Storm-Starter例子</a></h2>
-                <div class="summary"><blockquote>
-<p>官方文档待翻译，个人实践在下面</p>
-</blockquote>
-<h1>Example Storm Topologies</h1>
-<p>Learn to use Storm!</p>
-<hr>
-<p>Table of Contents</p>
-<ul>
-<li><a href="#getting-started">Getting started</a></li>
-<li><a href="#maven">Using storm-starter with Maven</a></li>
-<li><a href="#intellij-idea">Using storm-starter with IntelliJ IDEA</a></li>
-</ul>
-<hr>
-<p><a name="getting-started"></a></p>
-<h1>Getting started</h1>
-<h2>Prerequisites</h2>
-<p>First, you need <code>java</code> and <code>git</code> installed and in your user's <code>PATH</code>.  Also, two of the examples in storm-starter
-require Python and Ruby.</p>
-<p>Next …</p>
-                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/storm-starter.html">more ...</a>
-                </div>
-            </article>
-            <hr/>
 
         <ul class="pagination">
                 <li class="prev"><a href="https://blog.chih.me/tag/linux.html">&laquo;</a>
@@ -229,35 +231,35 @@ require Python and Ruby.</p>
 <li class="list-group-item">
   <a href="https://blog.chih.me/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
   <ul class="list-group " id="tags">
-    <li class="list-group-item tag-0">
+    <li class="list-group-item tag-1">
       <a href="https://blog.chih.me/tag/linux.html">Linux</a>
     </li>
     <li class="list-group-item tag-3">
-      <a href="https://blog.chih.me/tag/spark.html">Spark</a>
+      <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>
     </li>
     <li class="list-group-item tag-3">
       <a href="https://blog.chih.me/tag/big-data.html">big data</a>
     </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/shadowsocks.html">shadowsocks</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/hadoop.html">hadoop</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/storm.html">Storm</a>
+    <li class="list-group-item tag-3">
+      <a href="https://blog.chih.me/tag/spark.html">Spark</a>
     </li>
     <li class="list-group-item tag-4">
       <a href="https://blog.chih.me/tag/dai-li.html">代理</a>
     </li>
     <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
+      <a href="https://blog.chih.me/tag/shadowsocks.html">shadowsocks</a>
+    </li>
+    <li class="list-group-item tag-4">
+      <a href="https://blog.chih.me/tag/storm.html">Storm</a>
+    </li>
+    <li class="list-group-item tag-4">
+      <a href="https://blog.chih.me/tag/hadoop.html">hadoop</a>
     </li>
     <li class="list-group-item tag-4">
       <a href="https://blog.chih.me/tag/sql.html">SQL</a>
+    </li>
+    <li class="list-group-item tag-4">
+      <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
     </li>
   </ul>
 </li>

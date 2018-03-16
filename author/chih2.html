@@ -74,6 +74,42 @@ chih's blog            </a>
     <div class="row">
         <div class="col-sm-9">
             <article>
+                <h2><a href="https://blog.chih.me/shark-ppt.html">Shark</a></h2>
+                <div class="summary"><h1>Shark Overview</h1>
+<p>一个独立，快速，类MapReduce的SQL引擎</p>
+<ul>
+<li>基于内存存储数据，适合交互式查询</li>
+<li>优秀的查询优化</li>
+<li>比Hadoop快40倍以上</li>
+</ul>
+<p>完全兼容Hadoop存储接口</p>
+<ul>
+<li>可以读取或写入任何支持Hadoop的系统</li>
+<li>包括HDFS，Hbase，SequenceFiles</li>
+</ul>
+<hr>
+<h1>Shark Overview</h1>
+<ul>
+<li>
+<p>Shark即Hive on Spark，本质上是通过Hive的HQL解析，把HQL翻译成Spark上的RDD操作，然后通过Hive的metadata获取数据库里的表信息，实际HDFS上的数据和文件，会由Shark获取并放到Spark上运算。</p>
+</li>
+<li>
+<p>Shark建立在Hive的代码基础上，并通过将Hive的部分物理执行计划交换出来（by swapping out the physical execution engine part of Hive）。这个方法使得Shark的用户可以加速Hive的查询</p>
+</li>
+<li>
+<p>Shark在HQL方面重用了Hive中HQL的解析、逻辑执行计划翻译、执行计划优化等逻辑，完全兼容已有的Hive数据，metastores 和 查询( HiveQL，UDFs )</p>
+</li>
+</ul>
+<hr>
+<h1>Project History</h1>
+<ul>
+<li>
+<p>Spark project …</p></li></ul>
+                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/shark-ppt.html">more ...</a>
+                </div>
+            </article>
+            <hr/>
+            <article>
                 <h2><a href="https://blog.chih.me/read-cpu-power-with-RAPL.html">Energy measurements in Linux</a></h2>
                 <div class="summary"><h3>RAPL</h3>
 <p>RAPL provides a set of counters providing energy and power consumption information. RAPL is not an analog power meter, but rather uses a software power model. This software power model estimates energy usage by using hardware performance counters and I/O models. Based on our measurements, they match actual …</p>
@@ -192,15 +228,6 @@ chih's blog            </a>
                 </div>
             </article>
             <hr/>
-            <article>
-                <h2><a href="https://blog.chih.me/64.html">无题</a></h2>
-                <div class="summary"><p>“鲜活的生命，悄无声息地消失。他们的死，既不壮烈，也不浪漫，当时无人知晓，今后或许也不会再被提起。但只要仍有人记得，他们的死便并非毫无意义。这也是卡萝尔•莫莉拍摄这部记录片并制作游戏的目的。人，不能永远消失。他们的故事，应让世人知晓。”</p>
-<p>“‘我们的人性，由我们对待同胞的行为界定。’1961年诺贝尔文学奖得主伊沃•安德里奇写道。卡萝尔为乔伊丝留下一部电影，玛格丽特为乔伊丝留下一个网站。而更多的人，从这个世界消失，没人悼念他们，没人为他们感到抱歉，甚至没人知道他们曾经存在过。今时今日，我们又能为他们做些什么?”</p>
-<p>-EOF-</p>
-                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/64.html">more ...</a>
-                </div>
-            </article>
-            <hr/>
 
         <ul class="pagination">
                 <li class="prev"><a href="https://blog.chih.me/author/chih.html">&laquo;</a>
@@ -227,35 +254,35 @@ chih's blog            </a>
 <li class="list-group-item">
   <a href="https://blog.chih.me/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
   <ul class="list-group " id="tags">
-    <li class="list-group-item tag-0">
+    <li class="list-group-item tag-1">
       <a href="https://blog.chih.me/tag/linux.html">Linux</a>
     </li>
     <li class="list-group-item tag-3">
-      <a href="https://blog.chih.me/tag/spark.html">Spark</a>
+      <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>
     </li>
     <li class="list-group-item tag-3">
       <a href="https://blog.chih.me/tag/big-data.html">big data</a>
     </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/shadowsocks.html">shadowsocks</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/hadoop.html">hadoop</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/storm.html">Storm</a>
+    <li class="list-group-item tag-3">
+      <a href="https://blog.chih.me/tag/spark.html">Spark</a>
     </li>
     <li class="list-group-item tag-4">
       <a href="https://blog.chih.me/tag/dai-li.html">代理</a>
     </li>
     <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
+      <a href="https://blog.chih.me/tag/shadowsocks.html">shadowsocks</a>
+    </li>
+    <li class="list-group-item tag-4">
+      <a href="https://blog.chih.me/tag/storm.html">Storm</a>
+    </li>
+    <li class="list-group-item tag-4">
+      <a href="https://blog.chih.me/tag/hadoop.html">hadoop</a>
     </li>
     <li class="list-group-item tag-4">
       <a href="https://blog.chih.me/tag/sql.html">SQL</a>
+    </li>
+    <li class="list-group-item tag-4">
+      <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
     </li>
   </ul>
 </li>
