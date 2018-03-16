@@ -8,7 +8,7 @@
 &lt;blockquote&gt;
 &lt;p&gt;让我们开始吧，在最开始，首先要说明的是：这份教程只适用于想要让你的Linux设备使用代理的用户，同时，下文的所有内容假设你运行的是Arch Linux。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h1&gt;设置 iptables&lt;/h1&gt;
+&lt;h2&gt;设置 iptables&lt;/h2&gt;
 &lt;p&gt;首先，在&lt;code&gt;/etc/iptables&lt;/code&gt;目录下创建一份新的规则：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Transparent SOCKS proxy&lt;/span&gt;
 
@@ -25,7 +25,7 @@
 &lt;blockquote&gt;
 &lt;p&gt;让我们开始吧，在最开始，首先要说明的是：这份教程只适用于想要让你的Linux设备使用代理的用户，同时，下文的所有内容假设你运行的是Arch Linux。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h1&gt;设置 iptables&lt;/h1&gt;
+&lt;h2&gt;设置 iptables&lt;/h2&gt;
 &lt;p&gt;首先，在&lt;code&gt;/etc/iptables&lt;/code&gt;目录下创建一份新的规则：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Transparent SOCKS proxy&lt;/span&gt;
 
@@ -71,7 +71,7 @@ sudo systemctl enable iptables.service
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;配置ipset&lt;/h1&gt;
+&lt;h2&gt;配置ipset&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;ipset是 Linux 防火墙iptables的一个伴随工具。它允许你建立规则来轻松愉快地屏蔽一组IP地址。
 ipset可以把大量ip或ip段存储在一个set中，实际上这个set是一个高效的查询结构，搜索的逻辑依然在iptables本身，iptables会判断IP地址或者哪个别的什么字段在不在这个set中，判断的过程使用二叉树，哈希等算法因此非常高效。&lt;/p&gt;
@@ -106,7 +106,7 @@ wget -P . http://www.ipdeny.com/ipblocks/data/countries/cn.zone
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;配置 ss-redir&lt;/h1&gt;
+&lt;h2&gt;配置 ss-redir&lt;/h2&gt;
 &lt;p&gt;在配置文件中设一个未使用的端口，我使用的是1081，在iptables的规则中与之对应&lt;code&gt;-A REDSOCKS -p tcp -j REDIRECT --to-ports 1081&lt;/code&gt;，然后启动ss-redir：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo systemctl start shadowsocks-libev-redir@config
 sudo systemctl enable shadowsocks-libev-redir@config

@@ -8,7 +8,7 @@
 &lt;blockquote&gt;
 &lt;p&gt;让我们开始吧，在最开始，首先要说明的是：这份教程只适用于想要让你的Linux设备使用代理的用户，同时，下文的所有内容假设你运行的是Arch Linux。&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h1&gt;设置 iptables&lt;/h1&gt;
+&lt;h2&gt;设置 iptables&lt;/h2&gt;
 &lt;p&gt;首先，在&lt;code&gt;/etc/iptables&lt;/code&gt;目录下创建一份新的规则：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Transparent SOCKS proxy&lt;/span&gt;
 

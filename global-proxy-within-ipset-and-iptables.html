@@ -48,7 +48,7 @@
 <blockquote>
 <p>让我们开始吧，在最开始，首先要说明的是：这份教程只适用于想要让你的Linux设备使用代理的用户，同时，下文的所有内容假设你运行的是Arch Linux。</p>
 </blockquote>
-<h1>设置 iptables</h1>
+<h2>设置 iptables</h2>
 <p>首先，在<code>/etc/iptables</code>目录下创建一份新的规则：</p>
 <div class="highlight"><pre><span></span><span class="c1"># Transparent SOCKS proxy</span>
 
@@ -94,7 +94,7 @@ sudo systemctl enable iptables.service
 </pre></div>
 
 
-<h1>配置ipset</h1>
+<h2>配置ipset</h2>
 <blockquote>
 <p>ipset是 Linux 防火墙iptables的一个伴随工具。它允许你建立规则来轻松愉快地屏蔽一组IP地址。
 ipset可以把大量ip或ip段存储在一个set中，实际上这个set是一个高效的查询结构，搜索的逻辑依然在iptables本身，iptables会判断IP地址或者哪个别的什么字段在不在这个set中，判断的过程使用二叉树，哈希等算法因此非常高效。</p>
@@ -129,7 +129,7 @@ wget -P . http://www.ipdeny.com/ipblocks/data/countries/cn.zone
 </pre></div>
 
 
-<h1>配置 ss-redir</h1>
+<h2>配置 ss-redir</h2>
 <p>在配置文件中设一个未使用的端口，我使用的是1081，在iptables的规则中与之对应<code>-A REDSOCKS -p tcp -j REDIRECT --to-ports 1081</code>，然后启动ss-redir：</p>
 <div class="highlight"><pre><span></span>sudo systemctl start shadowsocks-libev-redir@config
 sudo systemctl enable shadowsocks-libev-redir@config
@@ -168,16 +168,16 @@ sudo systemctl enable shadowsocks-libev-redir@config
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-star-o"> Tags</i></div>
     <div class="tagcloud">
+    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
+    <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
+    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
+    <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
     <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
     <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
-    <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
-    <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
-    <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
-    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
-    <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
-    <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
     <a href="/tag/shi-shi-ji-suan.html" style="font-size: 10px">实时计算</a>
-    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
+    <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
+    <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
+    <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
     </div>
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-file-o"> Recent</i></div>
