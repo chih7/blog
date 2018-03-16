@@ -38,6 +38,7 @@
     <div class="post-meta">Jul 09, 2017
     <span> | </span> <span>Tech</span>
     </div>
+    <a data-disqus-identifier="simjoin-on-spark.html" href="/simjoin-on-spark.html#disqus_thread" class="disqus-comment-count"></a>
     <div class="post-content">
         <h2>前言</h2>
 <p>随着Web上数量的急剧增长，近似镜像网页的数量也在不断增加。近似镜像网页的存在，严重影响了搜索引擎的检索结果。如果我们能将搜集到的网页中的近似镜像网页去掉，可以提高搜集系统和索引系统效率，用户查询时也不会出现大量内容重复的网页。去除镜像网页即需要网页近似度检测算法。实验基于相似性连接实现了基于SPARK的分布式网页近似度检测，对5000个网页进行了相似度检测，试图找出所有相似的网页。实验使用的网页来源与人才招聘网站的电子简历，共有5000份，由于我们只关心其中的简历内容，因此需要去除简历内容外的HTML标签，网页样式、代码。在去除了无关内容后，即可进行近似检测，大数据环境下，数据量巨大，运用传统的方式进行相似性连接效率极低，实验选择了相似性连接查询作为底层的算法实现，作为一种分布式算法，实验选择了Spark作为分布式计算框架。</p>
@@ -302,6 +303,47 @@ sbin/start-all.sh
         </div>
 
 
+<div id="disqus_thread">
+  <div class="btn_click_load">
+    <button class="disqus_click_btn">Failed to load comments from Disqus!</button>
+  </div>
+  <script>
+    var disqus_shortname = 'chihsblog';
+    var disqus_identifier = 'simjoin-on-spark.html';
+    var disqus_title = '基于SPARK的分布式网页近似度检测';
+    var disqus_url = 'https://blog.chih.me/simjoin-on-spark.html';
+    $('.btn_click_load').click(function() {
+      (function() {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || 
+          document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+      $('.btn_click_load').css('display','none');
+    });
+
+    $.ajax({
+      url: 'https://disqus.com/favicon.ico',
+      timeout: 3000,
+      type: 'GET',
+      success: (function() {
+        var dsq = document.createElement('script'); 
+        dsq.type = 'text/javascript'; 
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || 
+          document.getElementsByTagName('body')[0]).appendChild(dsq);
+        $('.btn_click_load').css('display','none');
+      })(),
+      error: function() {
+        $('.btn_click_load').css('display','block');
+        }
+      });
+  </script>
+  <script id="dsq-count-scr" src="//chihsblog.disqus.com/count.js" async></script>
+</div>
     </div>
 </div>
         </div></div>
@@ -322,16 +364,16 @@ sbin/start-all.sh
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-star-o"> Tags</i></div>
     <div class="tagcloud">
-    <a href="/tag/shi-shi-ji-suan.html" style="font-size: 10px">实时计算</a>
-    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
-    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
-    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
-    <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
-    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
-    <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
-    <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
     <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
+    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
+    <a href="/tag/shi-shi-ji-suan.html" style="font-size: 10px">实时计算</a>
+    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
+    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
+    <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
+    <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
     <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
+    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
+    <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
     </div>
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-file-o"> Recent</i></div>
@@ -368,6 +410,10 @@ sbin/start-all.sh
         </li>
     </ul>
 </div><div class="widget">
+    <div class="widget-title"><i class="fa fa-comment-o"> Recent Comments</i></div>
+    <script type="text/javascript" src="//chihsblog.disqus.com/recent_comments_widget.js?num_items=5&hide_avatars=1&avatar_size=32&excerpt_length=20&hide_mods=1"></script>
+</div>
+<div class="widget">
     <div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div>
     <ul></ul>
     <a href="http://www.hjk.im/" title="HJK" target="_blank">HJK</a>

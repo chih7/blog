@@ -38,6 +38,7 @@
     <div class="post-meta">Mar 02, 2015
     <span> | </span> <span>Tech</span>
     </div>
+    <a data-disqus-identifier="use-USB-in-virtualbox-at-openSUSE.html" href="/use-USB-in-virtualbox-at-openSUSE.html#disqus_thread" class="disqus-comment-count"></a>
     <div class="post-content">
         <p>因为要用<code>virtualbox</code>中的<code>Windows</code>虚拟机设置G602的可编程键，所以需要把G602的USB无线接收器挂载到虚拟机上，结果发现<code>virtualbox</code>右下角USB设备那里尽管有<code>logitech USB Receiver</code>这个选项，但它是灰色的，无法选中。</p>
 <p>因为已经确认当前用户已经加入<code>vboxusers</code>组、并已经安装<code>Oracle Extensions</code>扩展包，那么问题应该从其他方向寻找。</p>
@@ -64,6 +65,47 @@
         </div>
 
 
+<div id="disqus_thread">
+  <div class="btn_click_load">
+    <button class="disqus_click_btn">Failed to load comments from Disqus!</button>
+  </div>
+  <script>
+    var disqus_shortname = 'chihsblog';
+    var disqus_identifier = 'use-USB-in-virtualbox-at-openSUSE.html';
+    var disqus_title = '解决在opensuse下virtualbox无法挂载主机USB设备的问题';
+    var disqus_url = 'https://blog.chih.me/use-USB-in-virtualbox-at-openSUSE.html';
+    $('.btn_click_load').click(function() {
+      (function() {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || 
+          document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+      $('.btn_click_load').css('display','none');
+    });
+
+    $.ajax({
+      url: 'https://disqus.com/favicon.ico',
+      timeout: 3000,
+      type: 'GET',
+      success: (function() {
+        var dsq = document.createElement('script'); 
+        dsq.type = 'text/javascript'; 
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || 
+          document.getElementsByTagName('body')[0]).appendChild(dsq);
+        $('.btn_click_load').css('display','none');
+      })(),
+      error: function() {
+        $('.btn_click_load').css('display','block');
+        }
+      });
+  </script>
+  <script id="dsq-count-scr" src="//chihsblog.disqus.com/count.js" async></script>
+</div>
     </div>
 </div>
         </div></div>
@@ -84,16 +126,16 @@
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-star-o"> Tags</i></div>
     <div class="tagcloud">
-    <a href="/tag/shi-shi-ji-suan.html" style="font-size: 10px">实时计算</a>
-    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
-    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
-    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
-    <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
-    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
-    <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
-    <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
     <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
+    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
+    <a href="/tag/shi-shi-ji-suan.html" style="font-size: 10px">实时计算</a>
+    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
+    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
+    <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
+    <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
     <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
+    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
+    <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
     </div>
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-file-o"> Recent</i></div>
@@ -130,6 +172,10 @@
         </li>
     </ul>
 </div><div class="widget">
+    <div class="widget-title"><i class="fa fa-comment-o"> Recent Comments</i></div>
+    <script type="text/javascript" src="//chihsblog.disqus.com/recent_comments_widget.js?num_items=5&hide_avatars=1&avatar_size=32&excerpt_length=20&hide_mods=1"></script>
+</div>
+<div class="widget">
     <div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div>
     <ul></ul>
     <a href="http://www.hjk.im/" title="HJK" target="_blank">HJK</a>

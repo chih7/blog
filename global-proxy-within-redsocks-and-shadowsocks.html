@@ -38,6 +38,7 @@
     <div class="post-meta">Nov 21, 2016
     <span> | </span> <span>Tech</span>
     </div>
+    <a data-disqus-identifier="global-proxy-within-redsocks-and-shadowsocks.html" href="/global-proxy-within-redsocks-and-shadowsocks.html#disqus_thread" class="disqus-comment-count"></a>
     <div class="post-content">
         <h2>前言</h2>
 <p>shadowsocks是个非常棒的翻墙代理，它可以在本地提供一个socks5端口供软件使用代理。比如启动chrome的时候加上<code>--proxy-server="socks5://myproxy:1080"</code>这条参数就可以让chrome走代理；然而，有些软件不支持设置代理的功能。所以有时候，我们需要一个全局代理的环境，使用VPN是一个通常的选择，不过一般购买的VPN的速度不如shadowsocks，同时，VPN更容易受到GFW的干扰。为什么不把正在使用的shadowsocks利用起来作为一个全局代理呢？</p>
@@ -269,6 +270,47 @@ COMMIT
         </div>
 
 
+<div id="disqus_thread">
+  <div class="btn_click_load">
+    <button class="disqus_click_btn">Failed to load comments from Disqus!</button>
+  </div>
+  <script>
+    var disqus_shortname = 'chihsblog';
+    var disqus_identifier = 'global-proxy-within-redsocks-and-shadowsocks.html';
+    var disqus_title = '使用redsocks把shadowsocks转为全局代理';
+    var disqus_url = 'https://blog.chih.me/global-proxy-within-redsocks-and-shadowsocks.html';
+    $('.btn_click_load').click(function() {
+      (function() {
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || 
+          document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+      $('.btn_click_load').css('display','none');
+    });
+
+    $.ajax({
+      url: 'https://disqus.com/favicon.ico',
+      timeout: 3000,
+      type: 'GET',
+      success: (function() {
+        var dsq = document.createElement('script'); 
+        dsq.type = 'text/javascript'; 
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || 
+          document.getElementsByTagName('body')[0]).appendChild(dsq);
+        $('.btn_click_load').css('display','none');
+      })(),
+      error: function() {
+        $('.btn_click_load').css('display','block');
+        }
+      });
+  </script>
+  <script id="dsq-count-scr" src="//chihsblog.disqus.com/count.js" async></script>
+</div>
     </div>
 </div>
         </div></div>
@@ -289,16 +331,16 @@ COMMIT
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-star-o"> Tags</i></div>
     <div class="tagcloud">
-    <a href="/tag/shi-shi-ji-suan.html" style="font-size: 10px">实时计算</a>
-    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
-    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
-    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
-    <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
-    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
-    <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
-    <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
     <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
+    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
+    <a href="/tag/shi-shi-ji-suan.html" style="font-size: 10px">实时计算</a>
+    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
+    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
+    <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
+    <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
     <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
+    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
+    <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
     </div>
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-file-o"> Recent</i></div>
@@ -335,6 +377,10 @@ COMMIT
         </li>
     </ul>
 </div><div class="widget">
+    <div class="widget-title"><i class="fa fa-comment-o"> Recent Comments</i></div>
+    <script type="text/javascript" src="//chihsblog.disqus.com/recent_comments_widget.js?num_items=5&hide_avatars=1&avatar_size=32&excerpt_length=20&hide_mods=1"></script>
+</div>
+<div class="widget">
     <div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div>
     <ul></ul>
     <a href="http://www.hjk.im/" title="HJK" target="_blank">HJK</a>
