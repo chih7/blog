@@ -1,349 +1,144 @@
 <!DOCTYPE html>
-<html lang="zh" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<html lang="zh">
+
 <head>
-    <title>Linux - chih's blog</title>
-    <!-- Using the latest rendering mode for IE -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-    <link href="https://blog.chih.me/favicon.ico" rel="icon">
-
-
-    <meta name="author" content="chih" />
-    <meta name="keywords" content="Linux" />
-
-    <!-- Open Graph tags -->
-        <meta property="og:site_name" content="chih's blog" />
-        <meta property="og:type" content="website"/>
-        <meta property="og:title" content="chih's blog"/>
-        <meta property="og:url" content="https://blog.chih.me"/>
-        <meta property="og:description" content="chih's blog"/>
-
-
-
-    <!-- Bootstrap -->
-        <link rel="stylesheet" href="https://blog.chih.me/theme/css/bootstrap.min.css" type="text/css"/>
-    <link href="https://blog.chih.me/theme/css/font-awesome.min.css" rel="stylesheet">
-
-    <link href="https://blog.chih.me/theme/css/pygments/native.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://blog.chih.me/theme/css/style.css" type="text/css"/>
-
-        <link href="https://blog.chih.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
-              title="chih's blog ATOM Feed"/>
-
-
-
-
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style" />
+    <meta content="telephone=no" name="format-detection" />
+    <title>
+Linux | chih's blog    </title>
+    <link rel="stylesheet" type="text/css" href="/theme/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/theme/css/pygment.css" />
+    <link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css" />
+    <link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css" />
+    <link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css" />
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="Shortcut Icon" type="image/x-icon" href="/theme/favicon.ico" />
 </head>
+
 <body>
-
-<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-	<div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a href="https://blog.chih.me/" class="navbar-brand">
-chih's blog            </a>
+<div class="body_container">
+    <div id="header">
+        <div class="site-name">
+            <a id="logo" href="/."> chih's blog </a>
         </div>
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav">
-                         <li><a href="https://blog.chih.me/pages/about-me.html">
-                             About Me
-                          </a></li>
-                        <li >
-                            <a href="https://blog.chih.me/category/self.html">Self</a>
-                        </li>
-                        <li >
-                            <a href="https://blog.chih.me/category/tech.html">Tech</a>
-                        </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
-    </div>
-</div> <!-- /.navbar -->
-<!-- Banner -->
-<!-- End Banner -->
-<div class="container">
-    <div class="row">
-        <div class="col-sm-9">
-            <article>
-                <h2><a href="https://blog.chih.me/hadoop-install.html">Hadoop 安装笔记</a></h2>
-                <div class="summary"><h2>The building blocks of Hadoop</h2>
-<ul>
-<li>NameNode</li>
-<li>DataNode</li>
-<li>Secondary NameNode</li>
-<li>~~JobTracker~~</li>
-<li>~~TaskTracker~~</li>
-<li>ResourceManager</li>
-<li>NodeManager</li>
-</ul>
-<p><img alt="Screenshot_20161117_185744" src="images/Screenshot_20161117_185744.png"></p>
-<p><img alt="Screenshot_20161117_190357" src="images/Screenshot_20161117_190357.png"></p>
-<h3>NameNode</h3>
-<p>NameNode主要是用来保存HDFS的<strong>元数据</strong>信息，比如命名空间信息，块信息等。当它运行的时候，这些信息是存在内存中的。但是这些信息也可以持久化到磁盘上。没有Namenode，HDFS就不能工作。事实上，如果运行namenode的机器坏掉的话，系统中的文件将会完全丢失，因为没有其他方法能够将位于不同datanode上的文件块(blocks)重建文件。因此，Hadoop存在单点故障。为了解决单点故障，Hadoop提供了两套机制：</p>
-<ol>
-<li>第一种方式是将持久化存 储在本地硬盘的文件系统元数据备份。Hadoop可以通过配置来让Namenode将他的持久化状态文件写到不同的文件系统中。一般是镜像到网络文件系统或单独的磁盘中。</li>
-<li>第二种方式是运行一个辅助的Namenode(Secondary Namenode)。下面会具体说明。</li>
-</ol>
-<h3>DataNode</h3>
-<p>Datanode是文件系统的工作节点，他们根据客户端或者是namenode的调度存储和检索数据，并且定期向namenode发送他们所存储的块(block)的<strong>列表</strong>。</p>
-<p>集群中的每个服务器都运 …</p>
-                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/hadoop-install.html">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.chih.me/chang-openwtr-ppoe-password.html">使用LuCI的RPC接口修改openwrt配置</a></h2>
-                <div class="summary"><p>简单来说，本文整理了一些<code>openwrt</code>的RPC接口，用来自动修改pppoe的密码，并重启网络。为什么要弄这些玩意呢，因为浙江高校中普遍使用的蛋疼的闪讯——两三天换个动态密码，时不时给你断个网！使用这些API的是一个Android应用，它在用户按下一个按键后自动向电信发送一条获取密码的短信，然后获取返回的短信，解析其中的闪讯动态密码，通过<code>openwrt</code>的RPC接口修改密码并重启网络，这样，只需要一次按按钮的操作，就能恢复网络，又可以愉快的玩耍啦。</p>
-<p><a href="https://github.com/openwrt/openwrt">openwrt</a> 我就不多介绍了，玩路由器的都知道；<a href="https://wiki.openwrt.org/doc/techref/uci">UCI</a>是<code>openwrt</code>提供的一套统一的配置接口，可以用以配置整台<code>openwrt</code>设备；而<a href="https://wiki.openwrt.org/doc/techref/luci">LuCI</a>是一个基于Lua语言开发的、包装了底层UCI接口的易于使用的Web用户接口。LuCI也提供了一种基于JSON格式的RPC机制来访问其内部的库。</p>
-<p>LuCI的RPC接口的地址为 <strong>/cgi-bin/luci/rpc/LIBRARY</strong>，其中LIBRARY代表按功能区分的几个库，分别为：</p>
-<ul>
-<li><strong>auth</strong> - 基于token的认证库</li>
-<li><strong>uci</strong> - UCI统一配置接口的映射</li>
-<li><strong>fs</strong> -  文件操作</li>
-<li><strong>sys …</strong></li></ul>
-                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/chang-openwtr-ppoe-password.html">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.chih.me/download-use-aria2.html">我的硬盘不可能这么空~aria2篇</a></h2>
-                <div class="summary"><p>对于单纯的Aria2程序来说，它是一个轻量级、支持多种协议的命令行下载工具。</p>
-<ul>
-<li>支持的协议包括HTTP(S), FTP, BitTorrent, Metalink</li>
-<li>aria2可以并发的进行下载，并尝试将下载带宽利用率最大化</li>
-<li>分片与续传，自动中止并替换慢的线程</li>
-</ul>
-<p>看到命令行可能有人会想:“恩，又是那种强大到用起来要查手册写命令的玩意”。其实不然，由于aria2 支持 JSON-RPC和XML-RPC远程调用，可以通过web前端或客户端方便地进行管理。</p>
-<h3>安装</h3>
-<p>在Linux下，可以很方便地通过包管理进行安装，比如Arch Linux</p>
-<div class="highlight"><pre><span></span>$ sudo pacman -S aria2
-</pre></div>
-
-
-<p>如果是Windows，可以下载编译好的二进制文件，放在<code>C:\WINDOWS\system32</code>目录下，就可以通过<code>aria2c</code>命令执行程序了</p>
-<p>可以直接运行命令进行下载:</p>
-<ul>
-<li>
-<p>HTTP下载</p>
-<p>$ aria2c http://example.org/test.bin</p>
-</li>
-<li>
-<p>从两个源同时下载</p>
-<p>$ aria2c http …</p></li></ul>
-                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/download-use-aria2.html">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.chih.me/fixbug-grub2-in-archlinux.html">Arch Linux 修复grub2 引导过程中的花屏</a></h2>
-                <div class="summary"><p>前几天 <code>opensuse 13.2</code> 被我强关了几次，结果用 <code>XFS</code> 挂载的 <code>/home</code> 每次都丢文件， 这样实在是让人难以安心，再加上opensuse 的一些操作始终感觉有些麻烦，官方仓库的软件也少。种种不便之处， 让我想起以前用 <code>Arch Linux</code>时的舒心，于是备份重装。所有的文件系统用了 <code>Ext4</code>(opensuse 上的<code>Btrfs</code>的确先进，但很多功能我也没怎么去用)。</p>
-<p>​<code>Arch Linux</code>的安装过程先略去不表。安装基本系统和<code>KDE</code>都没有发现问题，但安装完基本系统重启的时候就发现有个小问题了喵。</p>
-<div class="highlight"><pre><span></span>从BIOS自检完成到桌面启动直接的那段过程中屏幕一直都是花的，就是那种黑白电视机雪花屏的样子。
-</pre></div>
-
-
-<p>这只是一个小问题，反正进入桌面之后就没影响了，但对于强迫症患者真是太难受了啊! 于是去Google找解决方案，翻了几页之后还真的被我找到类似的问题了—— <a href="https://forum.suse.org.cn/viewtopic.php?f=2&amp;t=2365">https://forum.suse.org.cn/viewtopic.php?f=2 …</a></p>
-                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/fixbug-grub2-in-archlinux.html">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.chih.me/socks-for-minecraft.html">为MineCraft启动器挂上代理</a></h2>
-                <div class="summary"><p><code>MineCraft</code>官方启动器在启动的时候会从以下地址获取更新:</p>
-<div class="highlight"><pre><span></span>https://s3.amazonaws.com/Minecraft.Download/launcher/launcher.pack.lzma
-</pre></div>
-
-
-<p>如你所见，用的是Amazon EC2，Amazon AWS云服务，这两个服务在国内都是部分被屏蔽的。</p>
-<p>但是如果你有shadowsocks等socks代理的话是可以给<code>MineCraft</code>挂上代理的，虽然官方启动器并未提供代理设置。</p>
-<p>我在这里用的是<code>java</code>提供的代理选项:</p>
-<div class="highlight"><pre><span></span>$ java -DsocksProxyHost<span class="o">=</span><span class="m">127</span>.0.0.1 -DsocksProxyPort<span class="o">=</span><span class="m">1080</span> -jar ~/.minecraft/Minecraft.jar
-</pre></div>
-
-
-<p>这样子打开<code>MineCraft</code>启动器就可以很快的登录、更新、下游戏了。但需要注意的是你通过启动器打开<code>Minecraft</code>游戏本体之后，游戏是不走代理的。</p>
-<p>-EOF-</p>
-                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/socks-for-minecraft.html">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.chih.me/Compiler-WizNote-in-openSUSE.html">在openSUSE上编译WizNote(为知笔记)</a></h2>
-                <div class="summary"><p><code>Wiznote</code>--为知笔记是一款优秀的全平台云笔记客户端，当初我从Windows切换到纯Linux平台的时候，就同时把我的在线笔记从<code>Evernote</code>切换到了<code>WizNote</code>。</p>
-<p><code>openSUSE</code>的个人仓库里其实是有<code>WizNote</code>的
-<a href="https://build.opensuse.org/package/show?project=home%3Agmg137&amp;package=WizNote">https://build.opensuse.org/package/show?project=home%3Agmg137&amp;package=WizNote</a>， 但它并不是最新版本。所以我打算自己编译一个最新版自用，同时因为是自用，直接源码编译安装了，并没有打包。如果需要在<code>openSUSE</code>下打包，可以参照苏姐的视频教学<a href="http://www.bilibili.com/video/av688454">http://www.bilibili.com/video/av688454</a>。</p>
-<h2>获取源码</h2>
-<ul>
-<li>
-<p>从github 上面 clone 为知笔记客户端源码到本地</p>
-<div class="highlight"><pre><span></span>$ git clone https://github.com/WizTeam/WizQTClient.git …</pre></div></li></ul>
-                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/Compiler-WizNote-in-openSUSE.html">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.chih.me/use-USB-in-virtualbox-at-openSUSE.html">解决在opensuse下virtualbox无法挂载主机USB设备的问题</a></h2>
-                <div class="summary"><p>因为要用<code>virtualbox</code>中的<code>Windows</code>虚拟机设置G602的可编程键，所以需要把G602的USB无线接收器挂载到虚拟机上，结果发现<code>virtualbox</code>右下角USB设备那里尽管有<code>logitech USB Receiver</code>这个选项，但它是灰色的，无法选中。</p>
-<p>因为已经确认当前用户已经加入<code>vboxusers</code>组、并已经安装<code>Oracle Extensions</code>扩展包，那么问题应该从其他方向寻找。</p>
-<p>在Google了一段时间后，终于在openSUSE论坛找到了<a href="https://forum.suse.org.cn/viewtopic.php?f=13&amp;t=3130">解决方法</a></p>
-<blockquote>
-<p>源中的包，/usr/lib/udev/rules.d/60-vboxdrv.rules 里面有 4 行规则被用 # 号注释掉了，有安全隐患。把那 4 行注释打开应该就可以了。</p>
-</blockquote>
-<p>找到那四行并取消注释就可以了:</p>
-<blockquote>
-<ul>
-<li>SUBSYSTEM=="usb_device", ACTION=="add", RUN+="/usr/share …</li></ul></blockquote>
-                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/use-USB-in-virtualbox-at-openSUSE.html">more ...</a>
-                </div>
-            </article>
-            <hr/>
-
-        <ul class="pagination">
-                <li class="prev"><a href="https://blog.chih.me/tag/linux.html">&laquo;</a>
-                </li>
-                    <li class=""><a
-                            href="https://blog.chih.me/tag/linux.html">1</a></li>
-                    <li class="active"><a
-                            href="https://blog.chih.me/tag/linux2.html">2</a></li>
-                    <li class=""><a
-                            href="https://blog.chih.me/tag/linux3.html">3</a></li>
-                <li class="next"><a
-                        href="https://blog.chih.me/tag/linux3.html">&raquo;</a></li>
-        </ul>
-        </div>
-        <div class="col-sm-3" id="sidebar">
-            <aside>
-<!-- Sidebar -->
-<section class="well well-sm">
-  <ul class="list-group list-group-flush">
-
-<!-- Sidebar/Tag Cloud -->
-<li class="list-group-item">
-  <a href="https://blog.chih.me/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
-  <ul class="list-group " id="tags">
-    <li class="list-group-item tag-1">
-      <a href="https://blog.chih.me/tag/linux.html">Linux</a>
-    </li>
-    <li class="list-group-item tag-3">
-      <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>
-    </li>
-    <li class="list-group-item tag-3">
-      <a href="https://blog.chih.me/tag/big-data.html">big data</a>
-    </li>
-    <li class="list-group-item tag-3">
-      <a href="https://blog.chih.me/tag/spark.html">Spark</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/dai-li.html">代理</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/shadowsocks.html">shadowsocks</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/storm.html">Storm</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/hadoop.html">hadoop</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/sql.html">SQL</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
-    </li>
-  </ul>
-</li>
-<!-- End Sidebar/Tag Cloud -->
-
-<!-- Sidebar/Links -->
-<li class="list-group-item">
-  <h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
-  <ul class="list-group" id="links">
-    <li class="list-group-item">
-      <a href="http://www.hjk.im/" target="_blank">HJK</a>
-    </li>
-    <li class="list-group-item">
-      <a href="http://imis.me/" target="_blank">记忆反射弧</a>
-    </li>
-    <li class="list-group-item">
-      <a href="http://mijack.github.io/" target="_blank">mijack</a>
-    </li>
-    <li class="list-group-item">
-      <a href="http://datahcong.cn/" target="_blank">whl的博客园</a>
-    </li>
-  </ul>
-</li>
-<!-- End Sidebar/Links -->
-  </ul>
-</section>
-<!-- End Sidebar -->            </aside>
+        <div id="nav-menu">
+            <a href="/."><i class="fa fa-home"> Home</i></a>
+            <a href="/archives.html"><i class="fa fa-archive"> Archive</i></a>
         </div>
     </div>
+    <div id="layout" class="pure-g">
+        <div class="pure-u-1 pure-u-md-3-4"><div class="content_container">
+<div class="post"><div class="post-archive">
+<h1 class="label-title">Articles tagged by <em>Linux</em></h1>
+<ul class="listing">
+    <li><span class="date">2018/03/07</span><a href="/global-proxy-within-ipset-and-iptables.html">使用 iptables、ipset 的全局智能代理</a></li>
+    <li><span class="date">2018/03/01</span><a href="/aiops.html">智能运维：从基于规则到基于学习</a></li>
+    <li><span class="date">2017/07/09</span><a href="/simjoin-on-spark.html">基于SPARK的分布式网页近似度检测</a></li>
+    <li><span class="date">2017/07/05</span><a href="/vldb-downloader.html">抓取网页中所有PDF链接并下载的Python脚本</a></li>
+    <li><span class="date">2017/01/31</span><a href="/read-cpu-power-with-RAPL.html">Energy measurements in Linux</a></li>
+    <li><span class="date">2016/12/25</span><a href="/power-with-different-cpufreq.html">Ubuntu 16.04 下 CPU 频率与功耗关系</a></li>
+    <li><span class="date">2016/11/21</span><a href="/global-proxy-within-redsocks-and-shadowsocks.html">使用redsocks把shadowsocks转为全局代理</a></li>
+    <li><span class="date">2016/11/17</span><a href="/hadoop-install.html">Hadoop 安装笔记</a></li>
+    <li><span class="date">2016/10/17</span><a href="/chang-openwtr-ppoe-password.html">使用LuCI的RPC接口修改openwrt配置</a></li>
+    <li><span class="date">2015/03/31</span><a href="/download-use-aria2.html">我的硬盘不可能这么空~aria2篇</a></li>
+    <li><span class="date">2015/03/15</span><a href="/fixbug-grub2-in-archlinux.html">Arch Linux 修复grub2 引导过程中的花屏</a></li>
+    <li><span class="date">2015/03/14</span><a href="/socks-for-minecraft.html">为MineCraft启动器挂上代理</a></li>
+    <li><span class="date">2015/03/11</span><a href="/Compiler-WizNote-in-openSUSE.html">在openSUSE上编译WizNote(为知笔记)</a></li>
+    <li><span class="date">2015/03/02</span><a href="/use-USB-in-virtualbox-at-openSUSE.html">解决在opensuse下virtualbox无法挂载主机USB设备的问题</a></li>
+    <li><span class="date">2015/02/22</span><a href="/storm-starter.html">在实时计算框架Storm集群上运行Storm-Starter例子</a></li>
+    <li><span class="date">2015/02/20</span><a href="/Setting-up-a-Storm-Cluster-in-3-machines.html">实时计算框架Storm集群搭建</a></li>
+    <li><span class="date">2015/02/02</span><a href="/Setting-up-a-Storm-Cluster.html">实时计算框架Storm本地模式搭建</a></li>
+    <li><span class="date">2014/04/06</span><a href="/ubuntutu-ran-chu-xian-da-kai-xi-tong-she-zhi-man-sudoshi-chu-xian-wu-fa-jie-xi-zhu-ji-de-jie-jue-ban-fa.html">ubuntu突然出现打开系统设置慢 sudo时出现无法解析主机的解决办法</a></li>
+    <li><span class="date">2014/03/02</span><a href="/virtualboxzhu-ji-fang-wen-xu-ni-ji.html">virtualbox主机访问虚拟机</a></li>
+    <li><span class="date">2012/09/05</span><a href="/disable-easy-install-in-vmware.html">VMware中使easy install失效</a></li>
+</ul>
+</div></div>
+        </div></div>
+        <div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar">
+<div class="widget">
+    <form action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" class="search-form">
+        <input type="text" name="q" maxlength="20" placeholder="Search"/>
+        <input type="hidden" name="sitesearch" value="https://blog.chih.me"/>
+    </form>
+</div><div class="widget">
+    <div class="widget-title">
+        <i class="fa fa-folder-o"> Categories</i>
+    </div>
+    <ul class="category-list">
+        <li class="category-list-item"><a class="category-list-link" href="/category/self.html">Self</a></li>
+        <li class="category-list-item"><a class="category-list-link" href="/category/tech.html">Tech</a></li>
+    </ul>
+</div><div class="widget">
+    <div class="widget-title"><i class="fa fa-star-o"> Tags</i></div>
+    <div class="tagcloud">
+    <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
+    <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
+    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
+    <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
+    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
+    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
+    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
+    <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
+    <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
+    <a href="/tag/shi-shi-ji-suan.html" style="font-size: 10px">实时计算</a>
+    </div>
+</div><div class="widget">
+    <div class="widget-title"><i class="fa fa-file-o"> Recent</i></div>
+    <ul class="post-list">
+        <li class="post-list-item">
+        <a class="post-list-link" href="/global-proxy-within-ipset-and-iptables.html">使用 iptables、ipset 的全局智能代理</a>
+        </li>
+        <li class="post-list-item">
+        <a class="post-list-link" href="/aiops.html">智能运维：从基于规则到基于学习</a>
+        </li>
+        <li class="post-list-item">
+        <a class="post-list-link" href="/simjoin-on-spark.html">基于SPARK的分布式网页近似度检测</a>
+        </li>
+        <li class="post-list-item">
+        <a class="post-list-link" href="/vldb-downloader.html">抓取网页中所有PDF链接并下载的Python脚本</a>
+        </li>
+        <li class="post-list-item">
+        <a class="post-list-link" href="/read-cpu-power-with-RAPL.html">Energy measurements in Linux</a>
+        </li>
+        <li class="post-list-item">
+        <a class="post-list-link" href="/power-with-different-cpufreq.html">Ubuntu 16.04 下 CPU 频率与功耗关系</a>
+        </li>
+        <li class="post-list-item">
+        <a class="post-list-link" href="/global-proxy-within-redsocks-and-shadowsocks.html">使用redsocks把shadowsocks转为全局代理</a>
+        </li>
+        <li class="post-list-item">
+        <a class="post-list-link" href="/hadoop-install.html">Hadoop 安装笔记</a>
+        </li>
+        <li class="post-list-item">
+        <a class="post-list-link" href="/chang-openwtr-ppoe-password.html">使用LuCI的RPC接口修改openwrt配置</a>
+        </li>
+        <li class="post-list-item">
+        <a class="post-list-link" href="/download-use-aria2.html">我的硬盘不可能这么空~aria2篇</a>
+        </li>
+    </ul>
+</div><div class="widget">
+    <div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div>
+    <ul></ul>
+    <a href="http://www.hjk.im/" title="HJK" target="_blank">HJK</a>
+    <ul></ul>
+    <a href="http://imis.me/" title="记忆反射弧" target="_blank">记忆反射弧</a>
+    <ul></ul>
+    <a href="http://mijack.github.io/" title="mijack" target="_blank">mijack</a>
+    <ul></ul>
+    <a href="http://datahcong.cn/" title="whl的博客园" target="_blank">whl的博客园</a>
 </div>
-<footer>
-   <div class="container">
-      <hr>
-      <div class="row">
-         <div class="col-xs-10">&copy; 2018 chih
-            &middot; Powered by <a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
-            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
-            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
-         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
-      </div>
-   </div>
-</footer>
-<script src="https://blog.chih.me/theme/js/jquery.min.js"></script>
+        </div></div>
+        <div class="pure-u-1 pure-u-md-3-4">
+<div id="footer">Copyright © 2018 <a href="/." rel="nofollow">chih's blog.</a> Powered by <a rel="nofollow" target="_blank" href="https://getpelican.com/">Pelican</a> and <a rel="nofollow", target="_blank", href="https://github.com/wormtooth/maupassant-pelican">maupassant</a>.</div>        </div>
+    </div>
 
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="https://blog.chih.me/theme/js/bootstrap.min.js"></script>
-
-<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
-<script src="https://blog.chih.me/theme/js/respond.min.js"></script>
-
-
-    <!-- Disqus -->
-    <script type="text/javascript">
-        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-        var disqus_shortname = 'chihsblog'; // required: replace example with your forum shortname
-
-        /* * * DON'T EDIT BELOW THIS LINE * * */
-        (function () {
-            var s = document.createElement('script');
-            s.async = true;
-            s.type = 'text/javascript';
-            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-        }());
-    </script>
-    <!-- End Disqus Code -->
-    <!-- Google Analytics -->
-    <script type="text/javascript">
-
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-61054351-1']);
-        _gaq.push(['_trackPageview']);
-
-        (function () {
-            var ga = document.createElement('script');
-            ga.type = 'text/javascript';
-            ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(ga, s);
-        })();
-    </script>
-    <!-- End Google Analytics Code -->
-
+<a id="rocket" href="#top" class="show"></a>
+<script type="text/javascript" src="/theme/js/totop.js" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.js" async></script>
+<script type="text/javascript" src="/theme/js/fancybox.js" async></script>
+<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.css" />
 
 </body>
-</html>

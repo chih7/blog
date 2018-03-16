@@ -1,306 +1,106 @@
 <!DOCTYPE html>
-<html lang="zh" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<html lang="zh">
+
 <head>
-    <title>Storm - chih's blog</title>
-    <!-- Using the latest rendering mode for IE -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-    <link href="https://blog.chih.me/favicon.ico" rel="icon">
-
-
-    <meta name="author" content="chih" />
-    <meta name="keywords" content="Storm" />
-
-    <!-- Open Graph tags -->
-        <meta property="og:site_name" content="chih's blog" />
-        <meta property="og:type" content="website"/>
-        <meta property="og:title" content="chih's blog"/>
-        <meta property="og:url" content="https://blog.chih.me"/>
-        <meta property="og:description" content="chih's blog"/>
-
-
-
-    <!-- Bootstrap -->
-        <link rel="stylesheet" href="https://blog.chih.me/theme/css/bootstrap.min.css" type="text/css"/>
-    <link href="https://blog.chih.me/theme/css/font-awesome.min.css" rel="stylesheet">
-
-    <link href="https://blog.chih.me/theme/css/pygments/native.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://blog.chih.me/theme/css/style.css" type="text/css"/>
-
-        <link href="https://blog.chih.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
-              title="chih's blog ATOM Feed"/>
-
-
-
-
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style" />
+    <meta content="telephone=no" name="format-detection" />
+    <title>
+Storm | chih's blog    </title>
+    <link rel="stylesheet" type="text/css" href="/theme/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/theme/css/pygment.css" />
+    <link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css" />
+    <link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css" />
+    <link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css" />
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="Shortcut Icon" type="image/x-icon" href="/theme/favicon.ico" />
 </head>
+
 <body>
-
-<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-	<div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a href="https://blog.chih.me/" class="navbar-brand">
-chih's blog            </a>
+<div class="body_container">
+    <div id="header">
+        <div class="site-name">
+            <a id="logo" href="/."> chih's blog </a>
         </div>
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav">
-                         <li><a href="https://blog.chih.me/pages/about-me.html">
-                             About Me
-                          </a></li>
-                        <li >
-                            <a href="https://blog.chih.me/category/self.html">Self</a>
-                        </li>
-                        <li >
-                            <a href="https://blog.chih.me/category/tech.html">Tech</a>
-                        </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
-    </div>
-</div> <!-- /.navbar -->
-<!-- Banner -->
-<!-- End Banner -->
-<div class="container">
-    <div class="row">
-        <div class="col-sm-9">
-            <article>
-                <h2><a href="https://blog.chih.me/storm-starter.html">在实时计算框架Storm集群上运行Storm-Starter例子</a></h2>
-                <div class="summary"><blockquote>
-<p>官方文档待翻译，个人实践在下面</p>
-</blockquote>
-<h1>Example Storm Topologies</h1>
-<p>Learn to use Storm!</p>
-<hr>
-<p>Table of Contents</p>
-<ul>
-<li><a href="#getting-started">Getting started</a></li>
-<li><a href="#maven">Using storm-starter with Maven</a></li>
-<li><a href="#intellij-idea">Using storm-starter with IntelliJ IDEA</a></li>
-</ul>
-<hr>
-<p><a name="getting-started"></a></p>
-<h1>Getting started</h1>
-<h2>Prerequisites</h2>
-<p>First, you need <code>java</code> and <code>git</code> installed and in your user's <code>PATH</code>.  Also, two of the examples in storm-starter
-require Python and Ruby.</p>
-<p>Next …</p>
-                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/storm-starter.html">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.chih.me/Setting-up-a-Storm-Cluster-in-3-machines.html">实时计算框架Storm集群搭建</a></h2>
-                <div class="summary"><h3>首先对三台ubuntu14.04进行任务分配:</h3>
-<p><img alt="4-1" src="https://blog.chih.me/images/4-1.jpg"></p>
-<ul>
-<li>
-<p>nimbus：
-ip：192.168.56.102</p>
-</li>
-<li>
-<p>zookeeper：
-ip：192.168.56.102；192.168.56.103；192.168.56.104</p>
-</li>
-<li>
-<p>supervisor：
-ip：192.168.56.103 192.168.56.104</p>
-</li>
-</ul>
-<p>此三台虚拟机分别用作Storm集群中的<code>nimbus</code>节点、<code>Zookeeper</code>集群（一台机器开多个zookeeper进程，当然也可以多台机器）、<code>supervisor</code>节点。</p>
-<p>在这里我为方便起见 直接从单机安装的virtualbox虚拟机clone了三台一样的机器进行配置，每台上的配置过程见<a href="https://blog.chih.me/Setting-up-a-Storm-Cluster.html">实时计算框架Storm本地模式搭建</a></p>
-<h3>下面针对每一个节点进行具体的配置</h3>
-<p><img alt="4-2" src="https://blog.chih.me/images/4-2.png"></p>
-<h4>搭建一个Zookeeper集群</h4>
-<p>三台机器同时作为<code>zookeeper</code>集群 …</p>
-                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/Setting-up-a-Storm-Cluster-in-3-machines.html">more ...</a>
-                </div>
-            </article>
-            <hr/>
-            <article>
-                <h2><a href="https://blog.chih.me/Setting-up-a-Storm-Cluster.html">实时计算框架Storm本地模式搭建</a></h2>
-                <div class="summary"><blockquote>
-<p>平台：Ubuntu14.04</p>
-</blockquote>
-<h2>安装依赖</h2>
-<p>通过ubuntu自带的软件包管理器安装java环境。
-安装Java：</p>
-<div class="highlight"><pre><span></span>$ sudo apt-get install openjdk-7-jdk
-</pre></div>
-
-
-<p>检查是否安装完成:</p>
-<div class="highlight"><pre><span></span>$ java -version
-</pre></div>
-
-
-<p><img alt="1-1" src="https://blog.chih.me/images/1-1.png"></p>
-<p>检查python版本:</p>
-<div class="highlight"><pre><span></span>$ python -V
-</pre></div>
-
-
-<p><img alt="1-2" src="https://blog.chih.me/images/1-2.png"></p>
-<h2>安装ZooKeeper</h2>
-<p>为了避免每次获取超级权限重复输入sudo
-临时进入超级用户:</p>
-<div class="highlight"><pre><span></span>$ sudo -s
-</pre></div>
-
-
-<p>使用<code>ctrl+d</code>退出</p>
-<p>定位目录:</p>
-<div class="highlight"><pre><span></span># cd /usr/local/src
-</pre></div>
-
-
-<p>从阿里的源下载:</p>
-<div class="highlight"><pre><span></span># wget http://mirrors.aliyun.com/apache/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz
-</pre></div>
-
-
-<p><img alt="1-3" src="https://blog.chih.me/images/1-3.png"></p>
-<p>使用命令解压:</p>
-<div class="highlight"><pre><span></span># tar -xzvf zookeeper-3 …</pre></div>
-                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/Setting-up-a-Storm-Cluster.html">more ...</a>
-                </div>
-            </article>
-            <hr/>
-
-        </div>
-        <div class="col-sm-3" id="sidebar">
-            <aside>
-<!-- Sidebar -->
-<section class="well well-sm">
-  <ul class="list-group list-group-flush">
-
-<!-- Sidebar/Tag Cloud -->
-<li class="list-group-item">
-  <a href="https://blog.chih.me/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
-  <ul class="list-group " id="tags">
-    <li class="list-group-item tag-1">
-      <a href="https://blog.chih.me/tag/linux.html">Linux</a>
-    </li>
-    <li class="list-group-item tag-3">
-      <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>
-    </li>
-    <li class="list-group-item tag-3">
-      <a href="https://blog.chih.me/tag/big-data.html">big data</a>
-    </li>
-    <li class="list-group-item tag-3">
-      <a href="https://blog.chih.me/tag/spark.html">Spark</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/dai-li.html">代理</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/shadowsocks.html">shadowsocks</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/storm.html">Storm</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/hadoop.html">hadoop</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/sql.html">SQL</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
-    </li>
-  </ul>
-</li>
-<!-- End Sidebar/Tag Cloud -->
-
-<!-- Sidebar/Links -->
-<li class="list-group-item">
-  <h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
-  <ul class="list-group" id="links">
-    <li class="list-group-item">
-      <a href="http://www.hjk.im/" target="_blank">HJK</a>
-    </li>
-    <li class="list-group-item">
-      <a href="http://imis.me/" target="_blank">记忆反射弧</a>
-    </li>
-    <li class="list-group-item">
-      <a href="http://mijack.github.io/" target="_blank">mijack</a>
-    </li>
-    <li class="list-group-item">
-      <a href="http://datahcong.cn/" target="_blank">whl的博客园</a>
-    </li>
-  </ul>
-</li>
-<!-- End Sidebar/Links -->
-  </ul>
-</section>
-<!-- End Sidebar -->            </aside>
+        <div id="nav-menu">
+            <a href="/."><i class="fa fa-home"> Home</i></a>
+            <a href="/archives.html"><i class="fa fa-archive"> Archive</i></a>
         </div>
     </div>
+    <div id="layout" class="pure-g">
+        <div class="pure-u-1 pure-u-md-3-4"><div class="content_container">
+<div class="post"><div class="post-archive">
+<h1 class="label-title">Articles tagged by <em>Storm</em></h1>
+<ul class="listing">
+    <li><span class="date">2015/02/22</span><a href="/storm-starter.html">在实时计算框架Storm集群上运行Storm-Starter例子</a></li>
+    <li><span class="date">2015/02/20</span><a href="/Setting-up-a-Storm-Cluster-in-3-machines.html">实时计算框架Storm集群搭建</a></li>
+    <li><span class="date">2015/02/02</span><a href="/Setting-up-a-Storm-Cluster.html">实时计算框架Storm本地模式搭建</a></li>
+</ul>
+</div></div>
+        </div></div>
+        <div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar">
+<div class="widget">
+    <form action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" class="search-form">
+        <input type="text" name="q" maxlength="20" placeholder="Search"/>
+        <input type="hidden" name="sitesearch" value="https://blog.chih.me"/>
+    </form>
+</div><div class="widget">
+    <div class="widget-title">
+        <i class="fa fa-folder-o"> Categories</i>
+    </div>
+    <ul class="category-list">
+        <li class="category-list-item"><a class="category-list-link" href="/category/self.html">Self</a></li>
+        <li class="category-list-item"><a class="category-list-link" href="/category/tech.html">Tech</a></li>
+    </ul>
+</div><div class="widget">
+    <div class="widget-title"><i class="fa fa-star-o"> Tags</i></div>
+    <div class="tagcloud">
+    <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
+    <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
+    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
+    <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
+    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
+    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
+    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
+    <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
+    <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
+    <a href="/tag/shi-shi-ji-suan.html" style="font-size: 10px">实时计算</a>
+    </div>
+</div><div class="widget">
+    <div class="widget-title"><i class="fa fa-file-o"> Recent</i></div>
+    <ul class="post-list">
+        <li class="post-list-item">
+        <a class="post-list-link" href="/storm-starter.html">在实时计算框架Storm集群上运行Storm-Starter例子</a>
+        </li>
+        <li class="post-list-item">
+        <a class="post-list-link" href="/Setting-up-a-Storm-Cluster-in-3-machines.html">实时计算框架Storm集群搭建</a>
+        </li>
+        <li class="post-list-item">
+        <a class="post-list-link" href="/Setting-up-a-Storm-Cluster.html">实时计算框架Storm本地模式搭建</a>
+        </li>
+    </ul>
+</div><div class="widget">
+    <div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div>
+    <ul></ul>
+    <a href="http://www.hjk.im/" title="HJK" target="_blank">HJK</a>
+    <ul></ul>
+    <a href="http://imis.me/" title="记忆反射弧" target="_blank">记忆反射弧</a>
+    <ul></ul>
+    <a href="http://mijack.github.io/" title="mijack" target="_blank">mijack</a>
+    <ul></ul>
+    <a href="http://datahcong.cn/" title="whl的博客园" target="_blank">whl的博客园</a>
 </div>
-<footer>
-   <div class="container">
-      <hr>
-      <div class="row">
-         <div class="col-xs-10">&copy; 2015 chih
-            &middot; Powered by <a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
-            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
-            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
-         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
-      </div>
-   </div>
-</footer>
-<script src="https://blog.chih.me/theme/js/jquery.min.js"></script>
+        </div></div>
+        <div class="pure-u-1 pure-u-md-3-4">
+<div id="footer">Copyright © 2015 <a href="/." rel="nofollow">chih's blog.</a> Powered by <a rel="nofollow" target="_blank" href="https://getpelican.com/">Pelican</a> and <a rel="nofollow", target="_blank", href="https://github.com/wormtooth/maupassant-pelican">maupassant</a>.</div>        </div>
+    </div>
 
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="https://blog.chih.me/theme/js/bootstrap.min.js"></script>
-
-<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
-<script src="https://blog.chih.me/theme/js/respond.min.js"></script>
-
-
-    <!-- Disqus -->
-    <script type="text/javascript">
-        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-        var disqus_shortname = 'chihsblog'; // required: replace example with your forum shortname
-
-        /* * * DON'T EDIT BELOW THIS LINE * * */
-        (function () {
-            var s = document.createElement('script');
-            s.async = true;
-            s.type = 'text/javascript';
-            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-        }());
-    </script>
-    <!-- End Disqus Code -->
-    <!-- Google Analytics -->
-    <script type="text/javascript">
-
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-61054351-1']);
-        _gaq.push(['_trackPageview']);
-
-        (function () {
-            var ga = document.createElement('script');
-            ga.type = 'text/javascript';
-            ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(ga, s);
-        })();
-    </script>
-    <!-- End Google Analytics Code -->
-
+<a id="rocket" href="#top" class="show"></a>
+<script type="text/javascript" src="/theme/js/totop.js" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.js" async></script>
+<script type="text/javascript" src="/theme/js/fancybox.js" async></script>
+<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.css" />
 
 </body>
-</html>

@@ -1,233 +1,98 @@
 <!DOCTYPE html>
-<html lang="zh" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<html lang="zh">
+
 <head>
-    <title>redsocks - chih's blog</title>
-    <!-- Using the latest rendering mode for IE -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-    <link href="https://blog.chih.me/favicon.ico" rel="icon">
-
-
-    <meta name="author" content="chih" />
-    <meta name="keywords" content="redsocks" />
-
-    <!-- Open Graph tags -->
-        <meta property="og:site_name" content="chih's blog" />
-        <meta property="og:type" content="website"/>
-        <meta property="og:title" content="chih's blog"/>
-        <meta property="og:url" content="https://blog.chih.me"/>
-        <meta property="og:description" content="chih's blog"/>
-
-
-
-    <!-- Bootstrap -->
-        <link rel="stylesheet" href="https://blog.chih.me/theme/css/bootstrap.min.css" type="text/css"/>
-    <link href="https://blog.chih.me/theme/css/font-awesome.min.css" rel="stylesheet">
-
-    <link href="https://blog.chih.me/theme/css/pygments/native.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://blog.chih.me/theme/css/style.css" type="text/css"/>
-
-        <link href="https://blog.chih.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
-              title="chih's blog ATOM Feed"/>
-
-
-
-
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style" />
+    <meta content="telephone=no" name="format-detection" />
+    <title>
+redsocks | chih's blog    </title>
+    <link rel="stylesheet" type="text/css" href="/theme/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/theme/css/pygment.css" />
+    <link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css" />
+    <link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css" />
+    <link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css" />
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="Shortcut Icon" type="image/x-icon" href="/theme/favicon.ico" />
 </head>
+
 <body>
-
-<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-	<div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a href="https://blog.chih.me/" class="navbar-brand">
-chih's blog            </a>
+<div class="body_container">
+    <div id="header">
+        <div class="site-name">
+            <a id="logo" href="/."> chih's blog </a>
         </div>
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav">
-                         <li><a href="https://blog.chih.me/pages/about-me.html">
-                             About Me
-                          </a></li>
-                        <li >
-                            <a href="https://blog.chih.me/category/self.html">Self</a>
-                        </li>
-                        <li >
-                            <a href="https://blog.chih.me/category/tech.html">Tech</a>
-                        </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
-    </div>
-</div> <!-- /.navbar -->
-<!-- Banner -->
-<!-- End Banner -->
-<div class="container">
-    <div class="row">
-        <div class="col-sm-9">
-            <article>
-                <h2><a href="https://blog.chih.me/global-proxy-within-redsocks-and-shadowsocks.html">使用redsocks把shadowsocks转为全局代理</a></h2>
-                <div class="summary"><h2>前言</h2>
-<p>shadowsocks是个非常棒的翻墙代理，它可以在本地提供一个socks5端口供软件使用代理。比如启动chrome的时候加上<code>--proxy-server="socks5://myproxy:1080"</code>这条参数就可以让chrome走代理；然而，有些软件不支持设置代理的功能。所以有时候，我们需要一个全局代理的环境，使用VPN是一个通常的选择，不过一般购买的VPN的速度不如shadowsocks，同时，VPN更容易受到GFW的干扰。为什么不把正在使用的shadowsocks利用起来作为一个全局代理呢？</p>
-<p>本文介绍了一种利用<a href="https://github.com/darkk/redsocks">redsocks</a>与iptables实现全局代理的方法，其基本原理如下：</p>
-<ol>
-<li>iptables的规则将所有tcp包转发到redsocks打开的本地端口</li>
-<li>redsocks接收tcp包并转发给shadowsocks打开的本地socks端口</li>
-<li>shadowsocks将接收的包转发给远端的代理服务器</li>
-</ol>
-<p>由于使用了redsocks与iptables，因此本文的方法仅适用于Linux。</p>
-<h2>安装</h2>
-<p>由于使用的是Arch Linux，我直接通过AUR安装</p>
-<div class="highlight"><pre><span></span>$ yaourt redsocks
-</pre></div>
-
-
-<p>通过<code>yaourt</code>搜索redsocks包，然后选择你要安装的包的序号就可以进行安装了。</p>
-<blockquote>
-<p>注意：下文中的配置文件的路径全部基于Arch Linux，如果你用的不是Arch Linux，请根据自己的情况更改。</p>
-</blockquote>
-<p>其他发行版可以通过各自的包管理器或者下载源码<a href="https://github.com/darkk/redsocks/blob/master/README">安装</a>。</p>
-<h2>配置</h2>
-<h3>配置redsocks</h3>
-<p>我在包提供的原有配置的基础上进行了一些修改，主要是把 <code>redsocks …</code></p>
-                    <a class="btn btn-default btn-xs" href="https://blog.chih.me/global-proxy-within-redsocks-and-shadowsocks.html">more ...</a>
-                </div>
-            </article>
-            <hr/>
-
-        </div>
-        <div class="col-sm-3" id="sidebar">
-            <aside>
-<!-- Sidebar -->
-<section class="well well-sm">
-  <ul class="list-group list-group-flush">
-
-<!-- Sidebar/Tag Cloud -->
-<li class="list-group-item">
-  <a href="https://blog.chih.me/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
-  <ul class="list-group " id="tags">
-    <li class="list-group-item tag-1">
-      <a href="https://blog.chih.me/tag/linux.html">Linux</a>
-    </li>
-    <li class="list-group-item tag-3">
-      <a href="https://blog.chih.me/tag/da-shu-ju.html">大数据</a>
-    </li>
-    <li class="list-group-item tag-3">
-      <a href="https://blog.chih.me/tag/big-data.html">big data</a>
-    </li>
-    <li class="list-group-item tag-3">
-      <a href="https://blog.chih.me/tag/spark.html">Spark</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/dai-li.html">代理</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/shadowsocks.html">shadowsocks</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/storm.html">Storm</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/hadoop.html">hadoop</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/sql.html">SQL</a>
-    </li>
-    <li class="list-group-item tag-4">
-      <a href="https://blog.chih.me/tag/shi-shi-ji-suan.html">实时计算</a>
-    </li>
-  </ul>
-</li>
-<!-- End Sidebar/Tag Cloud -->
-
-<!-- Sidebar/Links -->
-<li class="list-group-item">
-  <h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
-  <ul class="list-group" id="links">
-    <li class="list-group-item">
-      <a href="http://www.hjk.im/" target="_blank">HJK</a>
-    </li>
-    <li class="list-group-item">
-      <a href="http://imis.me/" target="_blank">记忆反射弧</a>
-    </li>
-    <li class="list-group-item">
-      <a href="http://mijack.github.io/" target="_blank">mijack</a>
-    </li>
-    <li class="list-group-item">
-      <a href="http://datahcong.cn/" target="_blank">whl的博客园</a>
-    </li>
-  </ul>
-</li>
-<!-- End Sidebar/Links -->
-  </ul>
-</section>
-<!-- End Sidebar -->            </aside>
+        <div id="nav-menu">
+            <a href="/."><i class="fa fa-home"> Home</i></a>
+            <a href="/archives.html"><i class="fa fa-archive"> Archive</i></a>
         </div>
     </div>
+    <div id="layout" class="pure-g">
+        <div class="pure-u-1 pure-u-md-3-4"><div class="content_container">
+<div class="post"><div class="post-archive">
+<h1 class="label-title">Articles tagged by <em>redsocks</em></h1>
+<ul class="listing">
+    <li><span class="date">2016/11/21</span><a href="/global-proxy-within-redsocks-and-shadowsocks.html">使用redsocks把shadowsocks转为全局代理</a></li>
+</ul>
+</div></div>
+        </div></div>
+        <div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar">
+<div class="widget">
+    <form action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" class="search-form">
+        <input type="text" name="q" maxlength="20" placeholder="Search"/>
+        <input type="hidden" name="sitesearch" value="https://blog.chih.me"/>
+    </form>
+</div><div class="widget">
+    <div class="widget-title">
+        <i class="fa fa-folder-o"> Categories</i>
+    </div>
+    <ul class="category-list">
+        <li class="category-list-item"><a class="category-list-link" href="/category/self.html">Self</a></li>
+        <li class="category-list-item"><a class="category-list-link" href="/category/tech.html">Tech</a></li>
+    </ul>
+</div><div class="widget">
+    <div class="widget-title"><i class="fa fa-star-o"> Tags</i></div>
+    <div class="tagcloud">
+    <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
+    <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
+    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
+    <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
+    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
+    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
+    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
+    <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
+    <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
+    <a href="/tag/shi-shi-ji-suan.html" style="font-size: 10px">实时计算</a>
+    </div>
+</div><div class="widget">
+    <div class="widget-title"><i class="fa fa-file-o"> Recent</i></div>
+    <ul class="post-list">
+        <li class="post-list-item">
+        <a class="post-list-link" href="/global-proxy-within-redsocks-and-shadowsocks.html">使用redsocks把shadowsocks转为全局代理</a>
+        </li>
+    </ul>
+</div><div class="widget">
+    <div class="widget-title"><i class="fa fa-external-link"> Blogroll</i></div>
+    <ul></ul>
+    <a href="http://www.hjk.im/" title="HJK" target="_blank">HJK</a>
+    <ul></ul>
+    <a href="http://imis.me/" title="记忆反射弧" target="_blank">记忆反射弧</a>
+    <ul></ul>
+    <a href="http://mijack.github.io/" title="mijack" target="_blank">mijack</a>
+    <ul></ul>
+    <a href="http://datahcong.cn/" title="whl的博客园" target="_blank">whl的博客园</a>
 </div>
-<footer>
-   <div class="container">
-      <hr>
-      <div class="row">
-         <div class="col-xs-10">&copy; 2016 chih
-            &middot; Powered by <a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
-            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
-            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
-         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
-      </div>
-   </div>
-</footer>
-<script src="https://blog.chih.me/theme/js/jquery.min.js"></script>
+        </div></div>
+        <div class="pure-u-1 pure-u-md-3-4">
+<div id="footer">Copyright © 2016 <a href="/." rel="nofollow">chih's blog.</a> Powered by <a rel="nofollow" target="_blank" href="https://getpelican.com/">Pelican</a> and <a rel="nofollow", target="_blank", href="https://github.com/wormtooth/maupassant-pelican">maupassant</a>.</div>        </div>
+    </div>
 
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="https://blog.chih.me/theme/js/bootstrap.min.js"></script>
-
-<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
-<script src="https://blog.chih.me/theme/js/respond.min.js"></script>
-
-
-    <!-- Disqus -->
-    <script type="text/javascript">
-        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-        var disqus_shortname = 'chihsblog'; // required: replace example with your forum shortname
-
-        /* * * DON'T EDIT BELOW THIS LINE * * */
-        (function () {
-            var s = document.createElement('script');
-            s.async = true;
-            s.type = 'text/javascript';
-            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-        }());
-    </script>
-    <!-- End Disqus Code -->
-    <!-- Google Analytics -->
-    <script type="text/javascript">
-
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-61054351-1']);
-        _gaq.push(['_trackPageview']);
-
-        (function () {
-            var ga = document.createElement('script');
-            ga.type = 'text/javascript';
-            ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(ga, s);
-        })();
-    </script>
-    <!-- End Google Analytics Code -->
-
+<a id="rocket" href="#top" class="show"></a>
+<script type="text/javascript" src="/theme/js/totop.js" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.js" async></script>
+<script type="text/javascript" src="/theme/js/fancybox.js" async></script>
+<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.1.20/jquery.fancybox.min.css" />
 
 </body>
-</html>
