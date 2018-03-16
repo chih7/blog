@@ -90,7 +90,7 @@
     <h1 class="post-title"><a href="/simjoin-on-spark.html">基于SPARK的分布式网页近似度检测</a></h1>
     <div class="post-meta">2017-07-09</div>
     <div class="post-content">
-        <h1>前言</h1>
+        <h2>前言</h2>
 <p>随着Web上数量的急剧增长，近似镜像网页的数量也在不断增加。近似镜像网页的存在，严重影响了搜索引擎的检索结果。如果我们能将搜集到的网页中的近似镜像网页去掉，可以提高搜集系统和索引系统效率，用户查询时也不会出现大量内容重复的网页。去除镜像网页即需要网页近似度检测算法。实验基于相似性连接实现了基于SPARK的分布式网页近似度检测，对5000个网页进行了相似度检测，试图找出所有相似的网页。实验使用的网页来源与人才招聘网站的电子简历，共有5000份，由于我们只关心其中的简历内容，因此需要去除简历内容外的HTML标签，网页样式、代码。在去除了无关内容后，即可进行近似检测，大数据环境下，数据量巨大，运用传统的方式进行相似性连接效率极低，实验选择了相似性连接查询作为底层的算法实现，作为一种分布式算法，实验选择了Spark作为分布式计算框架。</p>
 <p>相似性连接查询，即查找相似的数据对象对，具有广泛的应用领域，例如相似网页检、实体解析、数据清洗和相似图像检索等。 在相似网页检测中，使用相似性连接等技术识别相似的网页，不但可以帮助网页搜索引擎执行聚焦爬行，提高搜索结果的质量和多样性，还可以识别垃圾邮件。在实体解析中，使用相似性连接技术，可以找到企业数据库里相似的顾客，匹配产品报价等。在数据清洗中，使用相似性连接技术，可以为不同数 据源集成提供一致、准确的数据。在相似图像检索 中，使用相似性连接技术检索出相似的图像，可以分析图像的来源 …</p>
     </div>
@@ -100,9 +100,9 @@
     <h1 class="post-title"><a href="/vldb-downloader.html">抓取网页中所有PDF链接并下载的Python脚本</a></h1>
     <div class="post-meta">2017-07-05</div>
     <div class="post-content">
-        <h3>说点什么</h3>
+        <h2>说点什么</h2>
 <p>没什么好说的，工具脚本，代码都在下面，可能改一下后可以适用于其他地方。</p>
-<h3>代码</h3>
+<h2>代码</h2>
 <div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -129,7 +129,7 @@
     <h1 class="post-title"><a href="/spark-sql-ppt.html">Spark SQL 笔记</a></h1>
     <div class="post-meta">2017-06-25</div>
     <div class="post-content">
-        <h1>Spark SQL Overview</h1>
+        <h2>Spark SQL Overview</h2>
 <p>特性：</p>
 <ul>
 <li>Spark SQL是Apache Spark中的一个新模块</li>
@@ -145,13 +145,13 @@
 <li>获得更高的性能</li>
 </ul>
 <hr>
-<h1>Spark SQL in Spark</h1>
+<h2>Spark SQL in Spark</h2>
 <p><img alt="Screenshot_20170522_193655" src="images/Screenshot_20170522_193655.png" width="80%"></p>
 <ul>
 <li>Spark SQL was first released in Spark 1.0 (May, 2014)</li>
 </ul>
 <hr>
-<h1>Relationship …</h1>
+<h2>Relationship …</h2>
     </div>
     <p class="readmore"><a href="/spark-sql-ppt.html">Read More</a></p>
 </div>
@@ -159,7 +159,7 @@
     <h1 class="post-title"><a href="/spark-sql.html">Spark SQL</a></h1>
     <div class="post-meta">2017-06-24</div>
     <div class="post-content">
-        <h1>Spark 简介</h1>
+        <h2>Spark 简介</h2>
 <p>Hadoop 伴随着大数据的兴起已有十年时间，被认为是大数据处理的首选解决方案， 它分别提供HDFS和MapReduce解决了大数据（无法在单台机器上存储与处理的数据）的可靠存储和处理，但对于一些场景， MapReduce并不是十分高效，其一，MapReduce的抽象层次低，仅提供了map和reduce两个操作，对于应用需要编写大量代码；其二，一个job只包括了map和reduce两个阶段，想要完成复杂的工作，就必须串联一系列MapReduce作业，但每一步的输出数据必须存储到HDFS，导致io操作繁重，时延较高，只适合批处理，不适合实时处理和迭代计算。</p>
 <p>Apache Spark是一个新兴的大数据处理引擎，它允许开发者使用有向无环图 (DAG) 开发复杂的数据操作，内部使用一个集群上的分布式内存抽象 (RDD) ，简化了对分布式数据的编程复杂性。RDD 提供了两类操作，转换和动作，转换在原有 RDD 上通过一些操作定义了一个新的 RDD ，包括map, flatMap, filter, union, sample, join, groupByKey, cogroup, ReduceByKey, cros, sortByKey, mapValues等 …</p>
     </div>
@@ -193,16 +193,16 @@
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-star-o"> Tags</i></div>
     <div class="tagcloud">
-    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
-    <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
-    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
-    <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
-    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
-    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
     <a href="/tag/shi-shi-ji-suan.html" style="font-size: 10px">实时计算</a>
+    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
+    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
+    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
     <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
+    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
     <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
     <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
+    <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
+    <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
     </div>
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-file-o"> Recent</i></div>

@@ -39,7 +39,7 @@ Energy measurements in Linux | chih's blog    </title>
     <span> | </span> <span>Tech</span>
     </div>
     <div class="post-content">
-        <h3>RAPL</h3>
+        <h2>RAPL</h2>
 <p>RAPL provides a set of counters providing energy and power consumption information. RAPL is not an analog power meter, but rather uses a software power model. This software power model estimates energy usage by using hardware performance counters and I/O models. Based on our measurements, they match actual power measurements.</p>
 <ul>
 <li>The processor has one or more <em>packages</em>. These are part of the actual processor that you buy from Intel. Client processors (e.g. Core i3/i5/i7) have one package. Server processors (e.g. Xeon) typically have two or more packages.</li>
@@ -73,7 +73,7 @@ Energy measurements in Linux | chih's blog    </title>
 <p>https://01.org/blogs/2014/running-average-power-limit-%E2%80%93-rapl</p>
 <p>https://developer.mozilla.org/en-US/docs/Mozilla/Performance/Power_profiling_overview</p>
 <p>https://access.redhat.com/documentation/zh-CN/Red_Hat_Enterprise_Linux/7/html/Power_Management_Guide/Core_Infrastructure.html</p>
-<h3>mozilla_rapl</h3>
+<h2>mozilla_rapl</h2>
 <p>原先是firefox中的一个性能、功耗分析软件，我去除了与Linux无关的代码，添加了编译脚本，现在可以独立于firefox编译运行。</p>
 <p>https://github.com/chih7/rapl</p>
 <div class="highlight"><pre><span></span><span class="c1"># chih @ archlinux in ~/PMU/firefox_power [18:08:31] C:1</span>
@@ -101,7 +101,7 @@ Distribution of <span class="s1">&#39;total&#39;</span> values:
 </pre></div>
 
 
-<h3>intel power gadget</h3>
+<h2>intel power gadget</h2>
 <div class="highlight"><pre><span></span>$ sudo ./power_gadget -e <span class="m">1000</span> -d <span class="m">10</span> 
 <span class="o">[</span>sudo<span class="o">]</span> password <span class="k">for</span> chih: 
 RAPL not supported, or machine model 406e3 not recognized.
@@ -148,7 +148,7 @@ Average GT Power_0<span class="o">(</span>Watt<span class="o">)=</span><span cla
 </pre></div>
 
 
-<h3>rapl-read</h3>
+<h2>rapl-read</h2>
 <p><a href="http://web.eece.maine.edu/~vweaver/projects/rapl/index.html">http://web.eece.maine.edu/~vweaver/projects/rapl/index.html</a></p>
 <p>There are currently <em>three</em> ways to read RAPL results using the Linux kernel:</p>
 <ol>
@@ -246,7 +246,7 @@ Note: the energy measurements can overflow in 60s or so
 </pre></div>
 
 
-<h3>rapl_basic</h3>
+<h2>rapl_basic</h2>
 <div class="highlight"><pre><span></span><span class="c1"># chih @ archlinux in ~/PMU/papi-5.5.1/src [21:38:11] </span>
 $ ./configure --with-components<span class="o">=</span>rapl <span class="o">&amp;&amp;</span> make <span class="c1"># compile papi</span>
 </pre></div>
@@ -317,16 +317,16 @@ rapl_basic.c                           PASSED
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-star-o"> Tags</i></div>
     <div class="tagcloud">
-    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
-    <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
-    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
-    <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
-    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
-    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
     <a href="/tag/shi-shi-ji-suan.html" style="font-size: 10px">实时计算</a>
+    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
+    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
+    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
     <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
+    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
     <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
     <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
+    <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
+    <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
     </div>
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-file-o"> Recent</i></div>

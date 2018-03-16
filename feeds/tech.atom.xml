@@ -278,25 +278,25 @@ $$&lt;/div&gt;
         "}";
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }
-&lt;/script&gt;</content><category term="big data"></category><category term="data mining"></category><category term="Outlier"></category><category term="异常检测"></category><category term="时序数据"></category></entry><entry><title>基于SPARK的分布式网页近似度检测</title><link href="https://blog.chih.me/simjoin-on-spark.html" rel="alternate"></link><published>2017-07-09T00:00:00+08:00</published><updated>2017-07-09T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2017-07-09:/simjoin-on-spark.html</id><summary type="html">&lt;h1&gt;前言&lt;/h1&gt;
+&lt;/script&gt;</content><category term="big data"></category><category term="data mining"></category><category term="Outlier"></category><category term="异常检测"></category><category term="时序数据"></category></entry><entry><title>基于SPARK的分布式网页近似度检测</title><link href="https://blog.chih.me/simjoin-on-spark.html" rel="alternate"></link><published>2017-07-09T00:00:00+08:00</published><updated>2017-07-09T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2017-07-09:/simjoin-on-spark.html</id><summary type="html">&lt;h2&gt;前言&lt;/h2&gt;
 &lt;p&gt;随着Web上数量的急剧增长，近似镜像网页的数量也在不断增加。近似镜像网页的存在，严重影响了搜索引擎的检索结果。如果我们能将搜集到的网页中的近似镜像网页去掉，可以提高搜集系统和索引系统效率，用户查询时也不会出现大量内容重复的网页。去除镜像网页即需要网页近似度检测算法。实验基于相似性连接实现了基于SPARK的分布式网页近似度检测，对5000个网页进行了相似度检测，试图找出所有相似的网页。实验使用的网页来源与人才招聘网站的电子简历，共有5000份，由于我们只关心其中的简历内容，因此需要去除简历内容外的HTML标签，网页样式、代码。在去除了无关内容后，即可进行近似检测，大数据环境下，数据量巨大，运用传统的方式进行相似性连接效率极低，实验选择了相似性连接查询作为底层的算法实现，作为一种分布式算法，实验选择了Spark作为分布式计算框架。&lt;/p&gt;
-&lt;p&gt;相似性连接查询，即查找相似的数据对象对，具有广泛的应用领域，例如相似网页检、实体解析、数据清洗和相似图像检索等。 在相似网页检测中，使用相似性连接等技术识别相似的网页，不但可以帮助网页搜索引擎执行聚焦爬行，提高搜索结果的质量和多样性，还可以识别垃圾邮件。在实体解析中，使用相似性连接技术，可以找到企业数据库里相似的顾客，匹配产品报价等。在数据清洗中，使用相似性连接技术，可以为不同数 据源集成提供一致、准确的数据。在相似图像检索 中，使用相似性连接技术检索出相似的图像，可以分析图像的来源 …&lt;/p&gt;</summary><content type="html">&lt;h1&gt;前言&lt;/h1&gt;
+&lt;p&gt;相似性连接查询，即查找相似的数据对象对，具有广泛的应用领域，例如相似网页检、实体解析、数据清洗和相似图像检索等。 在相似网页检测中，使用相似性连接等技术识别相似的网页，不但可以帮助网页搜索引擎执行聚焦爬行，提高搜索结果的质量和多样性，还可以识别垃圾邮件。在实体解析中，使用相似性连接技术，可以找到企业数据库里相似的顾客，匹配产品报价等。在数据清洗中，使用相似性连接技术，可以为不同数 据源集成提供一致、准确的数据。在相似图像检索 中，使用相似性连接技术检索出相似的图像，可以分析图像的来源 …&lt;/p&gt;</summary><content type="html">&lt;h2&gt;前言&lt;/h2&gt;
 &lt;p&gt;随着Web上数量的急剧增长，近似镜像网页的数量也在不断增加。近似镜像网页的存在，严重影响了搜索引擎的检索结果。如果我们能将搜集到的网页中的近似镜像网页去掉，可以提高搜集系统和索引系统效率，用户查询时也不会出现大量内容重复的网页。去除镜像网页即需要网页近似度检测算法。实验基于相似性连接实现了基于SPARK的分布式网页近似度检测，对5000个网页进行了相似度检测，试图找出所有相似的网页。实验使用的网页来源与人才招聘网站的电子简历，共有5000份，由于我们只关心其中的简历内容，因此需要去除简历内容外的HTML标签，网页样式、代码。在去除了无关内容后，即可进行近似检测，大数据环境下，数据量巨大，运用传统的方式进行相似性连接效率极低，实验选择了相似性连接查询作为底层的算法实现，作为一种分布式算法，实验选择了Spark作为分布式计算框架。&lt;/p&gt;
 &lt;p&gt;相似性连接查询，即查找相似的数据对象对，具有广泛的应用领域，例如相似网页检、实体解析、数据清洗和相似图像检索等。 在相似网页检测中，使用相似性连接等技术识别相似的网页，不但可以帮助网页搜索引擎执行聚焦爬行，提高搜索结果的质量和多样性，还可以识别垃圾邮件。在实体解析中，使用相似性连接技术，可以找到企业数据库里相似的顾客，匹配产品报价等。在数据清洗中，使用相似性连接技术，可以为不同数 据源集成提供一致、准确的数据。在相似图像检索 中，使用相似性连接技术检索出相似的图像，可以分析图像的来源，查找高清图像等，当前比较常用的有字符串、集合和向量的相似性连接算法。&lt;/p&gt;
-&lt;h1&gt;选用平台描述&lt;/h1&gt;
+&lt;h2&gt;选用平台描述&lt;/h2&gt;
 &lt;p&gt;实验运用的是spark平台，选择的编程语言是scala中，操作系统是ubuntu。&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;spark：2.1.0&lt;/li&gt;
 &lt;li&gt;Scala：2.10.6&lt;/li&gt;
 &lt;li&gt;Ubuntu 16.04.2 LTS&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h1&gt;数据集描述&lt;/h1&gt;
+&lt;h2&gt;数据集描述&lt;/h2&gt;
 &lt;p&gt;原始数据集为5000个左右的简历网页， 大致格式如下：&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170611_195353" src="images/Screenshot_20170611_195353.png" width="70%"&gt;&lt;/p&gt;
 &lt;p&gt;经过分词，去除重复词，HTML标签，停用词后，输出如下，作为Spark文档近似度检测的输入源。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170611_195748" src="images/Screenshot_20170611_195748.png" width="80%"&gt;&lt;/p&gt;
-&lt;h1&gt;设计逻辑&lt;/h1&gt;
-&lt;h2&gt;数据清洗与中文分词&lt;/h2&gt;
+&lt;h2&gt;设计逻辑&lt;/h2&gt;
+&lt;h3&gt;数据清洗与中文分词&lt;/h3&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#! /bin/python&lt;/span&gt;
 
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pyquery&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;PyQuery&lt;/span&gt;
@@ -325,7 +325,7 @@ $$&lt;/div&gt;
 
 
 &lt;p&gt;遍历目录下的所有html文件，去除html文件中的所有标签、样式、代码。使用中文分词对过滤后的HTML文件进行分词，同时过滤掉重复的词、停用词，留下这份简历网页的关键词，写入另一份文件，作为近似度检测的输入。&lt;/p&gt;
-&lt;h2&gt;近似度检测&lt;/h2&gt;
+&lt;h3&gt;近似度检测&lt;/h3&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.apache.spark.SparkContext&lt;/span&gt;
 &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;org.apache.spark.SparkConf&lt;/span&gt;
 
@@ -368,15 +368,15 @@ $$&lt;/div&gt;
 
 &lt;p&gt;从目录中读取所有已经经过分词的简介文档，生成文件名、文件内容的对，供后续处理。建立倒排索引，将记录的RID插入到其项目的倒排索引中的对应Item中。生成候选集，通过倒排索引的item两两配对生成候选对，并记录相同候选对的数量，从而最终生成最终的候选集。
 从候选集中找出符合要求的结果，通过Jaccard 系数阈值计算出对应的相似度阈值，从而在候选集中找出相应的结果。&lt;/p&gt;
-&lt;h1&gt;运行部署描述&lt;/h1&gt;
+&lt;h2&gt;运行部署描述&lt;/h2&gt;
 &lt;p&gt;Spark 官方提供了三种集群部署方案： Standalone, Mesos, YARN。在试验环境下，Standalone 模式就足够了，因此本实验选用Standalone 模式。如果如果已经有 Yarn 或者 Mesos 环境，也是很方便地迁移到新的资源调度框架上的。&lt;/p&gt;
-&lt;h2&gt;注意&lt;/h2&gt;
+&lt;h3&gt;注意&lt;/h3&gt;
 &lt;p&gt;为了避免权限问题影响实验，本例中的演示均为 root 权限，当然在生产环境中，为了安全起见，需要使用单独的用户启动运行Spark。注意，除非特别说明，所有的操作需要在每台机器上都操作一遍，你可以使用Xshell，ansible简化操作。&lt;/p&gt;
-&lt;h2&gt;环境准备&lt;/h2&gt;
-&lt;h3&gt;安装系统&lt;/h3&gt;
+&lt;h3&gt;环境准备&lt;/h3&gt;
+&lt;h4&gt;安装系统&lt;/h4&gt;
 &lt;p&gt;我使用VirtualBox虚拟机软件创建三台Ubuntu服务器，均使用纯净安装，集群准备为1个master，2个slave。每台的均配置两张网卡，其中一张nat网络，用于连接外网，更新安装软件包用，另一张使用host-only模式，用于宿主机和虚拟机、 虚拟机直接通讯使用。如下图所示。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170611_190618" src="images/Screenshot_20170611_190618.png" width="80%"&gt;&lt;/p&gt;
-&lt;h3&gt;配置hosts&lt;/h3&gt;
+&lt;h4&gt;配置hosts&lt;/h4&gt;
 &lt;p&gt;Host-Only网卡的IP地址是顺序分配的，在这里，三台虚拟机Host-Only网卡的IP地址分别为 192.168.56.101、 192.168.56.102、 192.168.56.103 。&lt;/p&gt;
 &lt;p&gt;在每台主机上修改host文件，在文件末尾添加以下三行。&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;vim /etc/hosts
@@ -388,7 +388,7 @@ $$&lt;/div&gt;
 
 
 &lt;p&gt;配置之后相互ping一下看是否生效。&lt;/p&gt;
-&lt;h3&gt;配置SSH 免密码登录&lt;/h3&gt;
+&lt;h4&gt;配置SSH 免密码登录&lt;/h4&gt;
 &lt;p&gt;安装Openssh server&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt install openssh-server
 &lt;/pre&gt;&lt;/div&gt;
@@ -421,7 +421,7 @@ ssh slave2
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h3&gt;安装JDK&lt;/h3&gt;
+&lt;h4&gt;安装JDK&lt;/h4&gt;
 &lt;p&gt;直接通过包管理安装openJDK 8.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo apt install openjdk-8-jdk
 &lt;/pre&gt;&lt;/div&gt;
@@ -429,7 +429,7 @@ ssh slave2
 
 &lt;p&gt;使用以下命令配置环境变量并使之生效：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
-&lt;span class="s2"&gt;# set environment variable&lt;/span&gt;
+&lt;span class="s2"&gt;## set environment variable&lt;/span&gt;
 &lt;span class="s2"&gt;export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64&lt;/span&gt;
 &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;   &amp;gt;&amp;gt; /etc/profile.d/spark.sh
 
@@ -442,7 +442,7 @@ ssh slave2
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;安装Spark&lt;/h2&gt;
+&lt;h3&gt;安装Spark&lt;/h3&gt;
 &lt;p&gt;使用以下命令下载并安装Spark：&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;wget &lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;mirror&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/apache/spark/spark-2.1.0/ &lt;span class="se"&gt;\&lt;/span&gt;
     spark-&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;spark_pkgver&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;-bin-hadoop&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;hadoop_pkgver&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.tgz
@@ -452,7 +452,7 @@ mv spark-&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;spark_pkgv
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;配置 Spark&lt;/h2&gt;
+&lt;h3&gt;配置 Spark&lt;/h3&gt;
 &lt;p&gt;进入配置目录 &lt;code&gt;/usr/local/spark/conf&lt;/code&gt; 准备修改配置文件。&lt;/p&gt;
 &lt;p&gt;在&lt;code&gt;slaves&lt;/code&gt;中配置slave节点的ip或者host，&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;vim ./slaves
@@ -469,7 +469,7 @@ spark-slave2
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;启动Spark&lt;/h2&gt;
+&lt;h3&gt;启动Spark&lt;/h3&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo -s
 su -
 sbin/start-all.sh
@@ -478,7 +478,7 @@ sbin/start-all.sh
 
 &lt;p&gt;如果没有问题，进入Spark的Web管理页面： &lt;a href="http://master:8080/"&gt;http://master:8080&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170611_193731" src="images/Screenshot_20170611_193731.png" width="80%"&gt;&lt;/p&gt;
-&lt;h2&gt;脚本安装Spark&lt;/h2&gt;
+&lt;h3&gt;脚本安装Spark&lt;/h3&gt;
 &lt;p&gt;为了方便部署Spark，我简单写了一个Shell脚本，可以方便地几步搭建一个3节点的Spark集群。脚本地址为：&lt;/p&gt;
 &lt;p&gt;&lt;a href="https://github.com/chih7/spark-install/"&gt;https://github.com/chih7/spark-install/&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;脚本只在Ubuntu 16.04下进行了测试，但其他版本的Ubuntu和debian应该也是可以使用。&lt;/p&gt;
@@ -525,16 +525,16 @@ sbin/start-all.sh
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h1&gt;实验结果描述&lt;/h1&gt;
+&lt;h2&gt;实验结果描述&lt;/h2&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170611_122340" src="images/Screenshot_20170611_122340.png" width="80%"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170611_182331" src="images/Screenshot_20170611_182331.png" width="80%"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170611_182331" src="images/Screenshot_20170611_195236.png" width="80%"&gt;&lt;/p&gt;
 &lt;p&gt;运行代码后，可以看到生成了一个DAG图，即为Spark的计算路径，其中有三个stage。最后输出了超出一定阈值的所有相似的文档对，同时给出了相似度系数。&lt;/p&gt;
-&lt;h1&gt;出现的问题&lt;/h1&gt;
+&lt;h2&gt;出现的问题&lt;/h2&gt;
 &lt;p&gt;在运行中出现&lt;code&gt;java.io.IOException: No space left on device&lt;/code&gt;错误，经过Google搜索，发现Spark默认使用 &lt;code&gt;/tmp&lt;/code&gt;目录存储中间结果，而&lt;code&gt;/tmp&lt;/code&gt;目录为tmpfs目录，出于内存文件系统，默认大小仅为内存大小的一半。&lt;/p&gt;
-&lt;p&gt;为了解决这个问题，需要自定义&lt;code&gt;SPARK_LOCAL_DIRS&lt;/code&gt;环境变量到一个足够大的目录下，我这里把它改到了Spark的安装目录。&lt;/p&gt;</content><category term="linux"></category><category term="Spark"></category><category term="scala"></category><category term="SimJion"></category><category term="相似度检测"></category></entry><entry><title>抓取网页中所有PDF链接并下载的Python脚本</title><link href="https://blog.chih.me/vldb-downloader.html" rel="alternate"></link><published>2017-07-05T00:00:00+08:00</published><updated>2017-07-05T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2017-07-05:/vldb-downloader.html</id><summary type="html">&lt;h3&gt;说点什么&lt;/h3&gt;
+&lt;p&gt;为了解决这个问题，需要自定义&lt;code&gt;SPARK_LOCAL_DIRS&lt;/code&gt;环境变量到一个足够大的目录下，我这里把它改到了Spark的安装目录。&lt;/p&gt;</content><category term="linux"></category><category term="Spark"></category><category term="scala"></category><category term="SimJion"></category><category term="相似度检测"></category></entry><entry><title>抓取网页中所有PDF链接并下载的Python脚本</title><link href="https://blog.chih.me/vldb-downloader.html" rel="alternate"></link><published>2017-07-05T00:00:00+08:00</published><updated>2017-07-05T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2017-07-05:/vldb-downloader.html</id><summary type="html">&lt;h2&gt;说点什么&lt;/h2&gt;
 &lt;p&gt;没什么好说的，工具脚本，代码都在下面，可能改一下后可以适用于其他地方。&lt;/p&gt;
-&lt;h3&gt;代码&lt;/h3&gt;
+&lt;h2&gt;代码&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python3&lt;/span&gt;
 &lt;span class="c1"&gt;# -*- coding: utf-8 -*-&lt;/span&gt;
 &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
@@ -553,9 +553,9 @@ sbin/start-all.sh
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="fm"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;base_url&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;BASE_URL&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;base_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;base_url&lt;/span&gt;
 
-    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fetch_download_link&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;h3&gt;说点什么&lt;/h3&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;fetch_download_link&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;h2&gt;说点什么&lt;/h2&gt;
 &lt;p&gt;没什么好说的，工具脚本，代码都在下面，可能改一下后可以适用于其他地方。&lt;/p&gt;
-&lt;h3&gt;代码&lt;/h3&gt;
+&lt;h2&gt;代码&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python3&lt;/span&gt;
 &lt;span class="c1"&gt;# -*- coding: utf-8 -*-&lt;/span&gt;
 &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
@@ -592,7 +592,7 @@ sbin/start-all.sh
 &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vm"&gt;__name__&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;__main__&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
     &lt;span class="n"&gt;vc&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;VldbCrawler&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
     &lt;span class="n"&gt;vc&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</content><category term="linux"></category><category term="python"></category><category term="crawler"></category></entry><entry><title>Spark SQL 笔记</title><link href="https://blog.chih.me/spark-sql-ppt.html" rel="alternate"></link><published>2017-06-25T00:00:00+08:00</published><updated>2017-06-25T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2017-06-25:/spark-sql-ppt.html</id><summary type="html">&lt;h1&gt;Spark SQL Overview&lt;/h1&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="linux"></category><category term="python"></category><category term="crawler"></category></entry><entry><title>Spark SQL 笔记</title><link href="https://blog.chih.me/spark-sql-ppt.html" rel="alternate"></link><published>2017-06-25T00:00:00+08:00</published><updated>2017-06-25T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2017-06-25:/spark-sql-ppt.html</id><summary type="html">&lt;h2&gt;Spark SQL Overview&lt;/h2&gt;
 &lt;p&gt;特性：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Spark SQL是Apache Spark中的一个新模块&lt;/li&gt;
@@ -608,13 +608,13 @@ sbin/start-all.sh
 &lt;li&gt;获得更高的性能&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h1&gt;Spark SQL in Spark&lt;/h1&gt;
+&lt;h2&gt;Spark SQL in Spark&lt;/h2&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170522_193655" src="images/Screenshot_20170522_193655.png" width="80%"&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Spark SQL was first released in Spark 1.0 (May, 2014)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h1&gt;Relationship …&lt;/h1&gt;</summary><content type="html">&lt;h1&gt;Spark SQL Overview&lt;/h1&gt;
+&lt;h2&gt;Relationship …&lt;/h2&gt;</summary><content type="html">&lt;h2&gt;Spark SQL Overview&lt;/h2&gt;
 &lt;p&gt;特性：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Spark SQL是Apache Spark中的一个新模块&lt;/li&gt;
@@ -630,13 +630,13 @@ sbin/start-all.sh
 &lt;li&gt;获得更高的性能&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h1&gt;Spark SQL in Spark&lt;/h1&gt;
+&lt;h2&gt;Spark SQL in Spark&lt;/h2&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170522_193655" src="images/Screenshot_20170522_193655.png" width="80%"&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Spark SQL was first released in Spark 1.0 (May, 2014)&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h1&gt;Relationship to Shark&lt;/h1&gt;
+&lt;h2&gt;Relationship to Shark&lt;/h2&gt;
 &lt;p&gt;Spark上的第一个关系数据库是Shark，它修改了Apache Hive系统，使之能在Spark上运行，并通过Spark引擎实现了传统的RDBMS优化。&lt;/p&gt;
 &lt;p&gt;虽然Shark表现出良好的表现和与Spark计划融合的良好机会，但它有三个重要挑战：&lt;/p&gt;
 &lt;ul&gt;
@@ -645,7 +645,7 @@ sbin/start-all.sh
 &lt;li&gt;Hive优化器是针对MapReduce量身定制的，难以扩展，难以构建新功能&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h1&gt;Relationship to Shark&lt;/h1&gt;
+&lt;h2&gt;Relationship to Shark&lt;/h2&gt;
 &lt;p&gt;借鉴：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;hive 数据源的加载&lt;/li&gt;
@@ -658,10 +658,10 @@ sbin/start-all.sh
 &lt;li&gt;高级分析算法（如图形处理和机器学习）扩展。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h1&gt;Programming Interface&lt;/h1&gt;
+&lt;h2&gt;Programming Interface&lt;/h2&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170523_103741" src="images/Screenshot_20170523_103741.png" width="80%"&gt;&lt;/p&gt;
 &lt;hr&gt;
-&lt;h1&gt;DataFrame&lt;/h1&gt;
+&lt;h2&gt;DataFrame&lt;/h2&gt;
 &lt;p&gt;Spark SQL API中的主要抽象方法是DataFrame&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;取代了以前的（Spark &amp;lt; 1.3）SchemaRDD。&lt;/li&gt;
@@ -671,10 +671,10 @@ sbin/start-all.sh
 &lt;li&gt;DataFrames提供与关系查询语言（如SQL和Pig）相同的操作。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h1&gt;Getting Started: Spark SQL&lt;/h1&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Import Spark SQL&lt;/span&gt;
+&lt;h2&gt;Getting Started: Spark SQL&lt;/h2&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;## Import Spark SQL&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pyspark.sql&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;HiveContext&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Row&lt;/span&gt;
-&lt;span class="c1"&gt;# Or if you can&amp;#39;t include the hive requirements&lt;/span&gt;
+&lt;span class="c1"&gt;## Or if you can&amp;#39;t include the hive requirements&lt;/span&gt;
 &lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pyspark.sql&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;SQLContext&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Row&lt;/span&gt;
 
 &lt;span class="n"&gt;hiveCtx&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;HiveContext&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sc&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -686,7 +686,7 @@ sbin/start-all.sh
 &lt;p&gt;As of Spark 2.0, HiveContext and SQLContext are replaced by SparkSession. However, we are keeping the class here for backward compatibility.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;hr&gt;
-&lt;h1&gt;Getting Started: Spark SQL&lt;/h1&gt;
+&lt;h2&gt;Getting Started: Spark SQL&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;pyspark.sql&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;HiveContext&lt;/span&gt;
 &lt;span class="n"&gt;hiveCtx&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;HiveContext&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;sc&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;span class="n"&gt;rows&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;hiveCtx&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sql&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;SELECT key, value FROM mytable&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
@@ -705,55 +705,55 @@ sbin/start-all.sh
 
 
 &lt;hr&gt;
-&lt;h1&gt;Catalyst Optimizer&lt;/h1&gt;
+&lt;h2&gt;Catalyst Optimizer&lt;/h2&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170523_111752" src="images/Screenshot_20170523_111752.png" width="90%"&gt;&lt;/p&gt;
 &lt;hr&gt;
-&lt;h1&gt;Performance&lt;/h1&gt;
+&lt;h2&gt;Performance&lt;/h2&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170522_195943" src="images/Screenshot_20170522_195943.png" width="90%"&gt;&lt;/p&gt;
 &lt;hr&gt;
-&lt;h1&gt;Performance&lt;/h1&gt;
+&lt;h2&gt;Performance&lt;/h2&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170522_200157" src="images/Screenshot_20170522_200157.png" width="60%"&gt;&lt;/p&gt;
 &lt;hr&gt;
-&lt;h1&gt;参考&lt;/h1&gt;
+&lt;h2&gt;参考&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;ARMBRUST M, GHODSI A, ZAHARIA M. Spark SQL: Relational Data Processing in Spark[C]//ACM Press, 2015: 1383–1394.&lt;/li&gt;
 &lt;li&gt;Spark快速大数据分析[M]. 人民邮电出版社, 2015.&lt;/li&gt;
 &lt;li&gt;https://pandas.pydata.org/pandas-docs/stable/dsintro.html&lt;/li&gt;
-&lt;/ol&gt;</content><category term="spark"></category><category term="big data"></category><category term="SQL"></category><category term="SQL on Hadoop，hadoop"></category></entry><entry><title>Spark SQL</title><link href="https://blog.chih.me/spark-sql.html" rel="alternate"></link><published>2017-06-24T00:00:00+08:00</published><updated>2017-06-24T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2017-06-24:/spark-sql.html</id><summary type="html">&lt;h1&gt;Spark 简介&lt;/h1&gt;
+&lt;/ol&gt;</content><category term="spark"></category><category term="big data"></category><category term="SQL"></category><category term="SQL on Hadoop，hadoop"></category></entry><entry><title>Spark SQL</title><link href="https://blog.chih.me/spark-sql.html" rel="alternate"></link><published>2017-06-24T00:00:00+08:00</published><updated>2017-06-24T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2017-06-24:/spark-sql.html</id><summary type="html">&lt;h2&gt;Spark 简介&lt;/h2&gt;
 &lt;p&gt;Hadoop 伴随着大数据的兴起已有十年时间，被认为是大数据处理的首选解决方案， 它分别提供HDFS和MapReduce解决了大数据（无法在单台机器上存储与处理的数据）的可靠存储和处理，但对于一些场景， MapReduce并不是十分高效，其一，MapReduce的抽象层次低，仅提供了map和reduce两个操作，对于应用需要编写大量代码；其二，一个job只包括了map和reduce两个阶段，想要完成复杂的工作，就必须串联一系列MapReduce作业，但每一步的输出数据必须存储到HDFS，导致io操作繁重，时延较高，只适合批处理，不适合实时处理和迭代计算。&lt;/p&gt;
-&lt;p&gt;Apache Spark是一个新兴的大数据处理引擎，它允许开发者使用有向无环图 (DAG) 开发复杂的数据操作，内部使用一个集群上的分布式内存抽象 (RDD) ，简化了对分布式数据的编程复杂性。RDD 提供了两类操作，转换和动作，转换在原有 RDD 上通过一些操作定义了一个新的 RDD ，包括map, flatMap, filter, union, sample, join, groupByKey, cogroup, ReduceByKey, cros, sortByKey, mapValues等 …&lt;/p&gt;</summary><content type="html">&lt;h1&gt;Spark 简介&lt;/h1&gt;
+&lt;p&gt;Apache Spark是一个新兴的大数据处理引擎，它允许开发者使用有向无环图 (DAG) 开发复杂的数据操作，内部使用一个集群上的分布式内存抽象 (RDD) ，简化了对分布式数据的编程复杂性。RDD 提供了两类操作，转换和动作，转换在原有 RDD 上通过一些操作定义了一个新的 RDD ，包括map, flatMap, filter, union, sample, join, groupByKey, cogroup, ReduceByKey, cros, sortByKey, mapValues等 …&lt;/p&gt;</summary><content type="html">&lt;h2&gt;Spark 简介&lt;/h2&gt;
 &lt;p&gt;Hadoop 伴随着大数据的兴起已有十年时间，被认为是大数据处理的首选解决方案， 它分别提供HDFS和MapReduce解决了大数据（无法在单台机器上存储与处理的数据）的可靠存储和处理，但对于一些场景， MapReduce并不是十分高效，其一，MapReduce的抽象层次低，仅提供了map和reduce两个操作，对于应用需要编写大量代码；其二，一个job只包括了map和reduce两个阶段，想要完成复杂的工作，就必须串联一系列MapReduce作业，但每一步的输出数据必须存储到HDFS，导致io操作繁重，时延较高，只适合批处理，不适合实时处理和迭代计算。&lt;/p&gt;
 &lt;p&gt;Apache Spark是一个新兴的大数据处理引擎，它允许开发者使用有向无环图 (DAG) 开发复杂的数据操作，内部使用一个集群上的分布式内存抽象 (RDD) ，简化了对分布式数据的编程复杂性。RDD 提供了两类操作，转换和动作，转换在原有 RDD 上通过一些操作定义了一个新的 RDD ，包括map, flatMap, filter, union, sample, join, groupByKey, cogroup, ReduceByKey, cros, sortByKey, mapValues等，动作是返回一个结果，包括collect, reduce, count, save, lookupKey。在这里，所有的转换操作都是惰性求值的，只有执行到动作操作才会真正进行数据处理。即，RDD的转换操作会生成新的RDD，新的RDD的数据依赖于原来的RDD的数据，每个RDD又包含多个分区。那么一段程序实际上就构造了一个由相互依赖的多个RDD组成的 DAG， 并通过在RDD上执行动作将这个有向无环图作为一个Job提交给Spark执行。通过RDD的惰性计算，减少了数据的传输和写磁盘操作，在某些情景下，可以将spark的速度提高到Hadoop的100倍。同时，RDD是容错的，系统可以使用RDD的谱系图恢复丢失的数据。&lt;/p&gt;
 &lt;p&gt;Spark  支持 Hadoop 的分布式文件系统 HDFS，也可以将 Spark 部署到 Hadoop 的资源调度框架 Yarn 之上， 因此，可以将Spark 看作 Hadoop MapReduce 的一个替代品。Spark和Hadoop的差别不仅仅在增强了MapReduce上，Spark还提供高级的(Scala，Java和Python)API以提升开发者的生产力，此外，Spark框架为批处理（Spark Core），交互式（Spark SQL），流式（Spark Streaming），机器学习（MLlib），图计算（GraphX）提供一个统一的数据处理平台，这相对于使用Hadoop有很大优势。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170522_193655" src="images/Screenshot_20170522_193655.png" width="80%"&gt;&lt;/p&gt;
-&lt;h1&gt;Spark SQL&lt;/h1&gt;
+&lt;h2&gt;Spark SQL&lt;/h2&gt;
 &lt;p&gt;对大数据的处理方式早期有MapReduce，在Spark出现后多了对RDD的转换和动作API，对这些强大但低级的编程接口进行编程是十分繁重的，需要用户手动优化以实现高性能和数据分布均衡。因此，目前多个系统旨在向大数据提供关系接口(SQL)来提供更高效的用户体验，诸如Pig，Hive，Dremel和Shark之类的系统都利用声明式查询来提供更丰富的自动优化。特别是，SQL由于其简单的特点，被广泛使用，同时，传统数据库有着几十年的SQL优化经验，如果SQL优化策略合入大数据处理中，这将大大简化大数据的处理过程，降低对用户的要求，也可以自动提高处理效率。&lt;/p&gt;
 &lt;p&gt;Spark SQL的前身是Shark，Shark 基本上就是把Hive移植到了Spark，使用Spark作为执行引擎后，Shark确实比Hive的执行效率有了极大提升，但由于Hive的优化器是针对MapReduce量身定制的，难以扩展，难以构建新功能，例如机器学习的数据类型或支持除Hive外的新数据源。因此在2014年6月1日Shark项目和Spark SQL项目的主持人Reynold Xin宣布：停止对Shark的开发，团队将所有资源放Spark SQL项目上。Spark SQL是Apache Spark中的一个新模块，它将关系处理与Spark的功能编程API相集成。基于Shark上的经验，Spark SQL允许Spark程序员利用关系处理（例如声明式查询和优化存储）的优势，并允许SQL用户在Spark中调用复杂的分析库（例如机器学习）。&lt;/p&gt;
 &lt;p&gt;SparkSQL体系结构如下图所示，整体由上到下分为三层：编程模型层、执行任务优化层以及任务执行引擎层，其中SparkSQL编程模型可以分为SQL和DataFrame两种；执行计划优化又称为Catalyst，该模块负责将SQL语句解析成AST（逻辑执行计划），并对原始逻辑执行计划进行优化，最终输出优化后的物理执行计划；任务执行引擎就是Spark内核，负责根据物理执行计划生成DAG，在任务调度系统的管理下分解为任务集并分发到集群节点上加载数据运行。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170523_103741" src="images/Screenshot_20170523_103741.png" width="80%"&gt;&lt;/p&gt;
-&lt;h1&gt;DataFrame&lt;/h1&gt;
+&lt;h2&gt;DataFrame&lt;/h2&gt;
 &lt;p&gt;Spark SQL API 中的主要抽象方法是 DataFrame，DataFrame类似于R 和 Python pandas 中的 DataFrame , 与关系型数据库中的数据库表类似，每一列都有命名。但 Spark SQL 中的 DataFrame 基于RDD，是分布式的。在Spark 1.3之前， 它被称为SchemaRDD。RDD 可以转换为 DataFrame，但与RDD不同，DataFrames跟踪其模式并支持各种关系操作以得到更优化的执行。即，RDD是不知道内部数据的结构的，而使用DataFrame可以让框架了解RDD内部的数据结构，便于引擎进行优化。&lt;/p&gt;
 &lt;p&gt;可以根据下图对比RDD与DataFrame数据结构的差别：&lt;/p&gt;
 &lt;p&gt;&lt;img alt="12" src="images/12.png"&gt;&lt;/p&gt;
 &lt;p&gt;从图上看，DataFrame相比RDD多了一个表头，同时每列的数据类型也被规定了。DataFrame将一行切分了多个列，每个列都有一定的数据格式，数据粒度相比更细，因此就能支持更多更细粒度的算子，比如select算子、groupby算子、where算子。由于每列的数据类型被规定了，数据项的转换也都将是类型安全的，这对于较为复杂的数据计算程序的调试是十分有利的，很多数据类型不匹配的问题都可以在编译阶段就被检查出来。&lt;/p&gt;
 &lt;p&gt;DataFrames可以从系统目录中的表（基于外部数据源）构建，也允许程序通过JDBC / ODBC访问数据集。一旦DataFrame构建完成，它们可以用各种关系运算符来处理，例如where和groupBy，它们类似于与R和Python中的数据帧域特定语言（DSL）表达式。与RDD类似，Spark DataFrames是懒惰的，因为每个DataFrame对象都代表一个用于计算数据集的逻辑计划，但是直到用户调用特定的“输出操作”（如保存）才会执行任何执行。用户可以使用类似于R数据帧和Python Pandas的域特定语言（DSL）来对DataFrames执行关系操作。DataFrames支持所有常见的关系运算符，包括投影（选择），过滤器（where），连接和聚合（groupBy）。&lt;/p&gt;
-&lt;h1&gt;Catalyst 优化器&lt;/h1&gt;
+&lt;h2&gt;Catalyst 优化器&lt;/h2&gt;
 &lt;p&gt;Scala的一些特性使得它非常适合开发优化编译器，为了实现Spark SQL，Spark开发者基于Scala中的功能编程结构设计了一个新的可扩展优化器Catalyst。Catalyst的核心包含一个用于表示树并应用规则来操纵树的通用库，在此之上，构建了专用于关系查询处理（例如表达式，逻辑查询计划）执行不同阶段的规则：分析，逻辑优化，物理规划和代码生成。Catalyst是可扩展的，其目的在于能够轻松地向Spark SQL添加新的优化技术和功能，特别是为了解决我们特别使用“大数据”（例如，半结构化数据和高级分析）所遇到的各种问题，同时，使外部开发人员能够扩展优化器，例如，通过添加可将过滤或聚合推送到外部存储系统的数据源特定规则，或支持新的数据类型。&lt;/p&gt;
 &lt;p&gt;SQL优化器核心执行策略主要分为两个大的方向：基于规则优化（RBO）以及基于代价优化(CBO)，Catalyst支持基于规则和基于成本的优化，通过使用规则生成多个计划，然后计算其成本来执行基于代价的优化。Catalyst的大致流程为：SQL语句首先通过Parser模块被解析为语法树，此棵树称为Unresolved Logical Plan；Unresolved Logical Plan通过Analyzer模块借助于数据元数据解析为Logical Plan；此时再通过各种基于规则的优化策略进行深入优化，得到Optimized Logical Plan；优化后的逻辑执行计划依然是逻辑的，并不能被Spark系统理解，此时需要将此逻辑执行计划转换为Physical Plan。&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170523_111752" src="images/Screenshot_20170523_111752.png" width="90%"&gt;&lt;/p&gt;
-&lt;h2&gt;分析&lt;/h2&gt;
+&lt;h3&gt;分析&lt;/h3&gt;
 &lt;p&gt;Spark SQL从SQL解析器返回的抽象语法树（AST）或使用API构造的DataFrame对象中计算出的关系开始。在这两种情况下，关系可能包含未解析的属性引用或关系：例如，在SQL查询&lt;code&gt;SELECT col FROM sales&lt;/code&gt;中，col的类型，或者是否是有效的列名称，直到我们查找才会知道。如果我们不知道它的类型或者没有将它与输入表（或者别名）匹配，那么这个属性称为未解析。Spark SQL遍历整个语法树，使用Catalyst规则和Catalog对象来跟踪所有数据源中的表以解析这些属性。它首先构建一个具有未绑定属性和数据类型的“未解决的逻辑计划”树，然后应用执行以下操作的规则：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;从目录中按名称查找关系。&lt;/li&gt;
 &lt;li&gt;将命名属性（例如col）映射到给定运算符的子节点的输入。&lt;/li&gt;
 &lt;li&gt;确定哪些属性引用相同的值以给它们一个唯一的ID（稍后可以优化，如col = col）。&lt;/li&gt;
 &lt;/ol&gt;
-&lt;h2&gt;逻辑优化&lt;/h2&gt;
+&lt;h3&gt;逻辑优化&lt;/h3&gt;
 &lt;p&gt;逻辑优化阶段将基于规则的优化应用于逻辑计划。基于规则的优化策略实际上就是对语法树进行一次遍历，模式匹配能够满足特定规则的节点，再进行相应的等价转换。因此，基于规则优化说到底就是一棵树等价地转换为另一棵树。SQL中经典的优化规则有很多，三种比较常见的规则有：谓词下推（Predicate Pushdown）、常量累加（Constant Folding）和列值裁剪（Column Pruning&lt;/p&gt;
-&lt;h2&gt;物理规划&lt;/h2&gt;
+&lt;h3&gt;物理规划&lt;/h3&gt;
 &lt;p&gt;在物理规划阶段，Spark SQL采用逻辑计划，并使用与Spark执行引擎匹配的物理运算符生成一个或多个物理计划。然后使用成本模型选择一个计划。目前，SparkSQL没有很好的支持基于代价优化，基于成本的优化仅用于选择连接算法。物理计划员还可以执行基于规则的物理优化。&lt;/p&gt;
-&lt;h2&gt;代码生成&lt;/h2&gt;
-&lt;p&gt;查询优化的最后阶段包括生成Java字节码以在每台机器上运行。因为Spark SQL通常在内存数据集中运行，因为处理是CPU限制的，因此我们希望支持代码生成以加快执行速度。尽管如此，代码生成引擎通常很难构建，实际上与构建编译器相当。Catalyst依靠Scala语言的一个特殊功能，quasiquotes ，使代码生成更简单。Quasiquotes允许以Scala语言编程构建抽象语法树（AST），然后可以在运行时将其提供给Scala编译器以生成字节码。我们使用Catalyst将表示SQL中的表达式的树转换为用于Scala代码的AST，以评估该表达式，然后编译并运行生成的代码。&lt;/p&gt;</content><category term="spark"></category><category term="big data"></category><category term="SQL"></category><category term="SQL on Hadoop"></category><category term="Spark SQL"></category><category term="hadoop"></category></entry><entry><title>Shark</title><link href="https://blog.chih.me/shark-ppt.html" rel="alternate"></link><published>2017-06-23T00:00:00+08:00</published><updated>2017-06-23T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2017-06-23:/shark-ppt.html</id><summary type="html">&lt;h1&gt;Shark Overview&lt;/h1&gt;
+&lt;h3&gt;代码生成&lt;/h3&gt;
+&lt;p&gt;查询优化的最后阶段包括生成Java字节码以在每台机器上运行。因为Spark SQL通常在内存数据集中运行，因为处理是CPU限制的，因此我们希望支持代码生成以加快执行速度。尽管如此，代码生成引擎通常很难构建，实际上与构建编译器相当。Catalyst依靠Scala语言的一个特殊功能，quasiquotes ，使代码生成更简单。Quasiquotes允许以Scala语言编程构建抽象语法树（AST），然后可以在运行时将其提供给Scala编译器以生成字节码。我们使用Catalyst将表示SQL中的表达式的树转换为用于Scala代码的AST，以评估该表达式，然后编译并运行生成的代码。&lt;/p&gt;</content><category term="spark"></category><category term="big data"></category><category term="SQL"></category><category term="SQL on Hadoop"></category><category term="Spark SQL"></category><category term="hadoop"></category></entry><entry><title>Shark</title><link href="https://blog.chih.me/shark-ppt.html" rel="alternate"></link><published>2017-06-23T00:00:00+08:00</published><updated>2017-06-23T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2017-06-23:/shark-ppt.html</id><summary type="html">&lt;h2&gt;Shark Overview&lt;/h2&gt;
 &lt;p&gt;一个独立，快速，类MapReduce的SQL引擎&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;基于内存存储数据，适合交互式查询&lt;/li&gt;
@@ -766,7 +766,7 @@ sbin/start-all.sh
 &lt;li&gt;包括HDFS，Hbase，SequenceFiles&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h1&gt;Shark Overview&lt;/h1&gt;
+&lt;h2&gt;Shark Overview&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Shark即Hive on Spark，本质上是通过Hive的HQL解析，把HQL翻译成Spark上的RDD操作，然后通过Hive的metadata获取数据库里的表信息，实际HDFS上的数据和文件，会由Shark获取并放到Spark上运算。&lt;/p&gt;
@@ -779,10 +779,10 @@ sbin/start-all.sh
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h1&gt;Project History&lt;/h1&gt;
+&lt;h2&gt;Project History&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;
-&lt;p&gt;Spark project …&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;h1&gt;Shark Overview&lt;/h1&gt;
+&lt;p&gt;Spark project …&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;h2&gt;Shark Overview&lt;/h2&gt;
 &lt;p&gt;一个独立，快速，类MapReduce的SQL引擎&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;基于内存存储数据，适合交互式查询&lt;/li&gt;
@@ -795,7 +795,7 @@ sbin/start-all.sh
 &lt;li&gt;包括HDFS，Hbase，SequenceFiles&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h1&gt;Shark Overview&lt;/h1&gt;
+&lt;h2&gt;Shark Overview&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Shark即Hive on Spark，本质上是通过Hive的HQL解析，把HQL翻译成Spark上的RDD操作，然后通过Hive的metadata获取数据库里的表信息，实际HDFS上的数据和文件，会由Shark获取并放到Spark上运算。&lt;/p&gt;
@@ -808,7 +808,7 @@ sbin/start-all.sh
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h1&gt;Project History&lt;/h1&gt;
+&lt;h2&gt;Project History&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;
 &lt;p&gt;Spark project started in 2009, open sourced 2010&lt;/p&gt;
@@ -824,7 +824,7 @@ sbin/start-all.sh
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h1&gt;动机&lt;/h1&gt;
+&lt;h2&gt;动机&lt;/h2&gt;
 &lt;p&gt;数据仓库&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;难以横向扩展&lt;/li&gt;
@@ -839,13 +839,13 @@ sbin/start-all.sh
 &lt;li&gt;Apache Hive&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h1&gt;Hive Architecture&lt;/h1&gt;
+&lt;h2&gt;Hive Architecture&lt;/h2&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170702_210019" src="images/Screenshot_20170702_210019.png" width="80%"&gt;&lt;/p&gt;
 &lt;hr&gt;
-&lt;h1&gt;Shark Architecture&lt;/h1&gt;
+&lt;h2&gt;Shark Architecture&lt;/h2&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170702_210127" src="images/Screenshot_20170702_210127.png" width="80%"&gt;&lt;/p&gt;
 &lt;hr&gt;
-&lt;h1&gt;为什么需要一个新的编程模型&lt;/h1&gt;
+&lt;h2&gt;为什么需要一个新的编程模型&lt;/h2&gt;
 &lt;p&gt;MapReduce 编程模型被提出后被广泛使用，简化了大数据的编程&lt;/p&gt;
 &lt;p&gt;但它在一些特殊场景下表现不佳：&lt;/p&gt;
 &lt;ul&gt;
@@ -854,7 +854,7 @@ sbin/start-all.sh
 &lt;/ul&gt;
 &lt;p&gt;即使传统 SQL 仓库的工作负载也表现出很强的时间和空间局部性，这是因为最近的事实表数据和小维度表数据经常频繁地被读取。&lt;/p&gt;
 &lt;hr&gt;
-&lt;h1&gt;Shark速度快的原因&lt;/h1&gt;
+&lt;h2&gt;Shark速度快的原因&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;Spark平台提供的基于内存迭代计算(RDD)&lt;/li&gt;
 &lt;li&gt;partial DAG execution：在一个DAG 任务运行了前几个阶段之后，Spark 可以基于观测到的统计数据，选择一个更好的连接策略或者更合适的并发度，从而能够重新优化正在运行的查询。&lt;/li&gt;
@@ -862,14 +862,14 @@ sbin/start-all.sh
 &lt;/ul&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170702_210324" src="images/Screenshot_20170702_210324.png" width="60%"&gt;&lt;/p&gt;
 &lt;hr&gt;
-&lt;h1&gt;Shark速度快的原因&lt;/h1&gt;
+&lt;h2&gt;Shark速度快的原因&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;传统的MapReduce系统，就比如Hadoop，是为了运行长达数小时的批量作业而设计的，而组成作业的每个任务其运行时间则有数分钟之久，他们会在独立的系统进程中执行任务，在某些极端情况下提交一个任务的延迟非常之高。&lt;/li&gt;
 &lt;li&gt;Spark采用了事件驱动的RPC类库来启动任务，通过复用工作进程来避免系统进程开销。它能够在一秒钟内启动上千个任务，任务之间的延时小于5毫秒，从而使得50-100毫秒的任务，500毫秒的作业变得可能。&lt;/li&gt;
 &lt;li&gt;亚秒级的任务使得引擎能够更好地在工作节点之间平衡任务的分配，甚至在某些节点遇到了不可预知的延迟(网络延迟或是JVM垃圾回收)的情况下面也能较好地平衡。同时对于数据倾斜也有巨大的帮助，&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h1&gt;为什么之前的MapReduce系统比较慢&lt;/h1&gt;
+&lt;h2&gt;为什么之前的MapReduce系统比较慢&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;容错所引入的昂贵数据实体化(data materialization)开销。&lt;/li&gt;
 &lt;li&gt;孱弱的数据布局(data layout)，比如缺少索引。&lt;/li&gt;
@@ -877,7 +877,7 @@ sbin/start-all.sh
 &lt;/ul&gt;
 &lt;p&gt;下面针对这三点说明Shark的优化。&lt;/p&gt;
 &lt;hr&gt;
-&lt;h1&gt;中间结果输出&lt;/h1&gt;
+&lt;h2&gt;中间结果输出&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;在MapReduce任务内部，为了防止Reduce任务的失败，Map通常会把结果存储在磁盘上(materialize)。&lt;/li&gt;
 &lt;li&gt;通常一些查询在翻译到MapReduce任务的时候，往往会产生多个stage，而这些串联的stage则又依赖于底层文件系统(如HDFS)来存储每一个stage的输出结果。&lt;/li&gt;
@@ -887,7 +887,7 @@ sbin/start-all.sh
 &lt;hr&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170702_193305" src="images/Screenshot_20170702_193305.png"&gt;&lt;/p&gt;
 &lt;hr&gt;
-&lt;h1&gt;中间结果输出&lt;/h1&gt;
+&lt;h2&gt;中间结果输出&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;
 &lt;p&gt;Map的输出结果存储在磁盘上是为了确保能够有足够的空间来存储这些大数据批量任务的输出。而Map的输出并不会复制到不同的节点上去，因此如果执行Map任务的节点失效的话仍会造成数据丢失。由此可以推出，如果将这部分输出数据缓存在内存中，而不是全部输出到磁盘上面也是合理的。&lt;/p&gt;
@@ -897,7 +897,7 @@ sbin/start-all.sh
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;hr&gt;
-&lt;h1&gt;列式内存存储&lt;/h1&gt;
+&lt;h2&gt;列式内存存储&lt;/h2&gt;
 &lt;p&gt;内存中数据表示的3种方法:&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;内存中直接缓存磁盘上序列化后的数据. 在查询时根据需求进行反序列化, 反序列化是瓶颈.&lt;/li&gt;
@@ -905,7 +905,7 @@ sbin/start-all.sh
 &lt;li&gt;列示内存存储, 每一列仅创建一个 JVM 对象, 可以带来快速访问, 垃圾收集和紧凑的数据表示。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;hr&gt;
-&lt;h1&gt;数据格式和布局&lt;/h1&gt;
+&lt;h2&gt;数据格式和布局&lt;/h2&gt;
 &lt;p&gt;列式内存存储&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;反序列化成为了很大的瓶颈，在现代的商业CPUs 单核的序列化速率仅仅在 200MB/秒。&lt;/p&gt;
@@ -916,27 +916,27 @@ sbin/start-all.sh
 &lt;li&gt;列式数据带来了更好的缓存行为，特别是对那些在特定列上频繁进行聚合计算的分析查询。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h1&gt;数据格式和布局&lt;/h1&gt;
+&lt;h2&gt;数据格式和布局&lt;/h2&gt;
 &lt;p&gt;联合分区&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;另一个Spark独有的特性是能够控制数据在不同节点上的分区，这为Shark带来了一种新的功能：对表进行联合分区(co-partition)。&lt;/li&gt;
 &lt;li&gt;Shark 允许两个表基于公共键进行协同分区，从而可以在后续的查询中提供快速的连接操作。它在表的创建声明中增加了 DISTRIBUTE BY 语法，用来指定对某个列进行分区。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h1&gt;执行策略&lt;/h1&gt;
+&lt;h2&gt;执行策略&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;partial DAG execution (PDE)，这使得Spark能够在基于数据统计的基础上改变后续执行计划。&lt;/li&gt;
 &lt;li&gt;PDE与其他系统(DryadLINQ)的运行时执行计划图重写的不同在于：它能够收集键值范围内的细粒度统计数据；能够完全重新选择join的执行策略，如broadcast join，而不仅仅是选择Reduce任务的个数。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h1&gt;分区统计和映射修剪&lt;/h1&gt;
+&lt;h2&gt;分区统计和映射修剪&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;为了利用列（column）在自然聚合的优势，Shark 在每一个工作节点上的的内存存储会在数据加载过程中附带收集统计信息。&lt;/li&gt;
 &lt;li&gt;每个分区收集来的统计信息包含了每一个列的范围, 当不同值的个数较少的时候, 会包含所有不同的值。所收集到的统计信息会被发送回驱动节点并存储在内存中, 在查询执行过程中用于修剪分区.&lt;/li&gt;
 &lt;li&gt;当发出一个查询后，Shark 会针对查询的目标评估所有的分区统计信息，然后修剪掉没有匹配到目标的分区。&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h1&gt;Performance&lt;/h1&gt;
+&lt;h2&gt;Performance&lt;/h2&gt;
 &lt;p&gt;使用了四个数据集对 Shark 进行了评估：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Pavlo 等人的基准测试：用 2.1TB 的数据重现了 Pavlo 等人对 MapReduce 和分析数据库管理系统的比较&lt;/li&gt;
@@ -951,23 +951,23 @@ sbin/start-all.sh
 &lt;li&gt;可以在几秒钟内从查询错误中恢复&lt;/li&gt;
 &lt;/ol&gt;
 &lt;hr&gt;
-&lt;h1&gt;Pavlo 等人的基准测试&lt;/h1&gt;
+&lt;h2&gt;Pavlo 等人的基准测试&lt;/h2&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170702_193839" src="images/Screenshot_20170702_193839.png" width="50%"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170702_211547" src="images/Screenshot_20170702_211547.png" width="50%"&gt;&lt;/p&gt;
 &lt;hr&gt;
-&lt;h1&gt;微基准测试&lt;/h1&gt;
+&lt;h2&gt;微基准测试&lt;/h2&gt;
 &lt;p&gt;&lt;img alt="" src="images/Screenshot_20170702_194031.png" width="40%"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img alt="" src="images/Screenshot_20170702_194038.png" width="40%"&gt;&lt;/p&gt;
 &lt;hr&gt;
-&lt;h1&gt;容错&lt;/h1&gt;
+&lt;h2&gt;容错&lt;/h2&gt;
 &lt;p&gt;在出现节点错误的情况下，对 100GB lineitem 表使用 group by 查询来测试查询性能。在将 lineitem 的数据加载到 shark 的内存后，我们切断了一台工作的机器并重新运行该查询。 Shark 能完美地从故障中恢复，并以并行的方式在其他 49 个节点上重新构建丢失的数据分区。这个恢复过程对性能有小许的影响，但比重新加载整个数据集并重新进行查询的成本 要低很多 (14 vs 34 秒)。&lt;/p&gt;
 &lt;hr&gt;
-&lt;h1&gt;真实的 Hive 数据仓库查询&lt;/h1&gt;
+&lt;h2&gt;真实的 Hive 数据仓库查询&lt;/h2&gt;
 &lt;p&gt;&lt;img alt="Screenshot_20170702_212039" src="images/Screenshot_20170702_212039.png" width="60%"&gt;&lt;/p&gt;
 &lt;hr&gt;
-&lt;h1&gt;机器学习&lt;/h1&gt;
-&lt;p&gt;&lt;img alt="Screenshot_20170702_194105" src="images/Screenshot_20170702_194105.png" width="60%"&gt;&lt;/p&gt;</content><category term="spark"></category><category term="big data"></category><category term="SQL"></category><category term="SQL on Hadoop"></category><category term="shark"></category><category term="hadoop"></category></entry><entry><title>Energy measurements in Linux</title><link href="https://blog.chih.me/read-cpu-power-with-RAPL.html" rel="alternate"></link><published>2017-01-31T00:00:00+08:00</published><updated>2017-01-31T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2017-01-31:/read-cpu-power-with-RAPL.html</id><summary type="html">&lt;h3&gt;RAPL&lt;/h3&gt;
-&lt;p&gt;RAPL provides a set of counters providing energy and power consumption information. RAPL is not an analog power meter, but rather uses a software power model. This software power model estimates energy usage by using hardware performance counters and I/O models. Based on our measurements, they match actual …&lt;/p&gt;</summary><content type="html">&lt;h3&gt;RAPL&lt;/h3&gt;
+&lt;h2&gt;机器学习&lt;/h2&gt;
+&lt;p&gt;&lt;img alt="Screenshot_20170702_194105" src="images/Screenshot_20170702_194105.png" width="60%"&gt;&lt;/p&gt;</content><category term="spark"></category><category term="big data"></category><category term="SQL"></category><category term="SQL on Hadoop"></category><category term="shark"></category><category term="hadoop"></category></entry><entry><title>Energy measurements in Linux</title><link href="https://blog.chih.me/read-cpu-power-with-RAPL.html" rel="alternate"></link><published>2017-01-31T00:00:00+08:00</published><updated>2017-01-31T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2017-01-31:/read-cpu-power-with-RAPL.html</id><summary type="html">&lt;h2&gt;RAPL&lt;/h2&gt;
+&lt;p&gt;RAPL provides a set of counters providing energy and power consumption information. RAPL is not an analog power meter, but rather uses a software power model. This software power model estimates energy usage by using hardware performance counters and I/O models. Based on our measurements, they match actual …&lt;/p&gt;</summary><content type="html">&lt;h2&gt;RAPL&lt;/h2&gt;
 &lt;p&gt;RAPL provides a set of counters providing energy and power consumption information. RAPL is not an analog power meter, but rather uses a software power model. This software power model estimates energy usage by using hardware performance counters and I/O models. Based on our measurements, they match actual power measurements.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;The processor has one or more &lt;em&gt;packages&lt;/em&gt;. These are part of the actual processor that you buy from Intel. Client processors (e.g. Core i3/i5/i7) have one package. Server processors (e.g. Xeon) typically have two or more packages.&lt;/li&gt;
@@ -1001,7 +1001,7 @@ sbin/start-all.sh
 &lt;p&gt;https://01.org/blogs/2014/running-average-power-limit-%E2%80%93-rapl&lt;/p&gt;
 &lt;p&gt;https://developer.mozilla.org/en-US/docs/Mozilla/Performance/Power_profiling_overview&lt;/p&gt;
 &lt;p&gt;https://access.redhat.com/documentation/zh-CN/Red_Hat_Enterprise_Linux/7/html/Power_Management_Guide/Core_Infrastructure.html&lt;/p&gt;
-&lt;h3&gt;mozilla_rapl&lt;/h3&gt;
+&lt;h2&gt;mozilla_rapl&lt;/h2&gt;
 &lt;p&gt;原先是firefox中的一个性能、功耗分析软件，我去除了与Linux无关的代码，添加了编译脚本，现在可以独立于firefox编译运行。&lt;/p&gt;
 &lt;p&gt;https://github.com/chih7/rapl&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# chih @ archlinux in ~/PMU/firefox_power [18:08:31] C:1&lt;/span&gt;
@@ -1029,7 +1029,7 @@ Distribution of &lt;span class="s1"&gt;&amp;#39;total&amp;#39;&lt;/span&gt; valu
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h3&gt;intel power gadget&lt;/h3&gt;
+&lt;h2&gt;intel power gadget&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ sudo ./power_gadget -e &lt;span class="m"&gt;1000&lt;/span&gt; -d &lt;span class="m"&gt;10&lt;/span&gt; 
 &lt;span class="o"&gt;[&lt;/span&gt;sudo&lt;span class="o"&gt;]&lt;/span&gt; password &lt;span class="k"&gt;for&lt;/span&gt; chih: 
 RAPL not supported, or machine model 406e3 not recognized.
@@ -1076,7 +1076,7 @@ Average GT Power_0&lt;span class="o"&gt;(&lt;/span&gt;Watt&lt;span class="o"&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h3&gt;rapl-read&lt;/h3&gt;
+&lt;h2&gt;rapl-read&lt;/h2&gt;
 &lt;p&gt;&lt;a href="http://web.eece.maine.edu/~vweaver/projects/rapl/index.html"&gt;http://web.eece.maine.edu/~vweaver/projects/rapl/index.html&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;There are currently &lt;em&gt;three&lt;/em&gt; ways to read RAPL results using the Linux kernel:&lt;/p&gt;
 &lt;ol&gt;
@@ -1174,7 +1174,7 @@ Note: the energy measurements can overflow in 60s or so
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h3&gt;rapl_basic&lt;/h3&gt;
+&lt;h2&gt;rapl_basic&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# chih @ archlinux in ~/PMU/papi-5.5.1/src [21:38:11] &lt;/span&gt;
 $ ./configure --with-components&lt;span class="o"&gt;=&lt;/span&gt;rapl &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; make &lt;span class="c1"&gt;# compile papi&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
@@ -1213,14 +1213,14 @@ rapl:::MINIMUM_POWER_CNT:PACKAGE0                  &lt;span class="m"&gt;0&lt;/s
 rapl:::MAXIMUM_POWER_CNT:PACKAGE0                  &lt;span class="m"&gt;0&lt;/span&gt;    &lt;span class="m"&gt;00000000&lt;/span&gt;
 rapl:::MAXIMUM_TIME_WINDOW_CNT:PACKAGE0            &lt;span class="m"&gt;0&lt;/span&gt;    &lt;span class="m"&gt;00000000&lt;/span&gt;
 rapl_basic.c                           PASSED
-&lt;/pre&gt;&lt;/div&gt;</content><category term="linux"></category><category term="intel"></category><category term="CPU"></category><category term="power"></category><category term="kernel"></category><category term="rapl"></category></entry><entry><title>Ubuntu 16.04 下 CPU 频率与功耗关系</title><link href="https://blog.chih.me/power-with-different-cpufreq.html" rel="alternate"></link><published>2016-12-25T00:00:00+08:00</published><updated>2016-12-25T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2016-12-25:/power-with-different-cpufreq.html</id><summary type="html">&lt;h3&gt;硬件环境&lt;/h3&gt;
+&lt;/pre&gt;&lt;/div&gt;</content><category term="linux"></category><category term="intel"></category><category term="CPU"></category><category term="power"></category><category term="kernel"></category><category term="rapl"></category></entry><entry><title>Ubuntu 16.04 下 CPU 频率与功耗关系</title><link href="https://blog.chih.me/power-with-different-cpufreq.html" rel="alternate"></link><published>2016-12-25T00:00:00+08:00</published><updated>2016-12-25T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2016-12-25:/power-with-different-cpufreq.html</id><summary type="html">&lt;h2&gt;硬件环境&lt;/h2&gt;
 &lt;p&gt;实验服务器搭载两颗 Intel E5645 处理器，24块 SAS+SATA 机械硬盘。E5645 为 6 核处理器，并支持超线程技术（Intel® Hyper-Threading Technology），服务器共 24 个逻辑核，基本时钟频率为 2.40 GHz 。&lt;/p&gt;
-&lt;h3&gt;软件环境&lt;/h3&gt;
+&lt;h2&gt;软件环境&lt;/h2&gt;
 &lt;p&gt;Ubuntu Server 16.04.1 LTS&lt;/p&gt;
 &lt;h2&gt;CPU 频率驱动程序与工具&lt;/h2&gt;
-&lt;p&gt;操作系统通过CPU调频可以根据负载动态调节CPU工作频率，达到省电的目的。这个过程可以自动进行，也可以由用户空间(userspace)程序手动调节。Linux 内核实现了CPU 调频，该驱动被称为 CPUfreq， 从 3.4 内核开始，内核会自动载入相应的内核模块，默认的频率调频器 …&lt;/p&gt;</summary><content type="html">&lt;h3&gt;硬件环境&lt;/h3&gt;
+&lt;p&gt;操作系统通过CPU调频可以根据负载动态调节CPU工作频率，达到省电的目的。这个过程可以自动进行，也可以由用户空间(userspace)程序手动调节。Linux 内核实现了CPU 调频，该驱动被称为 CPUfreq， 从 3.4 内核开始，内核会自动载入相应的内核模块，默认的频率调频器 …&lt;/p&gt;</summary><content type="html">&lt;h2&gt;硬件环境&lt;/h2&gt;
 &lt;p&gt;实验服务器搭载两颗 Intel E5645 处理器，24块 SAS+SATA 机械硬盘。E5645 为 6 核处理器，并支持超线程技术（Intel® Hyper-Threading Technology），服务器共 24 个逻辑核，基本时钟频率为 2.40 GHz 。&lt;/p&gt;
-&lt;h3&gt;软件环境&lt;/h3&gt;
+&lt;h2&gt;软件环境&lt;/h2&gt;
 &lt;p&gt;Ubuntu Server 16.04.1 LTS&lt;/p&gt;
 &lt;h2&gt;CPU 频率驱动程序与工具&lt;/h2&gt;
 &lt;p&gt;操作系统通过CPU调频可以根据负载动态调节CPU工作频率，达到省电的目的。这个过程可以自动进行，也可以由用户空间(userspace)程序手动调节。Linux 内核实现了CPU 调频，该驱动被称为 CPUfreq， 从 3.4 内核开始，内核会自动载入相应的内核模块，默认的频率调频器 &lt;strong&gt;ondemand&lt;/strong&gt; 会被启动（ Intel  Sandy Bridge 架构后 CPU 的功率驱动程序为 P-State，默认调频器为 powersave ）。用户调频工具有 cpufrequtils、  cpupower 等，这里使用 cpufrequtils 。&lt;/p&gt;
@@ -1339,7 +1339,7 @@ cpuinfo_transition_latency  scaling_governor
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h3&gt;负载&lt;/h3&gt;
+&lt;h2&gt;负载&lt;/h2&gt;
 &lt;p&gt;由于服务器无图形界面，使用了stress作为负载，stress 可以进行综合（内存占用、磁盘 IO）压力测试，可以反映典型用途下的服务器负载情况。&lt;/p&gt;
 &lt;p&gt;安装 stress&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# aptitude install stress&lt;/span&gt;
@@ -2558,7 +2558,7 @@ $ cmake &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;p&gt;闲话几句:&lt;code&gt;Linux&lt;/code&gt;就这点不方便，各个发行版有自己的打包方式，结果在使用上总是有细微差别。每次换一个发行版总要折腾一些莫名其妙的问题。&lt;/p&gt;</content><category term="linux"></category><category term="virtualbox"></category><category term="openSUSE"></category><category term="USB"></category></entry><entry><title>在实时计算框架Storm集群上运行Storm-Starter例子</title><link href="https://blog.chih.me/storm-starter.html" rel="alternate"></link><published>2015-02-22T00:00:00+08:00</published><updated>2015-02-22T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2015-02-22:/storm-starter.html</id><summary type="html">&lt;blockquote&gt;
 &lt;p&gt;官方文档待翻译，个人实践在下面&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h1&gt;Example Storm Topologies&lt;/h1&gt;
+&lt;h2&gt;Example Storm Topologies&lt;/h2&gt;
 &lt;p&gt;Learn to use Storm!&lt;/p&gt;
 &lt;hr&gt;
 &lt;p&gt;Table of Contents&lt;/p&gt;
@@ -2569,14 +2569,14 @@ $ cmake &lt;span class="se"&gt;\&lt;/span&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
 &lt;p&gt;&lt;a name="getting-started"&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;h1&gt;Getting started&lt;/h1&gt;
-&lt;h2&gt;Prerequisites&lt;/h2&gt;
+&lt;h2&gt;Getting started&lt;/h2&gt;
+&lt;h3&gt;Prerequisites&lt;/h3&gt;
 &lt;p&gt;First, you need &lt;code&gt;java&lt;/code&gt; and &lt;code&gt;git&lt;/code&gt; installed and in your user's &lt;code&gt;PATH&lt;/code&gt;.  Also, two of the examples in storm-starter
 require Python and Ruby.&lt;/p&gt;
 &lt;p&gt;Next …&lt;/p&gt;</summary><content type="html">&lt;blockquote&gt;
 &lt;p&gt;官方文档待翻译，个人实践在下面&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h1&gt;Example Storm Topologies&lt;/h1&gt;
+&lt;h2&gt;Example Storm Topologies&lt;/h2&gt;
 &lt;p&gt;Learn to use Storm!&lt;/p&gt;
 &lt;hr&gt;
 &lt;p&gt;Table of Contents&lt;/p&gt;
@@ -2587,8 +2587,8 @@ require Python and Ruby.&lt;/p&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
 &lt;p&gt;&lt;a name="getting-started"&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;h1&gt;Getting started&lt;/h1&gt;
-&lt;h2&gt;Prerequisites&lt;/h2&gt;
+&lt;h2&gt;Getting started&lt;/h2&gt;
+&lt;h3&gt;Prerequisites&lt;/h3&gt;
 &lt;p&gt;First, you need &lt;code&gt;java&lt;/code&gt; and &lt;code&gt;git&lt;/code&gt; installed and in your user's &lt;code&gt;PATH&lt;/code&gt;.  Also, two of the examples in storm-starter
 require Python and Ruby.&lt;/p&gt;
 &lt;p&gt;Next, make sure you have the storm-starter code available on your machine.  Git/GitHub beginners may want to use the
@@ -2598,7 +2598,7 @@ code.&lt;/p&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;storm-starter overview&lt;/h2&gt;
+&lt;h3&gt;storm-starter overview&lt;/h3&gt;
 &lt;p&gt;storm-starter contains a variety of examples of using Storm.  If this is your first time working with Storm, check out
 these topologies first:&lt;/p&gt;
 &lt;ol&gt;
@@ -2613,11 +2613,11 @@ for more advanced implementations.&lt;/p&gt;
 &lt;p&gt;If you want to learn more about how Storm works, please head over to the
 &lt;a href="http://storm.incubator.apache.org"&gt;Storm project page&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;a name="maven"&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;h1&gt;Using storm-starter with Maven&lt;/h1&gt;
-&lt;h2&gt;Install Maven&lt;/h2&gt;
+&lt;h2&gt;Using storm-starter with Maven&lt;/h2&gt;
+&lt;h3&gt;Install Maven&lt;/h3&gt;
 &lt;p&gt;Install &lt;a href="http://maven.apache.org/"&gt;Maven&lt;/a&gt; (preferably version 3.x) by following
 the &lt;a href="http://maven.apache.org/download.cgi"&gt;Maven installation instructions&lt;/a&gt;.&lt;/p&gt;
-&lt;h2&gt;Build and install Storm jars locally&lt;/h2&gt;
+&lt;h3&gt;Build and install Storm jars locally&lt;/h3&gt;
 &lt;p&gt;If you are using the latest development version of Storm, e.g. by having cloned the Storm git repository,
 then you must first perform a local build of Storm itself.  Otherwise you will run into Maven errors such as
 "Could not resolve dependencies for project &lt;code&gt;org.apache.storm:storm-starter:&amp;lt;storm-version&amp;gt;-SNAPSHOT&lt;/code&gt;".&lt;/p&gt;
@@ -2629,7 +2629,7 @@ $ mvn clean install -DskipTests=true
 &lt;p&gt;This command will build Storm locally and install its jar files to your user's &lt;code&gt;$HOME/.m2/repository/&lt;/code&gt;.  When you run
 the Maven command to build and run storm-starter (see below), Maven will then be able to find the corresponding version
 of Storm in this local Maven repository at &lt;code&gt;$HOME/.m2/repository&lt;/code&gt;.&lt;/p&gt;
-&lt;h2&gt;Running topologies with Maven&lt;/h2&gt;
+&lt;h3&gt;Running topologies with Maven&lt;/h3&gt;
 &lt;p&gt;storm-starter topologies can be run with the maven-exec-plugin. For example, to
 compile and run &lt;code&gt;WordCountTopology&lt;/code&gt; in local mode, use the command:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ mvn compile exec:java -Dstorm.topology&lt;span class="o"&gt;=&lt;/span&gt;storm.starter.WordCountTopology
@@ -2646,7 +2646,7 @@ compile and run &lt;code&gt;WordCountTopology&lt;/code&gt; in local mode, use th
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;Packaging storm-starter for use on a Storm cluster&lt;/h2&gt;
+&lt;h3&gt;Packaging storm-starter for use on a Storm cluster&lt;/h3&gt;
 &lt;p&gt;You can package a jar suitable for submitting to a Storm cluster with the command:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ mvn package
 &lt;/pre&gt;&lt;/div&gt;
@@ -2654,7 +2654,7 @@ compile and run &lt;code&gt;WordCountTopology&lt;/code&gt; in local mode, use th
 
 &lt;p&gt;This will package your code and all the non-Storm dependencies into a single "uberjar" at the path
 &lt;code&gt;target/storm-starter-{version}-jar-with-dependencies.jar&lt;/code&gt;.&lt;/p&gt;
-&lt;h2&gt;Running unit tests&lt;/h2&gt;
+&lt;h3&gt;Running unit tests&lt;/h3&gt;
 &lt;p&gt;Use the following Maven command to run the unit tests that ship with storm-starter.  Unfortunately &lt;code&gt;lein test&lt;/code&gt; does not
 yet run the included unit tests.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ mvn &lt;span class="nb"&gt;test&lt;/span&gt;
@@ -2662,8 +2662,8 @@ yet run the included unit tests.&lt;/p&gt;
 
 
 &lt;p&gt;&lt;a name="intellij-idea"&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;h1&gt;Using storm-starter with IntelliJ IDEA&lt;/h1&gt;
-&lt;h2&gt;Importing storm-starter as a project in IDEA&lt;/h2&gt;
+&lt;h2&gt;Using storm-starter with IntelliJ IDEA&lt;/h2&gt;
+&lt;h3&gt;Importing storm-starter as a project in IDEA&lt;/h3&gt;
 &lt;p&gt;The following instructions will import storm-starter as a new project in IntelliJ IDEA.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Open &lt;em&gt;File &amp;gt; Import Project...&lt;/em&gt; and navigate to the storm-starter directory of your storm clone (e.g.
@@ -2685,23 +2685,23 @@ yet run the included unit tests.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;默认通过sudo -s 进入root环境&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h3&gt;安装环境 git ，maven&lt;/h3&gt;
+&lt;h4&gt;安装环境 git ，maven&lt;/h4&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# apt-get install git maven
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h3&gt;通过git clone 项目&lt;/h3&gt;
+&lt;h4&gt;通过git clone 项目&lt;/h4&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# git clone git://github.com/apache/incubator-storm.git
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;&lt;img alt="3-1" src="https://blog.chih.me/images/3-1.png"&gt;&lt;/p&gt;
-&lt;h3&gt;进入项目目录&lt;/h3&gt;
+&lt;h4&gt;进入项目目录&lt;/h4&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# cd incubator-storm/examples/storm-starter
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h3&gt;编译&lt;/h3&gt;
+&lt;h4&gt;编译&lt;/h4&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# mvn compile
 &lt;/pre&gt;&lt;/div&gt;
 
@@ -2720,14 +2720,14 @@ yet run the included unit tests.&lt;/p&gt;
 
 &lt;p&gt;&lt;img alt="3-3" src="https://blog.chih.me/images/3-3.png"&gt;&lt;/p&gt;
 &lt;p&gt;成功!&lt;/p&gt;
-&lt;h3&gt;打包所有的依赖&lt;/h3&gt;
+&lt;h4&gt;打包所有的依赖&lt;/h4&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# mvn package
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;&lt;img alt="3-4" src="https://blog.chih.me/images/3-4.png"&gt;&lt;/p&gt;
 &lt;p&gt;进入target目录，可以看到&lt;code&gt;storm-starter-0.9.2-incubating-jar-with-dependencies.jar&lt;/code&gt;&lt;/p&gt;
-&lt;h3&gt;提交到storm(以WordCountTopology为例)&lt;/h3&gt;
+&lt;h4&gt;提交到storm(以WordCountTopology为例)&lt;/h4&gt;
 &lt;p&gt;在nimbus上运行&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# ./bin/storm jar storm-starter-0.9.2-incubating-jar-with-dependencies.jar  storm.starter.WordCountTopology test
 &lt;/pre&gt;&lt;/div&gt;

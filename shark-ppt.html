@@ -39,7 +39,7 @@ Shark | chih's blog    </title>
     <span> | </span> <span>Tech</span>
     </div>
     <div class="post-content">
-        <h1>Shark Overview</h1>
+        <h2>Shark Overview</h2>
 <p>一个独立，快速，类MapReduce的SQL引擎</p>
 <ul>
 <li>基于内存存储数据，适合交互式查询</li>
@@ -52,7 +52,7 @@ Shark | chih's blog    </title>
 <li>包括HDFS，Hbase，SequenceFiles</li>
 </ul>
 <hr>
-<h1>Shark Overview</h1>
+<h2>Shark Overview</h2>
 <ul>
 <li>
 <p>Shark即Hive on Spark，本质上是通过Hive的HQL解析，把HQL翻译成Spark上的RDD操作，然后通过Hive的metadata获取数据库里的表信息，实际HDFS上的数据和文件，会由Shark获取并放到Spark上运算。</p>
@@ -65,7 +65,7 @@ Shark | chih's blog    </title>
 </li>
 </ul>
 <hr>
-<h1>Project History</h1>
+<h2>Project History</h2>
 <ul>
 <li>
 <p>Spark project started in 2009, open sourced 2010</p>
@@ -81,7 +81,7 @@ Shark | chih's blog    </title>
 </li>
 </ul>
 <hr>
-<h1>动机</h1>
+<h2>动机</h2>
 <p>数据仓库</p>
 <ul>
 <li>难以横向扩展</li>
@@ -96,13 +96,13 @@ Shark | chih's blog    </title>
 <li>Apache Hive</li>
 </ul>
 <hr>
-<h1>Hive Architecture</h1>
+<h2>Hive Architecture</h2>
 <p><img alt="Screenshot_20170702_210019" src="images/Screenshot_20170702_210019.png" width="80%"></p>
 <hr>
-<h1>Shark Architecture</h1>
+<h2>Shark Architecture</h2>
 <p><img alt="Screenshot_20170702_210127" src="images/Screenshot_20170702_210127.png" width="80%"></p>
 <hr>
-<h1>为什么需要一个新的编程模型</h1>
+<h2>为什么需要一个新的编程模型</h2>
 <p>MapReduce 编程模型被提出后被广泛使用，简化了大数据的编程</p>
 <p>但它在一些特殊场景下表现不佳：</p>
 <ul>
@@ -111,7 +111,7 @@ Shark | chih's blog    </title>
 </ul>
 <p>即使传统 SQL 仓库的工作负载也表现出很强的时间和空间局部性，这是因为最近的事实表数据和小维度表数据经常频繁地被读取。</p>
 <hr>
-<h1>Shark速度快的原因</h1>
+<h2>Shark速度快的原因</h2>
 <ul>
 <li>Spark平台提供的基于内存迭代计算(RDD)</li>
 <li>partial DAG execution：在一个DAG 任务运行了前几个阶段之后，Spark 可以基于观测到的统计数据，选择一个更好的连接策略或者更合适的并发度，从而能够重新优化正在运行的查询。</li>
@@ -119,14 +119,14 @@ Shark | chih's blog    </title>
 </ul>
 <p><img alt="Screenshot_20170702_210324" src="images/Screenshot_20170702_210324.png" width="60%"></p>
 <hr>
-<h1>Shark速度快的原因</h1>
+<h2>Shark速度快的原因</h2>
 <ul>
 <li>传统的MapReduce系统，就比如Hadoop，是为了运行长达数小时的批量作业而设计的，而组成作业的每个任务其运行时间则有数分钟之久，他们会在独立的系统进程中执行任务，在某些极端情况下提交一个任务的延迟非常之高。</li>
 <li>Spark采用了事件驱动的RPC类库来启动任务，通过复用工作进程来避免系统进程开销。它能够在一秒钟内启动上千个任务，任务之间的延时小于5毫秒，从而使得50-100毫秒的任务，500毫秒的作业变得可能。</li>
 <li>亚秒级的任务使得引擎能够更好地在工作节点之间平衡任务的分配，甚至在某些节点遇到了不可预知的延迟(网络延迟或是JVM垃圾回收)的情况下面也能较好地平衡。同时对于数据倾斜也有巨大的帮助，</li>
 </ul>
 <hr>
-<h1>为什么之前的MapReduce系统比较慢</h1>
+<h2>为什么之前的MapReduce系统比较慢</h2>
 <ul>
 <li>容错所引入的昂贵数据实体化(data materialization)开销。</li>
 <li>孱弱的数据布局(data layout)，比如缺少索引。</li>
@@ -134,7 +134,7 @@ Shark | chih's blog    </title>
 </ul>
 <p>下面针对这三点说明Shark的优化。</p>
 <hr>
-<h1>中间结果输出</h1>
+<h2>中间结果输出</h2>
 <ul>
 <li>在MapReduce任务内部，为了防止Reduce任务的失败，Map通常会把结果存储在磁盘上(materialize)。</li>
 <li>通常一些查询在翻译到MapReduce任务的时候，往往会产生多个stage，而这些串联的stage则又依赖于底层文件系统(如HDFS)来存储每一个stage的输出结果。</li>
@@ -144,7 +144,7 @@ Shark | chih's blog    </title>
 <hr>
 <p><img alt="Screenshot_20170702_193305" src="images/Screenshot_20170702_193305.png"></p>
 <hr>
-<h1>中间结果输出</h1>
+<h2>中间结果输出</h2>
 <ol>
 <li>
 <p>Map的输出结果存储在磁盘上是为了确保能够有足够的空间来存储这些大数据批量任务的输出。而Map的输出并不会复制到不同的节点上去，因此如果执行Map任务的节点失效的话仍会造成数据丢失。由此可以推出，如果将这部分输出数据缓存在内存中，而不是全部输出到磁盘上面也是合理的。</p>
@@ -154,7 +154,7 @@ Shark | chih's blog    </title>
 </li>
 </ol>
 <hr>
-<h1>列式内存存储</h1>
+<h2>列式内存存储</h2>
 <p>内存中数据表示的3种方法:</p>
 <ol>
 <li>内存中直接缓存磁盘上序列化后的数据. 在查询时根据需求进行反序列化, 反序列化是瓶颈.</li>
@@ -162,7 +162,7 @@ Shark | chih's blog    </title>
 <li>列示内存存储, 每一列仅创建一个 JVM 对象, 可以带来快速访问, 垃圾收集和紧凑的数据表示。</li>
 </ol>
 <hr>
-<h1>数据格式和布局</h1>
+<h2>数据格式和布局</h2>
 <p>列式内存存储</p>
 <blockquote>
 <p>反序列化成为了很大的瓶颈，在现代的商业CPUs 单核的序列化速率仅仅在 200MB/秒。</p>
@@ -173,27 +173,27 @@ Shark | chih's blog    </title>
 <li>列式数据带来了更好的缓存行为，特别是对那些在特定列上频繁进行聚合计算的分析查询。</li>
 </ul>
 <hr>
-<h1>数据格式和布局</h1>
+<h2>数据格式和布局</h2>
 <p>联合分区</p>
 <ul>
 <li>另一个Spark独有的特性是能够控制数据在不同节点上的分区，这为Shark带来了一种新的功能：对表进行联合分区(co-partition)。</li>
 <li>Shark 允许两个表基于公共键进行协同分区，从而可以在后续的查询中提供快速的连接操作。它在表的创建声明中增加了 DISTRIBUTE BY 语法，用来指定对某个列进行分区。</li>
 </ul>
 <hr>
-<h1>执行策略</h1>
+<h2>执行策略</h2>
 <ul>
 <li>partial DAG execution (PDE)，这使得Spark能够在基于数据统计的基础上改变后续执行计划。</li>
 <li>PDE与其他系统(DryadLINQ)的运行时执行计划图重写的不同在于：它能够收集键值范围内的细粒度统计数据；能够完全重新选择join的执行策略，如broadcast join，而不仅仅是选择Reduce任务的个数。</li>
 </ul>
 <hr>
-<h1>分区统计和映射修剪</h1>
+<h2>分区统计和映射修剪</h2>
 <ul>
 <li>为了利用列（column）在自然聚合的优势，Shark 在每一个工作节点上的的内存存储会在数据加载过程中附带收集统计信息。</li>
 <li>每个分区收集来的统计信息包含了每一个列的范围, 当不同值的个数较少的时候, 会包含所有不同的值。所收集到的统计信息会被发送回驱动节点并存储在内存中, 在查询执行过程中用于修剪分区.</li>
 <li>当发出一个查询后，Shark 会针对查询的目标评估所有的分区统计信息，然后修剪掉没有匹配到目标的分区。</li>
 </ul>
 <hr>
-<h1>Performance</h1>
+<h2>Performance</h2>
 <p>使用了四个数据集对 Shark 进行了评估：</p>
 <ol>
 <li>Pavlo 等人的基准测试：用 2.1TB 的数据重现了 Pavlo 等人对 MapReduce 和分析数据库管理系统的比较</li>
@@ -208,21 +208,21 @@ Shark | chih's blog    </title>
 <li>可以在几秒钟内从查询错误中恢复</li>
 </ol>
 <hr>
-<h1>Pavlo 等人的基准测试</h1>
+<h2>Pavlo 等人的基准测试</h2>
 <p><img alt="Screenshot_20170702_193839" src="images/Screenshot_20170702_193839.png" width="50%"></p>
 <p><img alt="Screenshot_20170702_211547" src="images/Screenshot_20170702_211547.png" width="50%"></p>
 <hr>
-<h1>微基准测试</h1>
+<h2>微基准测试</h2>
 <p><img alt="" src="images/Screenshot_20170702_194031.png" width="40%"></p>
 <p><img alt="" src="images/Screenshot_20170702_194038.png" width="40%"></p>
 <hr>
-<h1>容错</h1>
+<h2>容错</h2>
 <p>在出现节点错误的情况下，对 100GB lineitem 表使用 group by 查询来测试查询性能。在将 lineitem 的数据加载到 shark 的内存后，我们切断了一台工作的机器并重新运行该查询。 Shark 能完美地从故障中恢复，并以并行的方式在其他 49 个节点上重新构建丢失的数据分区。这个恢复过程对性能有小许的影响，但比重新加载整个数据集并重新进行查询的成本 要低很多 (14 vs 34 秒)。</p>
 <hr>
-<h1>真实的 Hive 数据仓库查询</h1>
+<h2>真实的 Hive 数据仓库查询</h2>
 <p><img alt="Screenshot_20170702_212039" src="images/Screenshot_20170702_212039.png" width="60%"></p>
 <hr>
-<h1>机器学习</h1>
+<h2>机器学习</h2>
 <p><img alt="Screenshot_20170702_194105" src="images/Screenshot_20170702_194105.png" width="60%"></p>
 
         <div class="tags">
@@ -255,16 +255,16 @@ Shark | chih's blog    </title>
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-star-o"> Tags</i></div>
     <div class="tagcloud">
-    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
-    <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
-    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
-    <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
-    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
-    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
     <a href="/tag/shi-shi-ji-suan.html" style="font-size: 10px">实时计算</a>
+    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
+    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
+    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
     <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
+    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
     <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
     <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
+    <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
+    <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
     </div>
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-file-o"> Recent</i></div>

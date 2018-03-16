@@ -42,7 +42,7 @@
         <blockquote>
 <p>官方文档待翻译，个人实践在下面</p>
 </blockquote>
-<h1>Example Storm Topologies</h1>
+<h2>Example Storm Topologies</h2>
 <p>Learn to use Storm!</p>
 <hr>
 <p>Table of Contents</p>
@@ -53,8 +53,8 @@
 </ul>
 <hr>
 <p><a name="getting-started"></a></p>
-<h1>Getting started</h1>
-<h2>Prerequisites</h2>
+<h2>Getting started</h2>
+<h3>Prerequisites</h3>
 <p>First, you need <code>java</code> and <code>git</code> installed and in your user's <code>PATH</code>.  Also, two of the examples in storm-starter
 require Python and Ruby.</p>
 <p>Next, make sure you have the storm-starter code available on your machine.  Git/GitHub beginners may want to use the
@@ -64,7 +64,7 @@ code.</p>
 </pre></div>
 
 
-<h2>storm-starter overview</h2>
+<h3>storm-starter overview</h3>
 <p>storm-starter contains a variety of examples of using Storm.  If this is your first time working with Storm, check out
 these topologies first:</p>
 <ol>
@@ -79,11 +79,11 @@ for more advanced implementations.</p>
 <p>If you want to learn more about how Storm works, please head over to the
 <a href="http://storm.incubator.apache.org">Storm project page</a>.</p>
 <p><a name="maven"></a></p>
-<h1>Using storm-starter with Maven</h1>
-<h2>Install Maven</h2>
+<h2>Using storm-starter with Maven</h2>
+<h3>Install Maven</h3>
 <p>Install <a href="http://maven.apache.org/">Maven</a> (preferably version 3.x) by following
 the <a href="http://maven.apache.org/download.cgi">Maven installation instructions</a>.</p>
-<h2>Build and install Storm jars locally</h2>
+<h3>Build and install Storm jars locally</h3>
 <p>If you are using the latest development version of Storm, e.g. by having cloned the Storm git repository,
 then you must first perform a local build of Storm itself.  Otherwise you will run into Maven errors such as
 "Could not resolve dependencies for project <code>org.apache.storm:storm-starter:&lt;storm-version&gt;-SNAPSHOT</code>".</p>
@@ -95,7 +95,7 @@ $ mvn clean install -DskipTests=true
 <p>This command will build Storm locally and install its jar files to your user's <code>$HOME/.m2/repository/</code>.  When you run
 the Maven command to build and run storm-starter (see below), Maven will then be able to find the corresponding version
 of Storm in this local Maven repository at <code>$HOME/.m2/repository</code>.</p>
-<h2>Running topologies with Maven</h2>
+<h3>Running topologies with Maven</h3>
 <p>storm-starter topologies can be run with the maven-exec-plugin. For example, to
 compile and run <code>WordCountTopology</code> in local mode, use the command:</p>
 <div class="highlight"><pre><span></span>$ mvn compile exec:java -Dstorm.topology<span class="o">=</span>storm.starter.WordCountTopology
@@ -112,7 +112,7 @@ compile and run <code>WordCountTopology</code> in local mode, use the command:</
 </pre></div>
 
 
-<h2>Packaging storm-starter for use on a Storm cluster</h2>
+<h3>Packaging storm-starter for use on a Storm cluster</h3>
 <p>You can package a jar suitable for submitting to a Storm cluster with the command:</p>
 <div class="highlight"><pre><span></span>$ mvn package
 </pre></div>
@@ -120,7 +120,7 @@ compile and run <code>WordCountTopology</code> in local mode, use the command:</
 
 <p>This will package your code and all the non-Storm dependencies into a single "uberjar" at the path
 <code>target/storm-starter-{version}-jar-with-dependencies.jar</code>.</p>
-<h2>Running unit tests</h2>
+<h3>Running unit tests</h3>
 <p>Use the following Maven command to run the unit tests that ship with storm-starter.  Unfortunately <code>lein test</code> does not
 yet run the included unit tests.</p>
 <div class="highlight"><pre><span></span>$ mvn <span class="nb">test</span>
@@ -128,8 +128,8 @@ yet run the included unit tests.</p>
 
 
 <p><a name="intellij-idea"></a></p>
-<h1>Using storm-starter with IntelliJ IDEA</h1>
-<h2>Importing storm-starter as a project in IDEA</h2>
+<h2>Using storm-starter with IntelliJ IDEA</h2>
+<h3>Importing storm-starter as a project in IDEA</h3>
 <p>The following instructions will import storm-starter as a new project in IntelliJ IDEA.</p>
 <ul>
 <li>Open <em>File &gt; Import Project...</em> and navigate to the storm-starter directory of your storm clone (e.g.
@@ -151,23 +151,23 @@ yet run the included unit tests.</p>
 <blockquote>
 <p>默认通过sudo -s 进入root环境</p>
 </blockquote>
-<h3>安装环境 git ，maven</h3>
+<h4>安装环境 git ，maven</h4>
 <div class="highlight"><pre><span></span># apt-get install git maven
 </pre></div>
 
 
-<h3>通过git clone 项目</h3>
+<h4>通过git clone 项目</h4>
 <div class="highlight"><pre><span></span># git clone git://github.com/apache/incubator-storm.git
 </pre></div>
 
 
 <p><img alt="3-1" src="https://blog.chih.me/images/3-1.png"></p>
-<h3>进入项目目录</h3>
+<h4>进入项目目录</h4>
 <div class="highlight"><pre><span></span># cd incubator-storm/examples/storm-starter
 </pre></div>
 
 
-<h3>编译</h3>
+<h4>编译</h4>
 <div class="highlight"><pre><span></span># mvn compile
 </pre></div>
 
@@ -186,14 +186,14 @@ yet run the included unit tests.</p>
 
 <p><img alt="3-3" src="https://blog.chih.me/images/3-3.png"></p>
 <p>成功!</p>
-<h3>打包所有的依赖</h3>
+<h4>打包所有的依赖</h4>
 <div class="highlight"><pre><span></span># mvn package
 </pre></div>
 
 
 <p><img alt="3-4" src="https://blog.chih.me/images/3-4.png"></p>
 <p>进入target目录，可以看到<code>storm-starter-0.9.2-incubating-jar-with-dependencies.jar</code></p>
-<h3>提交到storm(以WordCountTopology为例)</h3>
+<h4>提交到storm(以WordCountTopology为例)</h4>
 <p>在nimbus上运行</p>
 <div class="highlight"><pre><span></span># ./bin/storm jar storm-starter-0.9.2-incubating-jar-with-dependencies.jar  storm.starter.WordCountTopology test
 </pre></div>
@@ -230,16 +230,16 @@ yet run the included unit tests.</p>
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-star-o"> Tags</i></div>
     <div class="tagcloud">
-    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
-    <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
-    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
-    <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
-    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
-    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
     <a href="/tag/shi-shi-ji-suan.html" style="font-size: 10px">实时计算</a>
+    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
+    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
+    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
     <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
+    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
     <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
     <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
+    <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
+    <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
     </div>
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-file-o"> Recent</i></div>

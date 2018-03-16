@@ -39,23 +39,23 @@
     <span> | </span> <span>Tech</span>
     </div>
     <div class="post-content">
-        <h1>前言</h1>
+        <h2>前言</h2>
 <p>随着Web上数量的急剧增长，近似镜像网页的数量也在不断增加。近似镜像网页的存在，严重影响了搜索引擎的检索结果。如果我们能将搜集到的网页中的近似镜像网页去掉，可以提高搜集系统和索引系统效率，用户查询时也不会出现大量内容重复的网页。去除镜像网页即需要网页近似度检测算法。实验基于相似性连接实现了基于SPARK的分布式网页近似度检测，对5000个网页进行了相似度检测，试图找出所有相似的网页。实验使用的网页来源与人才招聘网站的电子简历，共有5000份，由于我们只关心其中的简历内容，因此需要去除简历内容外的HTML标签，网页样式、代码。在去除了无关内容后，即可进行近似检测，大数据环境下，数据量巨大，运用传统的方式进行相似性连接效率极低，实验选择了相似性连接查询作为底层的算法实现，作为一种分布式算法，实验选择了Spark作为分布式计算框架。</p>
 <p>相似性连接查询，即查找相似的数据对象对，具有广泛的应用领域，例如相似网页检、实体解析、数据清洗和相似图像检索等。 在相似网页检测中，使用相似性连接等技术识别相似的网页，不但可以帮助网页搜索引擎执行聚焦爬行，提高搜索结果的质量和多样性，还可以识别垃圾邮件。在实体解析中，使用相似性连接技术，可以找到企业数据库里相似的顾客，匹配产品报价等。在数据清洗中，使用相似性连接技术，可以为不同数 据源集成提供一致、准确的数据。在相似图像检索 中，使用相似性连接技术检索出相似的图像，可以分析图像的来源，查找高清图像等，当前比较常用的有字符串、集合和向量的相似性连接算法。</p>
-<h1>选用平台描述</h1>
+<h2>选用平台描述</h2>
 <p>实验运用的是spark平台，选择的编程语言是scala中，操作系统是ubuntu。</p>
 <ul>
 <li>spark：2.1.0</li>
 <li>Scala：2.10.6</li>
 <li>Ubuntu 16.04.2 LTS</li>
 </ul>
-<h1>数据集描述</h1>
+<h2>数据集描述</h2>
 <p>原始数据集为5000个左右的简历网页， 大致格式如下：</p>
 <p><img alt="Screenshot_20170611_195353" src="images/Screenshot_20170611_195353.png" width="70%"></p>
 <p>经过分词，去除重复词，HTML标签，停用词后，输出如下，作为Spark文档近似度检测的输入源。</p>
 <p><img alt="Screenshot_20170611_195748" src="images/Screenshot_20170611_195748.png" width="80%"></p>
-<h1>设计逻辑</h1>
-<h2>数据清洗与中文分词</h2>
+<h2>设计逻辑</h2>
+<h3>数据清洗与中文分词</h3>
 <div class="highlight"><pre><span></span><span class="ch">#! /bin/python</span>
 
 <span class="kn">from</span> <span class="nn">pyquery</span> <span class="kn">import</span> <span class="n">PyQuery</span>
@@ -84,7 +84,7 @@
 
 
 <p>遍历目录下的所有html文件，去除html文件中的所有标签、样式、代码。使用中文分词对过滤后的HTML文件进行分词，同时过滤掉重复的词、停用词，留下这份简历网页的关键词，写入另一份文件，作为近似度检测的输入。</p>
-<h2>近似度检测</h2>
+<h3>近似度检测</h3>
 <div class="highlight"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.SparkContext</span>
 <span class="k">import</span> <span class="nn">org.apache.spark.SparkConf</span>
 
@@ -127,15 +127,15 @@
 
 <p>从目录中读取所有已经经过分词的简介文档，生成文件名、文件内容的对，供后续处理。建立倒排索引，将记录的RID插入到其项目的倒排索引中的对应Item中。生成候选集，通过倒排索引的item两两配对生成候选对，并记录相同候选对的数量，从而最终生成最终的候选集。
 从候选集中找出符合要求的结果，通过Jaccard 系数阈值计算出对应的相似度阈值，从而在候选集中找出相应的结果。</p>
-<h1>运行部署描述</h1>
+<h2>运行部署描述</h2>
 <p>Spark 官方提供了三种集群部署方案： Standalone, Mesos, YARN。在试验环境下，Standalone 模式就足够了，因此本实验选用Standalone 模式。如果如果已经有 Yarn 或者 Mesos 环境，也是很方便地迁移到新的资源调度框架上的。</p>
-<h2>注意</h2>
+<h3>注意</h3>
 <p>为了避免权限问题影响实验，本例中的演示均为 root 权限，当然在生产环境中，为了安全起见，需要使用单独的用户启动运行Spark。注意，除非特别说明，所有的操作需要在每台机器上都操作一遍，你可以使用Xshell，ansible简化操作。</p>
-<h2>环境准备</h2>
-<h3>安装系统</h3>
+<h3>环境准备</h3>
+<h4>安装系统</h4>
 <p>我使用VirtualBox虚拟机软件创建三台Ubuntu服务器，均使用纯净安装，集群准备为1个master，2个slave。每台的均配置两张网卡，其中一张nat网络，用于连接外网，更新安装软件包用，另一张使用host-only模式，用于宿主机和虚拟机、 虚拟机直接通讯使用。如下图所示。</p>
 <p><img alt="Screenshot_20170611_190618" src="images/Screenshot_20170611_190618.png" width="80%"></p>
-<h3>配置hosts</h3>
+<h4>配置hosts</h4>
 <p>Host-Only网卡的IP地址是顺序分配的，在这里，三台虚拟机Host-Only网卡的IP地址分别为 192.168.56.101、 192.168.56.102、 192.168.56.103 。</p>
 <p>在每台主机上修改host文件，在文件末尾添加以下三行。</p>
 <div class="highlight"><pre><span></span>vim /etc/hosts
@@ -147,7 +147,7 @@
 
 
 <p>配置之后相互ping一下看是否生效。</p>
-<h3>配置SSH 免密码登录</h3>
+<h4>配置SSH 免密码登录</h4>
 <p>安装Openssh server</p>
 <div class="highlight"><pre><span></span>sudo apt install openssh-server
 </pre></div>
@@ -180,7 +180,7 @@ ssh slave2
 </pre></div>
 
 
-<h3>安装JDK</h3>
+<h4>安装JDK</h4>
 <p>直接通过包管理安装openJDK 8.</p>
 <div class="highlight"><pre><span></span>sudo apt install openjdk-8-jdk
 </pre></div>
@@ -188,7 +188,7 @@ ssh slave2
 
 <p>使用以下命令配置环境变量并使之生效：</p>
 <div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="s2">&quot;</span>
-<span class="s2"># set environment variable</span>
+<span class="s2">## set environment variable</span>
 <span class="s2">export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64</span>
 <span class="s2">&quot;</span>   &gt;&gt; /etc/profile.d/spark.sh
 
@@ -201,7 +201,7 @@ ssh slave2
 </pre></div>
 
 
-<h2>安装Spark</h2>
+<h3>安装Spark</h3>
 <p>使用以下命令下载并安装Spark：</p>
 <div class="highlight"><pre><span></span>wget <span class="si">${</span><span class="nv">mirror</span><span class="si">}</span>/apache/spark/spark-2.1.0/ <span class="se">\</span>
     spark-<span class="si">${</span><span class="nv">spark_pkgver</span><span class="si">}</span>-bin-hadoop<span class="si">${</span><span class="nv">hadoop_pkgver</span><span class="si">}</span>.tgz
@@ -211,7 +211,7 @@ mv spark-<span class="si">${</span><span class="nv">spark_pkgver</span><span cla
 </pre></div>
 
 
-<h2>配置 Spark</h2>
+<h3>配置 Spark</h3>
 <p>进入配置目录 <code>/usr/local/spark/conf</code> 准备修改配置文件。</p>
 <p>在<code>slaves</code>中配置slave节点的ip或者host，</p>
 <div class="highlight"><pre><span></span>vim ./slaves
@@ -228,7 +228,7 @@ spark-slave2
 </pre></div>
 
 
-<h2>启动Spark</h2>
+<h3>启动Spark</h3>
 <div class="highlight"><pre><span></span>sudo -s
 su -
 sbin/start-all.sh
@@ -237,7 +237,7 @@ sbin/start-all.sh
 
 <p>如果没有问题，进入Spark的Web管理页面： <a href="http://master:8080/">http://master:8080</a></p>
 <p><img alt="Screenshot_20170611_193731" src="images/Screenshot_20170611_193731.png" width="80%"></p>
-<h2>脚本安装Spark</h2>
+<h3>脚本安装Spark</h3>
 <p>为了方便部署Spark，我简单写了一个Shell脚本，可以方便地几步搭建一个3节点的Spark集群。脚本地址为：</p>
 <p><a href="https://github.com/chih7/spark-install/">https://github.com/chih7/spark-install/</a></p>
 <p>脚本只在Ubuntu 16.04下进行了测试，但其他版本的Ubuntu和debian应该也是可以使用。</p>
@@ -284,12 +284,12 @@ sbin/start-all.sh
 </pre></div>
 
 
-<h1>实验结果描述</h1>
+<h2>实验结果描述</h2>
 <p><img alt="Screenshot_20170611_122340" src="images/Screenshot_20170611_122340.png" width="80%"></p>
 <p><img alt="Screenshot_20170611_182331" src="images/Screenshot_20170611_182331.png" width="80%"></p>
 <p><img alt="Screenshot_20170611_182331" src="images/Screenshot_20170611_195236.png" width="80%"></p>
 <p>运行代码后，可以看到生成了一个DAG图，即为Spark的计算路径，其中有三个stage。最后输出了超出一定阈值的所有相似的文档对，同时给出了相似度系数。</p>
-<h1>出现的问题</h1>
+<h2>出现的问题</h2>
 <p>在运行中出现<code>java.io.IOException: No space left on device</code>错误，经过Google搜索，发现Spark默认使用 <code>/tmp</code>目录存储中间结果，而<code>/tmp</code>目录为tmpfs目录，出于内存文件系统，默认大小仅为内存大小的一半。</p>
 <p>为了解决这个问题，需要自定义<code>SPARK_LOCAL_DIRS</code>环境变量到一个足够大的目录下，我这里把它改到了Spark的安装目录。</p>
 
@@ -322,16 +322,16 @@ sbin/start-all.sh
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-star-o"> Tags</i></div>
     <div class="tagcloud">
-    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
-    <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
-    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
-    <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
-    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
-    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
     <a href="/tag/shi-shi-ji-suan.html" style="font-size: 10px">实时计算</a>
+    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
+    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
+    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
     <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
+    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
     <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
     <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
+    <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
+    <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
     </div>
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-file-o"> Recent</i></div>
