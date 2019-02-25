@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>chih's blog</title><link href="https://blog.chih.me/" rel="alternate"></link><link href="https://blog.chih.me/feeds/all.atom.xml" rel="self"></link><id>https://blog.chih.me/</id><updated>2018-03-07T00:00:00+08:00</updated><entry><title>使用 iptables、ipset 的全局智能代理</title><link href="https://blog.chih.me/global-proxy-within-ipset-and-iptables.html" rel="alternate"></link><published>2018-03-07T00:00:00+08:00</published><updated>2018-03-07T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2018-03-07:/global-proxy-within-ipset-and-iptables.html</id><summary type="html">&lt;p&gt;首先，我这里的全局智能代理实现的功能主要有以下几点：&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>chih's blog</title><link href="https://blog.chih.me/" rel="alternate"></link><link href="https://blog.chih.me/feeds/all.atom.xml" rel="self"></link><id>https://blog.chih.me/</id><updated>2018-03-01T00:00:00+08:00</updated><entry><title>智能运维：从基于规则到基于学习</title><link href="https://blog.chih.me/aiops.html" rel="alternate"></link><published>2018-03-01T00:00:00+08:00</published><updated>2018-03-01T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2018-03-01:/aiops.html</id><summary type="html">&lt;p&gt;随着企业发展，其应用架构也越来越复杂，从单一的应用，到多个应用共同组合形成服务，到云计算、微服务架构，再到目前流行的容器化。除了基础的服务应用外，也出现了专门用于采集、存储与分析用户信息的大数据处理应用。云数据中心规模快速增长，运维环境的异构和复杂化，导致日常运维工作需要付出的人力、时间成本越来越高。运维的发展已经经历了脚本时代——工具时代——自动化时代(DevOps)，每一次的变迁都代表了运维需求的变化，运维技术的变革和运维人员效率的提高，随着大数据、机器学习和AI技术的飞速发展，运维需求也逐渐向智能化过渡。智能运维(AIOps)是自动化运维的拓展，其目的是进一步去除自动化运维中人为干扰，最终实现运维工作的无人化，完全自动化。&lt;/p&gt;
+&lt;p&gt;智能运维的内容主要有数据采集存储、异常自动检测、异常自动处理和数据的可视化。&lt;/p&gt;
+&lt;h2&gt;数据采集存储&lt;/h2&gt;
+&lt;p&gt;运维系统需要支持从机房设施、物理基础设施、数据中心网络、虚拟化资源池、云服务和应用到用户端日志的统一管理，实现多对象和多维度的集中监控。对于基础架构，需要采集的可能是性能数据，除了基础的CPU利用率、负载、%iowait，内存的利用率、页扫描、交换，磁盘的利用率、响应时间外，也可以使用处理器内包含的硬件计数器采集更详细的性能指标 …&lt;/p&gt;</summary><content type="html">&lt;p&gt;随着企业发展，其应用架构也越来越复杂，从单一的应用，到多个应用共同组合形成服务，到云计算、微服务架构，再到目前流行的容器化。除了基础的服务应用外，也出现了专门用于采集、存储与分析用户信息的大数据处理应用。云数据中心规模快速增长，运维环境的异构和复杂化，导致日常运维工作需要付出的人力、时间成本越来越高。运维的发展已经经历了脚本时代——工具时代——自动化时代(DevOps)，每一次的变迁都代表了运维需求的变化，运维技术的变革和运维人员效率的提高，随着大数据、机器学习和AI技术的飞速发展，运维需求也逐渐向智能化过渡。智能运维(AIOps)是自动化运维的拓展，其目的是进一步去除自动化运维中人为干扰，最终实现运维工作的无人化，完全自动化。&lt;/p&gt;
+&lt;p&gt;智能运维的内容主要有数据采集存储、异常自动检测、异常自动处理和数据的可视化。&lt;/p&gt;
+&lt;h2&gt;数据采集存储&lt;/h2&gt;
+&lt;p&gt;运维系统需要支持从机房设施、物理基础设施、数据中心网络、虚拟化资源池、云服务和应用到用户端日志的统一管理，实现多对象和多维度的集中监控。对于基础架构，需要采集的可能是性能数据，除了基础的CPU利用率、负载、%iowait，内存的利用率、页扫描、交换，磁盘的利用率、响应时间外，也可以使用处理器内包含的硬件计数器采集更详细的性能指标，包括CPU周期、CPU指令、一级/二级/三级缓存访问，浮点单元、内存I/O、资源I/O。由于存在数据中心绿色节能的需求，也可以采集机器或应用的功耗信息。对于应用层日志，可以使用ELK抽取，也可以通过中间件采集日志。除了原始指标外，也可以通过聚合转换形成新的指标。&lt;/p&gt;
+&lt;h2&gt;异常自动检测&lt;/h2&gt;
+&lt;p&gt;想尽快在智能运维领域有所突破，更实际一点的办法就是实现异常自动检测系统。在监控领域，由数据采集器采集的数据源源不断的产生，形成了时间相对应的时序数据。传统的时序数据异常检测方法有阈值法，包括固定阈值和动态阈值，对于固定阈值，如果当前值大于或小于阈值，就说明为异常，而对于动态阈值，如果当前值前一个窗口数据的平均值𝜇、方差𝜎，如果当前值在𝜇±2𝜎或𝜇±3𝜎范围外，就说明为异常。但传统方法并不适用于监控数据的异常检测，主要有两个原因，第一是忽视了周期性，第二是忽视了趋势。在经济学领域，需要预测经济数据，为了解决前面两个问题，提出了一些方法，可以根据前面的时序数据预测之后数据可能的值，用在异常检测上，我们只需要看实际值和预测值偏差是否足够大就可以判断该值是否为异常。常见的算法有ARIMA、EWMA、Holt-Winters、时序数据分解，主要挑战包括突发事件的影响、节假日的影响、数据不规则的影响，最重要的就是对异常的定义不一样，会有主观的因素，最后导致这些算法很难调节。异常检测的另外一个思路基于深度学习来做，循环神经网络（简称RNN）是一个和时间序列有关系的神经网络，不过随着时间间隔的增大，RNN对于后面时间的节点相比前面时间节点的感知力将下降。解决这个问题需要用到LongShort Term 网络（LSTM），它通过刻意的设计来避免长期依赖问题。LSTM在实践中默认可以记住长期的信息，而不需要付出很大代价。更新的研究发现，一种新型的神经网络HTM在时序数据的异常检测上可以取得比LSTM更好的结果。&lt;/p&gt;
+&lt;h2&gt;异常自动处理&lt;/h2&gt;
+&lt;p&gt;云时代由于分布式和微服务化软件架构的流行，业务调用关系愈发复杂，出现故障后，对故障的快速定位形成了很大的挑战。利用大数据技术，结合故障特征库进行跨数据领域关联分析，提前发现隐患、预测故障。与自动化策略执行系统集成联动，在用户发觉问题前将问题解决，避免对业务造成影响。目前，主要有两类机器学习可以帮助解决该类问题。&lt;/p&gt;
+&lt;h4&gt;关联规则算法&lt;/h4&gt;
+&lt;p&gt;在实际的系统中，存在各种各样的关联，比如，&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;应用之间的调用链关系&lt;/li&gt;
+&lt;li&gt;数据库与应用服务器&lt;/li&gt;
+&lt;li&gt;网络设备与网络设备、网络设备与应用服务器&lt;/li&gt;
+&lt;li&gt;宿主机与虚拟机关系等&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;若在同一个时间窗内，有多个强关联的设备或应用服务器同时告警，则大概率认为告警之间存在关联关系。关联规则算法主要有Apriori算法和FPGrowth算法两种算法。这两种算法的功能是相似的，你可以找到频繁的项集。一般PGrowth比Apriori更有效一些。我们将时间窗口按一定的时间间隔进行划分，计算每个时间窗内各种报警发生的频率，并找出各种报警之间的相关性。最后根据分析报警根源的关系。在关联规则算法中，有一条重要的规则，即链路上的连续报警之间可能存在相关性，越靠后的应用越可能是根源。关联规则算法的优点是易于理解和实现。缺点是效率低，灵活性不够高。&lt;/p&gt;
+&lt;h4&gt;深度学习方法&lt;/h4&gt;
+&lt;p&gt;强关联数据分析是对已知告警的关联关系，直接进行根源告警分析。但是有些时候，关联关系是未知的。这时就需要通过机器学习算法，找到告警之间的隐含联系，再进行根源告警预测。对于某类故障引起的大量告警之间，存在着时间相关性。将历史派生告警作为输入，将根源告警类型作为输出。通过LSTM提取派生告警特征，建立告警相关性分析模型。这样就可以实时将符合特征的派生告警，划分到同一类根源告警中，帮助用户快速定位问题。&lt;/p&gt;
+&lt;h2&gt;数据的可视化&lt;/h2&gt;
+&lt;p&gt;在数据中心发生故障时，系统健康状况可视化将快速捕获每个数据中心内资源和云服务的当前和历史健康状况，包括有关性能容量，相关对象和警报以及拓扑和类别日志信息的信息。此外，对于多维监控数据，可以使用数据立方体帮助理解，在数据立方体上，我们已经有了深入的探索，并已有相关产品开发。事件流图也是一种简化运维的可视化方法智能算法需要自动分析这些告警，将它们按照主机、集群或者应用智能地进行组合，形成事件，并按照时间顺序显示出来。&lt;/p&gt;</content><category term="linux"></category><category term="运维"></category><category term="大数据"></category><category term="深度学习"></category><category term="机器学习"></category><category term="异常检测"></category></entry><entry><title>使用 iptables、ipset 的全局智能代理</title><link href="https://blog.chih.me/global-proxy-within-ipset-and-iptables.html" rel="alternate"></link><published>2018-02-07T00:00:00+08:00</published><updated>2018-02-07T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2018-02-07:/global-proxy-within-ipset-and-iptables.html</id><summary type="html">&lt;p&gt;首先，我这里的全局智能代理实现的功能主要有以下几点：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;基于iptables的全局代理，在Linux下可以实现只需设置一次，所有的软件(无论是GUI还是CLI)都可以免设置自动使用这个代理。&lt;/li&gt;
 &lt;li&gt;基于ipset，加入所有的国内IP项，对所有tcp流量进行判断，避免对国内的服务进行代理，一方面可以节省服务器流量，另一方面可以享受国内ip的优势，比如国内的版权视频、音乐，最后，避免被国内一些和政府有合作的IT企业发现你使用了代理。&lt;/li&gt;
@@ -113,30 +136,7 @@ sudo systemctl enable shadowsocks-libev-redir@config
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;这样，就全部完成了。&lt;/p&gt;</content><category term="Arch Linux"></category><category term="Linux"></category><category term="ipset"></category><category term="iptables"></category><category term="shadowsocks"></category><category term="代理"></category></entry><entry><title>智能运维：从基于规则到基于学习</title><link href="https://blog.chih.me/aiops.html" rel="alternate"></link><published>2018-03-01T00:00:00+08:00</published><updated>2018-03-01T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2018-03-01:/aiops.html</id><summary type="html">&lt;p&gt;随着企业发展，其应用架构也越来越复杂，从单一的应用，到多个应用共同组合形成服务，到云计算、微服务架构，再到目前流行的容器化。除了基础的服务应用外，也出现了专门用于采集、存储与分析用户信息的大数据处理应用。云数据中心规模快速增长，运维环境的异构和复杂化，导致日常运维工作需要付出的人力、时间成本越来越高。运维的发展已经经历了脚本时代——工具时代——自动化时代(DevOps)，每一次的变迁都代表了运维需求的变化，运维技术的变革和运维人员效率的提高，随着大数据、机器学习和AI技术的飞速发展，运维需求也逐渐向智能化过渡。智能运维(AIOps)是自动化运维的拓展，其目的是进一步去除自动化运维中人为干扰，最终实现运维工作的无人化，完全自动化。&lt;/p&gt;
-&lt;p&gt;智能运维的内容主要有数据采集存储、异常自动检测、异常自动处理和数据的可视化。&lt;/p&gt;
-&lt;h2&gt;数据采集存储&lt;/h2&gt;
-&lt;p&gt;运维系统需要支持从机房设施、物理基础设施、数据中心网络、虚拟化资源池、云服务和应用到用户端日志的统一管理，实现多对象和多维度的集中监控。对于基础架构，需要采集的可能是性能数据，除了基础的CPU利用率、负载、%iowait，内存的利用率、页扫描、交换，磁盘的利用率、响应时间外，也可以使用处理器内包含的硬件计数器采集更详细的性能指标 …&lt;/p&gt;</summary><content type="html">&lt;p&gt;随着企业发展，其应用架构也越来越复杂，从单一的应用，到多个应用共同组合形成服务，到云计算、微服务架构，再到目前流行的容器化。除了基础的服务应用外，也出现了专门用于采集、存储与分析用户信息的大数据处理应用。云数据中心规模快速增长，运维环境的异构和复杂化，导致日常运维工作需要付出的人力、时间成本越来越高。运维的发展已经经历了脚本时代——工具时代——自动化时代(DevOps)，每一次的变迁都代表了运维需求的变化，运维技术的变革和运维人员效率的提高，随着大数据、机器学习和AI技术的飞速发展，运维需求也逐渐向智能化过渡。智能运维(AIOps)是自动化运维的拓展，其目的是进一步去除自动化运维中人为干扰，最终实现运维工作的无人化，完全自动化。&lt;/p&gt;
-&lt;p&gt;智能运维的内容主要有数据采集存储、异常自动检测、异常自动处理和数据的可视化。&lt;/p&gt;
-&lt;h2&gt;数据采集存储&lt;/h2&gt;
-&lt;p&gt;运维系统需要支持从机房设施、物理基础设施、数据中心网络、虚拟化资源池、云服务和应用到用户端日志的统一管理，实现多对象和多维度的集中监控。对于基础架构，需要采集的可能是性能数据，除了基础的CPU利用率、负载、%iowait，内存的利用率、页扫描、交换，磁盘的利用率、响应时间外，也可以使用处理器内包含的硬件计数器采集更详细的性能指标，包括CPU周期、CPU指令、一级/二级/三级缓存访问，浮点单元、内存I/O、资源I/O。由于存在数据中心绿色节能的需求，也可以采集机器或应用的功耗信息。对于应用层日志，可以使用ELK抽取，也可以通过中间件采集日志。除了原始指标外，也可以通过聚合转换形成新的指标。&lt;/p&gt;
-&lt;h2&gt;异常自动检测&lt;/h2&gt;
-&lt;p&gt;想尽快在智能运维领域有所突破，更实际一点的办法就是实现异常自动检测系统。在监控领域，由数据采集器采集的数据源源不断的产生，形成了时间相对应的时序数据。传统的时序数据异常检测方法有阈值法，包括固定阈值和动态阈值，对于固定阈值，如果当前值大于或小于阈值，就说明为异常，而对于动态阈值，如果当前值前一个窗口数据的平均值𝜇、方差𝜎，如果当前值在𝜇±2𝜎或𝜇±3𝜎范围外，就说明为异常。但传统方法并不适用于监控数据的异常检测，主要有两个原因，第一是忽视了周期性，第二是忽视了趋势。在经济学领域，需要预测经济数据，为了解决前面两个问题，提出了一些方法，可以根据前面的时序数据预测之后数据可能的值，用在异常检测上，我们只需要看实际值和预测值偏差是否足够大就可以判断该值是否为异常。常见的算法有ARIMA、EWMA、Holt-Winters、时序数据分解，主要挑战包括突发事件的影响、节假日的影响、数据不规则的影响，最重要的就是对异常的定义不一样，会有主观的因素，最后导致这些算法很难调节。异常检测的另外一个思路基于深度学习来做，循环神经网络（简称RNN）是一个和时间序列有关系的神经网络，不过随着时间间隔的增大，RNN对于后面时间的节点相比前面时间节点的感知力将下降。解决这个问题需要用到LongShort Term 网络（LSTM），它通过刻意的设计来避免长期依赖问题。LSTM在实践中默认可以记住长期的信息，而不需要付出很大代价。更新的研究发现，一种新型的神经网络HTM在时序数据的异常检测上可以取得比LSTM更好的结果。&lt;/p&gt;
-&lt;h2&gt;异常自动处理&lt;/h2&gt;
-&lt;p&gt;云时代由于分布式和微服务化软件架构的流行，业务调用关系愈发复杂，出现故障后，对故障的快速定位形成了很大的挑战。利用大数据技术，结合故障特征库进行跨数据领域关联分析，提前发现隐患、预测故障。与自动化策略执行系统集成联动，在用户发觉问题前将问题解决，避免对业务造成影响。目前，主要有两类机器学习可以帮助解决该类问题。&lt;/p&gt;
-&lt;h4&gt;关联规则算法&lt;/h4&gt;
-&lt;p&gt;在实际的系统中，存在各种各样的关联，比如，&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;应用之间的调用链关系&lt;/li&gt;
-&lt;li&gt;数据库与应用服务器&lt;/li&gt;
-&lt;li&gt;网络设备与网络设备、网络设备与应用服务器&lt;/li&gt;
-&lt;li&gt;宿主机与虚拟机关系等&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;若在同一个时间窗内，有多个强关联的设备或应用服务器同时告警，则大概率认为告警之间存在关联关系。关联规则算法主要有Apriori算法和FPGrowth算法两种算法。这两种算法的功能是相似的，你可以找到频繁的项集。一般PGrowth比Apriori更有效一些。我们将时间窗口按一定的时间间隔进行划分，计算每个时间窗内各种报警发生的频率，并找出各种报警之间的相关性。最后根据分析报警根源的关系。在关联规则算法中，有一条重要的规则，即链路上的连续报警之间可能存在相关性，越靠后的应用越可能是根源。关联规则算法的优点是易于理解和实现。缺点是效率低，灵活性不够高。&lt;/p&gt;
-&lt;h4&gt;深度学习方法&lt;/h4&gt;
-&lt;p&gt;强关联数据分析是对已知告警的关联关系，直接进行根源告警分析。但是有些时候，关联关系是未知的。这时就需要通过机器学习算法，找到告警之间的隐含联系，再进行根源告警预测。对于某类故障引起的大量告警之间，存在着时间相关性。将历史派生告警作为输入，将根源告警类型作为输出。通过LSTM提取派生告警特征，建立告警相关性分析模型。这样就可以实时将符合特征的派生告警，划分到同一类根源告警中，帮助用户快速定位问题。&lt;/p&gt;
-&lt;h2&gt;数据的可视化&lt;/h2&gt;
-&lt;p&gt;在数据中心发生故障时，系统健康状况可视化将快速捕获每个数据中心内资源和云服务的当前和历史健康状况，包括有关性能容量，相关对象和警报以及拓扑和类别日志信息的信息。此外，对于多维监控数据，可以使用数据立方体帮助理解，在数据立方体上，我们已经有了深入的探索，并已有相关产品开发。事件流图也是一种简化运维的可视化方法智能算法需要自动分析这些告警，将它们按照主机、集群或者应用智能地进行组合，形成事件，并按照时间顺序显示出来。&lt;/p&gt;</content><category term="linux"></category><category term="运维"></category><category term="大数据"></category><category term="深度学习"></category><category term="机器学习"></category><category term="异常检测"></category></entry><entry><title>离群点挖掘简述</title><link href="https://blog.chih.me/Outlier-mining-review.html" rel="alternate"></link><published>2018-01-14T00:00:00+08:00</published><updated>2018-01-14T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2018-01-14:/Outlier-mining-review.html</id><summary type="html">&lt;h2&gt;引言&lt;/h2&gt;
+&lt;p&gt;这样，就全部完成了。&lt;/p&gt;</content><category term="Arch Linux"></category><category term="Linux"></category><category term="ipset"></category><category term="iptables"></category><category term="shadowsocks"></category><category term="代理"></category></entry><entry><title>离群点挖掘简述</title><link href="https://blog.chih.me/Outlier-mining-review.html" rel="alternate"></link><published>2018-01-14T00:00:00+08:00</published><updated>2018-01-14T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2018-01-14:/Outlier-mining-review.html</id><summary type="html">&lt;h2&gt;引言&lt;/h2&gt;
 &lt;p&gt;离群点是一个或一组明显不同于其他数据的数据点。Hawkins把离群点定义为“离群点是在数据集中偏离大部分数据的数据，使人怀疑这些数据的偏离并非由随机因素产生，而是产生于完全不同的机制。”&lt;/p&gt;
 &lt;p&gt;在大多数应用中，数据由一到多个程序产生，这些数据可以反映出系统的运行状态和被监测客体的相关数值。当测量、输入错误或系统运行错误时，或者客体出现异常行为，离群点就会产生。因此，离群点经常包含关于系统与实体异常特征的有效信息。现有数据挖掘研究大多集中于发现适用于大部分数据的常规模式,在许多应用领域中，离群点通常作为噪音而忽略，许多数据挖掘算法试图降低或消除离群点的影响。而在有些应用领域识别离群点是许多工作的基础和前提，离群点会带给我们新的视角。如在欺诈检测中，离群点可能意味欺诈行为的发生，在入侵检测中离群点可能意味入侵行为的发生。其他的一些应用场景包括信用卡诈骗、医疗诊断、执法、地球科学……&lt;/p&gt;
 &lt;p&gt;离群点的检测算法输出可以是两种类型之一：&lt;/p&gt;
@@ -2315,12 +2315,12 @@ dir=/home/chih/Downloads
 #另一种Linux文件缓存方式, 使用前确保您使用的内核支持此选项, 需要1.15及以上版本(?)
 #enable-mmap=true
 #文件预分配, 能有效降低文件碎片, 提高磁盘性能. 缺点是预分配时间较长
-#所需时间 none &amp;lt; falloc ? trunc &amp;lt;&amp;lt; prealloc, falloc和trunc需要文件系统和内核支持
+#所需时间 none &amp;amp;lt; falloc ? trunc &amp;amp;lt;&amp;amp;lt; prealloc, falloc和trunc需要文件系统和内核支持
 file-allocation=prealloc
 #启用本地节点查找
 bt-enable-lpd=true
 #添加额外的tracker
-#bt-tracker=&amp;lt;URI&amp;gt;,…
+#bt-tracker=&amp;amp;lt;URI&amp;amp;gt;,…
 #单种子最大连接数
 #bt-max-peers=55
 #强制加密, 防迅雷必备
@@ -2600,7 +2600,7 @@ require Python and Ruby.&lt;/p&gt;
 &lt;p&gt;Next, make sure you have the storm-starter code available on your machine.  Git/GitHub beginners may want to use the
 following command to download the latest storm-starter code and change to the new directory that contains the downloaded
 code.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git clone git://github.com/apache/incubator-storm.git &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;cd&lt;/span&gt; incubator-storm/examples/storm-starter
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ git clone git://github.com/apache/incubator-storm.git &lt;span class="p"&gt;&amp;amp;&lt;/span&gt;amp&lt;span class="p"&gt;;&amp;amp;&lt;/span&gt;amp&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="nb"&gt;cd&lt;/span&gt; incubator-storm/examples/storm-starter
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -2811,17 +2811,17 @@ server.3=192.168.56.104:2888:3888
 myid文件中只有一行数字，即与zoo.cfg设置的主机与id对应的id，
 (默认每台机器通过&lt;code&gt;sudo -s&lt;/code&gt; 进入root环境， 缺失的目录通过&lt;code&gt;mkdir&lt;/code&gt; 补全)&lt;/p&gt;
 &lt;p&gt;在 192.168.56.102 上执行：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# echo 1 &amp;gt;/var/zookeeper/myid
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# echo 1 &amp;amp;gt;/var/zookeeper/myid
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;在 192.168.56.103 上执行：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# echo 2 &amp;gt; /var/zookeeper/myid
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# echo 2 &amp;amp;gt; /var/zookeeper/myid
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;在 192.168.56.104 上执行：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# echo 3 &amp;gt; /var/zookeeper/myid
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# echo 3 &amp;amp;gt; /var/zookeeper/myid
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -3035,10 +3035,10 @@ storm.messaging.netty.min_wait_ms: 100   #--指定最小等待时间（毫秒）
 
 &lt;p&gt;&lt;img alt="1-6" src="https://blog.chih.me/images/1-6.png"&gt;&lt;/p&gt;
 &lt;p&gt;后台（通过命令后加&amp;amp;使进程后台执行，标准输出全部进入黑洞/dev/null）启动Storm服务：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# ./bin/storm nimbus &amp;gt;/dev/null 2&amp;gt;&amp;amp;1 &amp;amp;
-# ./bin/storm supervisor&amp;gt;/dev/null 2&amp;gt;&amp;amp;1 &amp;amp;
-# ./bin/storm ui &amp;gt;/dev/null 2&amp;gt;&amp;amp;1 &amp;amp;
-# ./bin/storm logviewer &amp;gt; /dev/null 2&amp;gt;&amp;amp;1 &amp;amp;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# ./bin/storm nimbus &amp;amp;gt;/dev/null 2&amp;amp;gt;&amp;amp;amp;1 &amp;amp;amp;
+# ./bin/storm supervisor&amp;amp;gt;/dev/null 2&amp;amp;gt;&amp;amp;amp;1 &amp;amp;amp;
+# ./bin/storm ui &amp;amp;gt;/dev/null 2&amp;amp;gt;&amp;amp;amp;1 &amp;amp;amp;
+# ./bin/storm logviewer &amp;amp;gt; /dev/null 2&amp;amp;gt;&amp;amp;amp;1 &amp;amp;amp;
 &lt;/pre&gt;&lt;/div&gt;
 
 

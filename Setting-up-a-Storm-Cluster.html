@@ -45,7 +45,7 @@
         <div class="pure-u-1 pure-u-md-3-4"><div class="content_container">
 <div class="post">
     <h1 class="post-title">实时计算框架Storm本地模式搭建</h1>
-    <div class="post-meta">Feb 02, 2015
+    <div class="post-meta">2月 02, 2015
     <span> | </span> <span>Tech</span>
     </div>
     <a data-disqus-identifier="Setting-up-a-Storm-Cluster.html" href="/Setting-up-a-Storm-Cluster.html#disqus_thread" class="disqus-comment-count"></a>
@@ -164,10 +164,10 @@ storm.messaging.netty.min_wait_ms: 100   #--指定最小等待时间（毫秒）
 
 <p><img alt="1-6" src="https://blog.chih.me/images/1-6.png"></p>
 <p>后台（通过命令后加&amp;使进程后台执行，标准输出全部进入黑洞/dev/null）启动Storm服务：</p>
-<div class="highlight"><pre><span></span># ./bin/storm nimbus &gt;/dev/null 2&gt;&amp;1 &amp;
-# ./bin/storm supervisor&gt;/dev/null 2&gt;&amp;1 &amp;
-# ./bin/storm ui &gt;/dev/null 2&gt;&amp;1 &amp;
-# ./bin/storm logviewer &gt; /dev/null 2&gt;&amp;1 &amp;
+<div class="highlight"><pre><span></span># ./bin/storm nimbus &amp;gt;/dev/null 2&amp;gt;&amp;amp;1 &amp;amp;
+# ./bin/storm supervisor&amp;gt;/dev/null 2&amp;gt;&amp;amp;1 &amp;amp;
+# ./bin/storm ui &amp;gt;/dev/null 2&amp;gt;&amp;amp;1 &amp;amp;
+# ./bin/storm logviewer &amp;gt; /dev/null 2&amp;gt;&amp;amp;1 &amp;amp;
 </pre></div>
 
 
@@ -245,25 +245,25 @@ storm.messaging.netty.min_wait_ms: 100   #--指定最小等待时间（毫秒）
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-star-o"> Tags</i></div>
     <div class="tagcloud">
-    <a href="/tag/shi-shi-ji-suan.html" style="font-size: 10px">实时计算</a>
-    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
-    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
-    <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
-    <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
-    <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
-    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
-    <a href="/tag/linux.html" style="font-size: 16px">Linux</a>
-    <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
     <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
+    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
+    <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
+    <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
+    <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
+    <a href="/tag/shi-shi-ji-suan.html" style="font-size: 10px">实时计算</a>
+    <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
+    <a href="/tag/linux.html" style="font-size: 16px">linux</a>
+    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
+    <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
     </div>
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-file-o"> Recent</i></div>
     <ul class="post-list">
         <li class="post-list-item">
-        <a class="post-list-link" href="/global-proxy-within-ipset-and-iptables.html">使用 iptables、ipset 的全局智能代理</a>
+        <a class="post-list-link" href="/aiops.html">智能运维：从基于规则到基于学习</a>
         </li>
         <li class="post-list-item">
-        <a class="post-list-link" href="/aiops.html">智能运维：从基于规则到基于学习</a>
+        <a class="post-list-link" href="/global-proxy-within-ipset-and-iptables.html">使用 iptables、ipset 的全局智能代理</a>
         </li>
         <li class="post-list-item">
         <a class="post-list-link" href="/Outlier-mining-review.html">离群点挖掘简述</a>
