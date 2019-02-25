@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh_cn">
 
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -56,32 +56,6 @@
     <p class="readmore"><a href="/aiops.html">Read More</a></p>
 </div>
 <div class="post">
-    <h1 class="post-title"><a href="/global-proxy-within-ipset-and-iptables.html">使用 iptables、ipset 的全局智能代理</a></h1>
-    <div class="post-meta">2018-02-07</div>
-    <a data-disqus-identifier="global-proxy-within-ipset-and-iptables.html" href="/global-proxy-within-ipset-and-iptables.html#disqus_thread" class="disqus-comment-count"></a>
-    <div class="post-content">
-        <p>首先，我这里的全局智能代理实现的功能主要有以下几点：</p>
-<ol>
-<li>基于iptables的全局代理，在Linux下可以实现只需设置一次，所有的软件(无论是GUI还是CLI)都可以免设置自动使用这个代理。</li>
-<li>基于ipset，加入所有的国内IP项，对所有tcp流量进行判断，避免对国内的服务进行代理，一方面可以节省服务器流量，另一方面可以享受国内ip的优势，比如国内的版权视频、音乐，最后，避免被国内一些和政府有合作的IT企业发现你使用了代理。</li>
-<li>iptables把需要代理的tcp流量交给shadowsocks-libev中的ss-redir，让它与代理服务器通讯。</li>
-</ol>
-<blockquote>
-<p>让我们开始吧，在最开始，首先要说明的是：这份教程只适用于想要让你的Linux设备使用代理的用户，同时，下文的所有内容假设你运行的是Arch Linux。</p>
-</blockquote>
-<h2>设置 iptables</h2>
-<p>首先，在<code>/etc/iptables</code>目录下创建一份新的规则：</p>
-<div class="highlight"><pre><span></span><span class="c1"># Transparent SOCKS proxy</span>
-
-<span class="o">*</span><span class="n">nat</span>
-<span class="p">:</span><span class="n">PREROUTING</span> <span class="n">ACCEPT</span> <span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span>
-<span class="p">:</span><span class="n">INPUT</span> <span class="n">ACCEPT</span> <span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span>
-<span class="p">:</span><span class="n">OUTPUT</span> <span class="n">ACCEPT</span> <span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span>
-<span class="p">:</span><span class="n">POSTROUTING …</span></pre></div>
-    </div>
-    <p class="readmore"><a href="/global-proxy-within-ipset-and-iptables.html">Read More</a></p>
-</div>
-<div class="post">
     <h1 class="post-title"><a href="/Outlier-mining-review.html">离群点挖掘简述</a></h1>
     <div class="post-meta">2018-01-14</div>
     <a data-disqus-identifier="Outlier-mining-review.html" href="/Outlier-mining-review.html#disqus_thread" class="disqus-comment-count"></a>
@@ -109,6 +83,32 @@
 <p>相似性连接查询，即查找相似的数据对象对，具有广泛的应用领域，例如相似网页检、实体解析、数据清洗和相似图像检索等。 在相似网页检测中，使用相似性连接等技术识别相似的网页，不但可以帮助网页搜索引擎执行聚焦爬行，提高搜索结果的质量和多样性，还可以识别垃圾邮件。在实体解析中，使用相似性连接技术，可以找到企业数据库里相似的顾客，匹配产品报价等。在数据清洗中，使用相似性连接技术，可以为不同数 据源集成提供一致、准确的数据。在相似图像检索 中，使用相似性连接技术检索出相似的图像，可以分析图像的来源 …</p>
     </div>
     <p class="readmore"><a href="/simjoin-on-spark.html">Read More</a></p>
+</div>
+<div class="post">
+    <h1 class="post-title"><a href="/global-proxy-within-ipset-and-iptables.html">使用 iptables、ipset 的全局智能代理</a></h1>
+    <div class="post-meta">2017-07-07</div>
+    <a data-disqus-identifier="global-proxy-within-ipset-and-iptables.html" href="/global-proxy-within-ipset-and-iptables.html#disqus_thread" class="disqus-comment-count"></a>
+    <div class="post-content">
+        <p>首先，我这里的全局智能代理实现的功能主要有以下几点：</p>
+<ol>
+<li>基于iptables的全局代理，在Linux下可以实现只需设置一次，所有的软件(无论是GUI还是CLI)都可以免设置自动使用这个代理。</li>
+<li>基于ipset，加入所有的国内IP项，对所有tcp流量进行判断，避免对国内的服务进行代理，一方面可以节省服务器流量，另一方面可以享受国内ip的优势，比如国内的版权视频、音乐，最后，避免被国内一些和政府有合作的IT企业发现你使用了代理。</li>
+<li>iptables把需要代理的tcp流量交给shadowsocks-libev中的ss-redir，让它与代理服务器通讯。</li>
+</ol>
+<blockquote>
+<p>让我们开始吧，在最开始，首先要说明的是：这份教程只适用于想要让你的Linux设备使用代理的用户，同时，下文的所有内容假设你运行的是Arch Linux。</p>
+</blockquote>
+<h2>设置 iptables</h2>
+<p>首先，在<code>/etc/iptables</code>目录下创建一份新的规则：</p>
+<div class="highlight"><pre><span></span><span class="c1"># Transparent SOCKS proxy</span>
+
+<span class="o">*</span><span class="n">nat</span>
+<span class="p">:</span><span class="n">PREROUTING</span> <span class="n">ACCEPT</span> <span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span>
+<span class="p">:</span><span class="n">INPUT</span> <span class="n">ACCEPT</span> <span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span>
+<span class="p">:</span><span class="n">OUTPUT</span> <span class="n">ACCEPT</span> <span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span>
+<span class="p">:</span><span class="n">POSTROUTING …</span></pre></div>
+    </div>
+    <p class="readmore"><a href="/global-proxy-within-ipset-and-iptables.html">Read More</a></p>
 </div>
 <div class="post">
     <h1 class="post-title"><a href="/vldb-downloader.html">抓取网页中所有PDF链接并下载的Python脚本</a></h1>
@@ -212,16 +212,16 @@
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-star-o"> Tags</i></div>
     <div class="tagcloud">
-    <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
-    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
-    <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
-    <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
-    <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
-    <a href="/tag/shi-shi-ji-suan.html" style="font-size: 10px">实时计算</a>
-    <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
     <a href="/tag/linux.html" style="font-size: 16px">linux</a>
-    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
+    <a href="/tag/sql.html" style="font-size: 10px">SQL</a>
     <a href="/tag/shadowsocks.html" style="font-size: 10px">shadowsocks</a>
+    <a href="/tag/spark.html" style="font-size: 12px">Spark</a>
+    <a href="/tag/dai-li.html" style="font-size: 10px">代理</a>
+    <a href="/tag/da-shu-ju.html" style="font-size: 12px">大数据</a>
+    <a href="/tag/storm.html" style="font-size: 10px">Storm</a>
+    <a href="/tag/shi-shi-ji-suan.html" style="font-size: 10px">实时计算</a>
+    <a href="/tag/hadoop.html" style="font-size: 10px">hadoop</a>
+    <a href="/tag/big-data.html" style="font-size: 12px">big data</a>
     </div>
 </div><div class="widget">
     <div class="widget-title"><i class="fa fa-file-o"> Recent</i></div>
@@ -230,13 +230,13 @@
         <a class="post-list-link" href="/aiops.html">智能运维：从基于规则到基于学习</a>
         </li>
         <li class="post-list-item">
-        <a class="post-list-link" href="/global-proxy-within-ipset-and-iptables.html">使用 iptables、ipset 的全局智能代理</a>
-        </li>
-        <li class="post-list-item">
         <a class="post-list-link" href="/Outlier-mining-review.html">离群点挖掘简述</a>
         </li>
         <li class="post-list-item">
         <a class="post-list-link" href="/simjoin-on-spark.html">基于SPARK的分布式网页近似度检测</a>
+        </li>
+        <li class="post-list-item">
+        <a class="post-list-link" href="/global-proxy-within-ipset-and-iptables.html">使用 iptables、ipset 的全局智能代理</a>
         </li>
         <li class="post-list-item">
         <a class="post-list-link" href="/vldb-downloader.html">抓取网页中所有PDF链接并下载的Python脚本</a>

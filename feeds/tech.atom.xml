@@ -22,121 +22,7 @@
 &lt;h4&gt;深度学习方法&lt;/h4&gt;
 &lt;p&gt;强关联数据分析是对已知告警的关联关系，直接进行根源告警分析。但是有些时候，关联关系是未知的。这时就需要通过机器学习算法，找到告警之间的隐含联系，再进行根源告警预测。对于某类故障引起的大量告警之间，存在着时间相关性。将历史派生告警作为输入，将根源告警类型作为输出。通过LSTM提取派生告警特征，建立告警相关性分析模型。这样就可以实时将符合特征的派生告警，划分到同一类根源告警中，帮助用户快速定位问题。&lt;/p&gt;
 &lt;h2&gt;数据的可视化&lt;/h2&gt;
-&lt;p&gt;在数据中心发生故障时，系统健康状况可视化将快速捕获每个数据中心内资源和云服务的当前和历史健康状况，包括有关性能容量，相关对象和警报以及拓扑和类别日志信息的信息。此外，对于多维监控数据，可以使用数据立方体帮助理解，在数据立方体上，我们已经有了深入的探索，并已有相关产品开发。事件流图也是一种简化运维的可视化方法智能算法需要自动分析这些告警，将它们按照主机、集群或者应用智能地进行组合，形成事件，并按照时间顺序显示出来。&lt;/p&gt;</content><category term="linux"></category><category term="运维"></category><category term="大数据"></category><category term="深度学习"></category><category term="机器学习"></category><category term="异常检测"></category></entry><entry><title>使用 iptables、ipset 的全局智能代理</title><link href="https://blog.chih.me/global-proxy-within-ipset-and-iptables.html" rel="alternate"></link><published>2018-02-07T00:00:00+08:00</published><updated>2018-02-07T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2018-02-07:/global-proxy-within-ipset-and-iptables.html</id><summary type="html">&lt;p&gt;首先，我这里的全局智能代理实现的功能主要有以下几点：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;基于iptables的全局代理，在Linux下可以实现只需设置一次，所有的软件(无论是GUI还是CLI)都可以免设置自动使用这个代理。&lt;/li&gt;
-&lt;li&gt;基于ipset，加入所有的国内IP项，对所有tcp流量进行判断，避免对国内的服务进行代理，一方面可以节省服务器流量，另一方面可以享受国内ip的优势，比如国内的版权视频、音乐，最后，避免被国内一些和政府有合作的IT企业发现你使用了代理。&lt;/li&gt;
-&lt;li&gt;iptables把需要代理的tcp流量交给shadowsocks-libev中的ss-redir，让它与代理服务器通讯。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;blockquote&gt;
-&lt;p&gt;让我们开始吧，在最开始，首先要说明的是：这份教程只适用于想要让你的Linux设备使用代理的用户，同时，下文的所有内容假设你运行的是Arch Linux。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h2&gt;设置 iptables&lt;/h2&gt;
-&lt;p&gt;首先，在&lt;code&gt;/etc/iptables&lt;/code&gt;目录下创建一份新的规则：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Transparent SOCKS proxy&lt;/span&gt;
-
-&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;nat&lt;/span&gt;
-&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;PREROUTING&lt;/span&gt; &lt;span class="n"&gt;ACCEPT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;INPUT&lt;/span&gt; &lt;span class="n"&gt;ACCEPT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;OUTPUT&lt;/span&gt; &lt;span class="n"&gt;ACCEPT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;POSTROUTING …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;首先，我这里的全局智能代理实现的功能主要有以下几点：&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;基于iptables的全局代理，在Linux下可以实现只需设置一次，所有的软件(无论是GUI还是CLI)都可以免设置自动使用这个代理。&lt;/li&gt;
-&lt;li&gt;基于ipset，加入所有的国内IP项，对所有tcp流量进行判断，避免对国内的服务进行代理，一方面可以节省服务器流量，另一方面可以享受国内ip的优势，比如国内的版权视频、音乐，最后，避免被国内一些和政府有合作的IT企业发现你使用了代理。&lt;/li&gt;
-&lt;li&gt;iptables把需要代理的tcp流量交给shadowsocks-libev中的ss-redir，让它与代理服务器通讯。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;blockquote&gt;
-&lt;p&gt;让我们开始吧，在最开始，首先要说明的是：这份教程只适用于想要让你的Linux设备使用代理的用户，同时，下文的所有内容假设你运行的是Arch Linux。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h2&gt;设置 iptables&lt;/h2&gt;
-&lt;p&gt;首先，在&lt;code&gt;/etc/iptables&lt;/code&gt;目录下创建一份新的规则：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Transparent SOCKS proxy&lt;/span&gt;
-
-&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;nat&lt;/span&gt;
-&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;PREROUTING&lt;/span&gt; &lt;span class="n"&gt;ACCEPT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;INPUT&lt;/span&gt; &lt;span class="n"&gt;ACCEPT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;OUTPUT&lt;/span&gt; &lt;span class="n"&gt;ACCEPT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;POSTROUTING&lt;/span&gt; &lt;span class="n"&gt;ACCEPT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-
-&lt;span class="c1"&gt;# Redirect all output through redsocks&lt;/span&gt;
-&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;OUTPUT&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;tcp&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt;
-
-&lt;span class="c1"&gt;# Whitelist LANs and some other reserved addresses.&lt;/span&gt;
-&lt;span class="c1"&gt;# https://en.wikipedia.org/wiki/Reserved_IP_addresses#Reserved_IPv4_addresses&lt;/span&gt;
-&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
-&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="mf"&gt;10.0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
-&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="mf"&gt;127.0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
-&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="mf"&gt;169.254&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
-&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="mf"&gt;172.16&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;12&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
-&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="mf"&gt;192.168&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
-&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="mf"&gt;224.0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
-&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="mf"&gt;240.0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
-
-&lt;span class="c1"&gt;# whitelist China ip.&lt;/span&gt;
-&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;tcp&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="nb"&gt;set&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;match&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nb"&gt;set&lt;/span&gt; &lt;span class="n"&gt;china&lt;/span&gt; &lt;span class="n"&gt;dst&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
-&lt;span class="c1"&gt;# import shadowsocks server ip&lt;/span&gt;
-&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="n"&gt;xxx&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xxx&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xxx&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xxx&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
-&lt;span class="c1"&gt;# shadowsocks server port&lt;/span&gt;
-&lt;span class="c1"&gt;#-A REDSOCKS -p tcp --dport xxxx -j RETURN&lt;/span&gt;
-
-&lt;span class="c1"&gt;# Redirect everything else to redsocks port&lt;/span&gt;
-&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;tcp&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;REDIRECT&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ports&lt;/span&gt; &lt;span class="mi"&gt;1081&lt;/span&gt;
-
-&lt;span class="n"&gt;COMMIT&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;这份配置文件的主要功能是，把所有的tcp流量(不包括一些保留的ip段，包括局域网网段；使用ipset存储的所有中国ip段，关于ipset后文讲；代理服务器自己的ip或端口，这是为了避免代理自己不要再被重定向，端口或ip选择一个就行)&lt;/p&gt;
-&lt;p&gt;然后把这份规则软链接到&lt;code&gt;/etc/iptables/iptables.rules&lt;/code&gt;，启动iptables并设置开机启动。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo systemctl start iptables.service
-sudo systemctl enable iptables.service
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;h2&gt;配置ipset&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;p&gt;ipset是 Linux 防火墙iptables的一个伴随工具。它允许你建立规则来轻松愉快地屏蔽一组IP地址。
-ipset可以把大量ip或ip段存储在一个set中，实际上这个set是一个高效的查询结构，搜索的逻辑依然在iptables本身，iptables会判断IP地址或者哪个别的什么字段在不在这个set中，判断的过程使用二叉树，哈希等算法因此非常高效。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;依次执行一下命令。&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Destroy ipset if it already exists
-sudo systemctl stop iptables.service 
-sudo ipset destroy china
-
-# Create the ipset list
-sudo ipset -N china hash:net
-
-# remove any old list that might exist from previous runs of this script
-rm cn.zone
-
-# Pull the latest IP set for China
-wget -P . http://www.ipdeny.com/ipblocks/data/countries/cn.zone
-
-# Add each IP address from the downloaded list into the ipset &amp;#39;china&amp;#39;
-# for i in $(cat ./cn.zone ); do ipset -A china $i; done
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;执行完成后，所有中国ip已经通过ipset保存在内存中，可以被iptable调用，参见上文中的iptables规则&lt;code&gt;-A REDSOCKS -p tcp -m set --match-set china dst -j RETURN&lt;/code&gt;，一旦遇到tcp包，其目标地址为名为china的ipset中的ip，就直接放行。&lt;/p&gt;
-&lt;p&gt;目前创建的ipse存在于内存中，重启后将会消失。要使ipset持久化，要这样做：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# ipset save &amp;gt; /etc/ipset.conf
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;同时把ipset设置为开机启动：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo systemctl enable ipset.service
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;h2&gt;配置 ss-redir&lt;/h2&gt;
-&lt;p&gt;在配置文件中设一个未使用的端口，我使用的是1081，在iptables的规则中与之对应&lt;code&gt;-A REDSOCKS -p tcp -j REDIRECT --to-ports 1081&lt;/code&gt;，然后启动ss-redir：&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo systemctl start shadowsocks-libev-redir@config
-sudo systemctl enable shadowsocks-libev-redir@config
-&lt;/pre&gt;&lt;/div&gt;
-
-
-&lt;p&gt;这样，就全部完成了。&lt;/p&gt;</content><category term="Arch Linux"></category><category term="Linux"></category><category term="ipset"></category><category term="iptables"></category><category term="shadowsocks"></category><category term="代理"></category></entry><entry><title>离群点挖掘简述</title><link href="https://blog.chih.me/Outlier-mining-review.html" rel="alternate"></link><published>2018-01-14T00:00:00+08:00</published><updated>2018-01-14T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2018-01-14:/Outlier-mining-review.html</id><summary type="html">&lt;h2&gt;引言&lt;/h2&gt;
+&lt;p&gt;在数据中心发生故障时，系统健康状况可视化将快速捕获每个数据中心内资源和云服务的当前和历史健康状况，包括有关性能容量，相关对象和警报以及拓扑和类别日志信息的信息。此外，对于多维监控数据，可以使用数据立方体帮助理解，在数据立方体上，我们已经有了深入的探索，并已有相关产品开发。事件流图也是一种简化运维的可视化方法智能算法需要自动分析这些告警，将它们按照主机、集群或者应用智能地进行组合，形成事件，并按照时间顺序显示出来。&lt;/p&gt;</content><category term="linux"></category><category term="运维"></category><category term="大数据"></category><category term="深度学习"></category><category term="机器学习"></category><category term="异常检测"></category></entry><entry><title>离群点挖掘简述</title><link href="https://blog.chih.me/Outlier-mining-review.html" rel="alternate"></link><published>2018-01-14T00:00:00+08:00</published><updated>2018-01-14T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2018-01-14:/Outlier-mining-review.html</id><summary type="html">&lt;h2&gt;引言&lt;/h2&gt;
 &lt;p&gt;离群点是一个或一组明显不同于其他数据的数据点。Hawkins把离群点定义为“离群点是在数据集中偏离大部分数据的数据，使人怀疑这些数据的偏离并非由随机因素产生，而是产生于完全不同的机制。”&lt;/p&gt;
 &lt;p&gt;在大多数应用中，数据由一到多个程序产生，这些数据可以反映出系统的运行状态和被监测客体的相关数值。当测量、输入错误或系统运行错误时，或者客体出现异常行为，离群点就会产生。因此，离群点经常包含关于系统与实体异常特征的有效信息。现有数据挖掘研究大多集中于发现适用于大部分数据的常规模式,在许多应用领域中，离群点通常作为噪音而忽略，许多数据挖掘算法试图降低或消除离群点的影响。而在有些应用领域识别离群点是许多工作的基础和前提，离群点会带给我们新的视角。如在欺诈检测中，离群点可能意味欺诈行为的发生，在入侵检测中离群点可能意味入侵行为的发生。其他的一些应用场景包括信用卡诈骗、医疗诊断、执法、地球科学……&lt;/p&gt;
 &lt;p&gt;离群点的检测算法输出可以是两种类型之一：&lt;/p&gt;
@@ -532,7 +418,121 @@ sbin/start-all.sh
 &lt;p&gt;运行代码后，可以看到生成了一个DAG图，即为Spark的计算路径，其中有三个stage。最后输出了超出一定阈值的所有相似的文档对，同时给出了相似度系数。&lt;/p&gt;
 &lt;h2&gt;出现的问题&lt;/h2&gt;
 &lt;p&gt;在运行中出现&lt;code&gt;java.io.IOException: No space left on device&lt;/code&gt;错误，经过Google搜索，发现Spark默认使用 &lt;code&gt;/tmp&lt;/code&gt;目录存储中间结果，而&lt;code&gt;/tmp&lt;/code&gt;目录为tmpfs目录，出于内存文件系统，默认大小仅为内存大小的一半。&lt;/p&gt;
-&lt;p&gt;为了解决这个问题，需要自定义&lt;code&gt;SPARK_LOCAL_DIRS&lt;/code&gt;环境变量到一个足够大的目录下，我这里把它改到了Spark的安装目录。&lt;/p&gt;</content><category term="linux"></category><category term="Spark"></category><category term="scala"></category><category term="SimJion"></category><category term="相似度检测"></category></entry><entry><title>抓取网页中所有PDF链接并下载的Python脚本</title><link href="https://blog.chih.me/vldb-downloader.html" rel="alternate"></link><published>2017-07-05T00:00:00+08:00</published><updated>2017-07-05T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2017-07-05:/vldb-downloader.html</id><summary type="html">&lt;h2&gt;说点什么&lt;/h2&gt;
+&lt;p&gt;为了解决这个问题，需要自定义&lt;code&gt;SPARK_LOCAL_DIRS&lt;/code&gt;环境变量到一个足够大的目录下，我这里把它改到了Spark的安装目录。&lt;/p&gt;</content><category term="linux"></category><category term="Spark"></category><category term="scala"></category><category term="SimJion"></category><category term="相似度检测"></category></entry><entry><title>使用 iptables、ipset 的全局智能代理</title><link href="https://blog.chih.me/global-proxy-within-ipset-and-iptables.html" rel="alternate"></link><published>2017-07-07T00:00:00+08:00</published><updated>2017-07-07T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2017-07-07:/global-proxy-within-ipset-and-iptables.html</id><summary type="html">&lt;p&gt;首先，我这里的全局智能代理实现的功能主要有以下几点：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;基于iptables的全局代理，在Linux下可以实现只需设置一次，所有的软件(无论是GUI还是CLI)都可以免设置自动使用这个代理。&lt;/li&gt;
+&lt;li&gt;基于ipset，加入所有的国内IP项，对所有tcp流量进行判断，避免对国内的服务进行代理，一方面可以节省服务器流量，另一方面可以享受国内ip的优势，比如国内的版权视频、音乐，最后，避免被国内一些和政府有合作的IT企业发现你使用了代理。&lt;/li&gt;
+&lt;li&gt;iptables把需要代理的tcp流量交给shadowsocks-libev中的ss-redir，让它与代理服务器通讯。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;让我们开始吧，在最开始，首先要说明的是：这份教程只适用于想要让你的Linux设备使用代理的用户，同时，下文的所有内容假设你运行的是Arch Linux。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;设置 iptables&lt;/h2&gt;
+&lt;p&gt;首先，在&lt;code&gt;/etc/iptables&lt;/code&gt;目录下创建一份新的规则：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Transparent SOCKS proxy&lt;/span&gt;
+
+&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;nat&lt;/span&gt;
+&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;PREROUTING&lt;/span&gt; &lt;span class="n"&gt;ACCEPT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;INPUT&lt;/span&gt; &lt;span class="n"&gt;ACCEPT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;OUTPUT&lt;/span&gt; &lt;span class="n"&gt;ACCEPT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;POSTROUTING …&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;</summary><content type="html">&lt;p&gt;首先，我这里的全局智能代理实现的功能主要有以下几点：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;基于iptables的全局代理，在Linux下可以实现只需设置一次，所有的软件(无论是GUI还是CLI)都可以免设置自动使用这个代理。&lt;/li&gt;
+&lt;li&gt;基于ipset，加入所有的国内IP项，对所有tcp流量进行判断，避免对国内的服务进行代理，一方面可以节省服务器流量，另一方面可以享受国内ip的优势，比如国内的版权视频、音乐，最后，避免被国内一些和政府有合作的IT企业发现你使用了代理。&lt;/li&gt;
+&lt;li&gt;iptables把需要代理的tcp流量交给shadowsocks-libev中的ss-redir，让它与代理服务器通讯。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;让我们开始吧，在最开始，首先要说明的是：这份教程只适用于想要让你的Linux设备使用代理的用户，同时，下文的所有内容假设你运行的是Arch Linux。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;设置 iptables&lt;/h2&gt;
+&lt;p&gt;首先，在&lt;code&gt;/etc/iptables&lt;/code&gt;目录下创建一份新的规则：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Transparent SOCKS proxy&lt;/span&gt;
+
+&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="n"&gt;nat&lt;/span&gt;
+&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;PREROUTING&lt;/span&gt; &lt;span class="n"&gt;ACCEPT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;INPUT&lt;/span&gt; &lt;span class="n"&gt;ACCEPT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;OUTPUT&lt;/span&gt; &lt;span class="n"&gt;ACCEPT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;POSTROUTING&lt;/span&gt; &lt;span class="n"&gt;ACCEPT&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Redirect all output through redsocks&lt;/span&gt;
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;OUTPUT&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;tcp&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Whitelist LANs and some other reserved addresses.&lt;/span&gt;
+&lt;span class="c1"&gt;# https://en.wikipedia.org/wiki/Reserved_IP_addresses#Reserved_IPv4_addresses&lt;/span&gt;
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="mf"&gt;10.0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="mf"&gt;127.0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;8&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="mf"&gt;169.254&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="mf"&gt;172.16&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;12&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="mf"&gt;192.168&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;16&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="mf"&gt;224.0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="mf"&gt;240.0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mf"&gt;0.0&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;4&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
+
+&lt;span class="c1"&gt;# whitelist China ip.&lt;/span&gt;
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;tcp&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;m&lt;/span&gt; &lt;span class="nb"&gt;set&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;match&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="nb"&gt;set&lt;/span&gt; &lt;span class="n"&gt;china&lt;/span&gt; &lt;span class="n"&gt;dst&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
+&lt;span class="c1"&gt;# import shadowsocks server ip&lt;/span&gt;
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="n"&gt;xxx&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xxx&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xxx&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;xxx&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;RETURN&lt;/span&gt;
+&lt;span class="c1"&gt;# shadowsocks server port&lt;/span&gt;
+&lt;span class="c1"&gt;#-A REDSOCKS -p tcp --dport xxxx -j RETURN&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Redirect everything else to redsocks port&lt;/span&gt;
+&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;A&lt;/span&gt; &lt;span class="n"&gt;REDSOCKS&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;p&lt;/span&gt; &lt;span class="n"&gt;tcp&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;j&lt;/span&gt; &lt;span class="n"&gt;REDIRECT&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;to&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;ports&lt;/span&gt; &lt;span class="mi"&gt;1081&lt;/span&gt;
+
+&lt;span class="n"&gt;COMMIT&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;这份配置文件的主要功能是，把所有的tcp流量(不包括一些保留的ip段，包括局域网网段；使用ipset存储的所有中国ip段，关于ipset后文讲；代理服务器自己的ip或端口，这是为了避免代理自己不要再被重定向，端口或ip选择一个就行)&lt;/p&gt;
+&lt;p&gt;然后把这份规则软链接到&lt;code&gt;/etc/iptables/iptables.rules&lt;/code&gt;，启动iptables并设置开机启动。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo systemctl start iptables.service
+sudo systemctl enable iptables.service
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;配置ipset&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;ipset是 Linux 防火墙iptables的一个伴随工具。它允许你建立规则来轻松愉快地屏蔽一组IP地址。
+ipset可以把大量ip或ip段存储在一个set中，实际上这个set是一个高效的查询结构，搜索的逻辑依然在iptables本身，iptables会判断IP地址或者哪个别的什么字段在不在这个set中，判断的过程使用二叉树，哈希等算法因此非常高效。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;依次执行一下命令。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# Destroy ipset if it already exists
+sudo systemctl stop iptables.service 
+sudo ipset destroy china
+
+# Create the ipset list
+sudo ipset -N china hash:net
+
+# remove any old list that might exist from previous runs of this script
+rm cn.zone
+
+# Pull the latest IP set for China
+wget -P . http://www.ipdeny.com/ipblocks/data/countries/cn.zone
+
+# Add each IP address from the downloaded list into the ipset &amp;#39;china&amp;#39;
+# for i in $(cat ./cn.zone ); do ipset -A china $i; done
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;执行完成后，所有中国ip已经通过ipset保存在内存中，可以被iptable调用，参见上文中的iptables规则&lt;code&gt;-A REDSOCKS -p tcp -m set --match-set china dst -j RETURN&lt;/code&gt;，一旦遇到tcp包，其目标地址为名为china的ipset中的ip，就直接放行。&lt;/p&gt;
+&lt;p&gt;目前创建的ipse存在于内存中，重启后将会消失。要使ipset持久化，要这样做：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# ipset save &amp;gt; /etc/ipset.conf
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;同时把ipset设置为开机启动：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo systemctl enable ipset.service
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;配置 ss-redir&lt;/h2&gt;
+&lt;p&gt;在配置文件中设一个未使用的端口，我使用的是1081，在iptables的规则中与之对应&lt;code&gt;-A REDSOCKS -p tcp -j REDIRECT --to-ports 1081&lt;/code&gt;，然后启动ss-redir：&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;sudo systemctl start shadowsocks-libev-redir@config
+sudo systemctl enable shadowsocks-libev-redir@config
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;这样，就全部完成了。&lt;/p&gt;</content><category term="Arch Linux"></category><category term="Linux"></category><category term="ipset"></category><category term="iptables"></category><category term="shadowsocks"></category><category term="代理"></category></entry><entry><title>抓取网页中所有PDF链接并下载的Python脚本</title><link href="https://blog.chih.me/vldb-downloader.html" rel="alternate"></link><published>2017-07-05T00:00:00+08:00</published><updated>2017-07-05T00:00:00+08:00</updated><author><name>chih</name></author><id>tag:blog.chih.me,2017-07-05:/vldb-downloader.html</id><summary type="html">&lt;h2&gt;说点什么&lt;/h2&gt;
 &lt;p&gt;没什么好说的，工具脚本，代码都在下面，可能改一下后可以适用于其他地方。&lt;/p&gt;
 &lt;h2&gt;代码&lt;/h2&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/usr/bin/env python3&lt;/span&gt;
